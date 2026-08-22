@@ -67,7 +67,15 @@ jobs:
           if [ -z "$url" ]; then echo "SPIKE NEGATIVE: both tunnels failed"; tail -30 tunnel.log; exit 1; fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "TUNNEL_URL=$url"
-          curl -sS -m 20 -o /dev/null -w 'tunnel bazaar http=%{http_code}\n' "$url/bazaar"
+          # fresh *.trycloudflare.com hostnames take a moment to resolve in DNS
+          ok=""
+          for i in $(seq 1 12); do
+            sleep 5
+            code=$(curl -s -o /dev/null -w '%{http_code}' -m 20 "$url/bazaar" || true)
+            echo "tunnel bazaar attempt $i http=$code"
+            [ "$code" = "200" ] && { ok=1; break; }
+          done
+          [ -n "$ok" ] || { echo "tunnel never served 200"; tail -30 tunnel.log; exit 1; }
 
       - name: Record URL in repo
         run: |

@@ -6,3 +6,4 @@
 {"ts": "2026-08-22T15:19:35Z", "bot": "Fleet", "event": "coordination layer online"}
 {"ts": "2026-08-22T15:20:02Z", "bot": "Fleet", "event": "BUILD CYCLE 1 STARTED: escrow claim integration"}
 {"ts": "2026-08-22T15:23:02Z", "bot": "Coder", "event": "BUILD COMPLETE: escrow claim info endpoint + panel section added"}
+{"ts": "2026-08-22T18:08:17Z", "bot": "Coder", "event": "BUILD COMPLETE: ops layer dashboard shipped + verified"}
