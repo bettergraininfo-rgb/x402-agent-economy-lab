@@ -52,7 +52,7 @@
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
       "status": "idle",
-      "last_action": "DIR-022 closed PASS: storefront fulfill() + x402-order template synced to 5-SKU catalog (report/batch fulfillable, analyze removed); ci.sh 7/7, ledger untouched"
+      "last_action": "DIR-023 closed PASS: public_v2.yml Actions workflow serves v2 rail over public HTTPS (run 32589866779); host-side probe /bazaar=200 + 402 v2 challenge verified; SELLER_ADDRESS keyless override added; ephemeral-URL caveat logged"
     },
     {
       "name": "Researcher",
