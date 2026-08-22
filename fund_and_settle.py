@@ -26,13 +26,14 @@ from solders.transaction import Transaction
 from solders.hash import Hash
 from solders.instruction import Instruction, AccountMeta
 
-RPC = "https://api.devnet.solana.com"
+RPCS = ["https://api.devnet.solana.com", "https://api.testnet.solana.com"]
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MEMO_PROG = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
 
 
-def rpc(method, params):
-    return httpx.post(RPC, json={"jsonrpc": "2.0", "id": 1,
+def rpc(method, params, rpc_url=None):
+    url = rpc_url or RPCS[0]
+    return httpx.post(url, json={"jsonrpc": "2.0", "id": 1,
                                  "method": method, "params": params},
                       timeout=25).json()
 
@@ -43,19 +44,23 @@ def load_kp():
 
 
 def try_airdrop(pubkey: str) -> dict:
-    out = rpc("requestAirdrop", [pubkey, 500_000_000])  # 0.5 SOL
-    if "error" in out:
-        return {"ok": False, "reason": out["error"].get("message", "")}
-    # confirm the airdrop itself
-    for _ in range(20):
-        st = rpc("getSignatureStatuses", [[out["result"]]])
-        v = st.get("result", {}).get("value", [None])[0]
-        if v and v.get("confirmationStatus") in ("confirmed", "finalized"):
-            return {"ok": True, "sig": out["result"]}
-        if v and v.get("err"):
-            return {"ok": False, "reason": str(v["err"])}
-        time.sleep(2)
-    return {"ok": False, "reason": "airdrop confirmation timeout"}
+    """Try each public RPC until one dispenses funds."""
+    reasons = []
+    for url in RPCS:
+        out = rpc("requestAirdrop", [pubkey, 500_000_000], rpc_url=url)  # 0.5 SOL
+        if "result" in out:
+            for _ in range(20):
+                st = rpc("getSignatureStatuses", [[out["result"]]], rpc_url=url)
+                v = st.get("result", {}).get("value", [None])[0]
+                if v and v.get("confirmationStatus") in ("confirmed", "finalized"):
+                    return {"ok": True, "sig": out["result"], "rpc": url}
+                if v and v.get("err"):
+                    break
+                time.sleep(2)
+            reasons.append(f"{url}: confirmation timeout")
+        else:
+            reasons.append(f"{url}: {out.get('error', {}).get('message', '?')[:80]}")
+    return {"ok": False, "reason": "; ".join(reasons)}
 
 
 def main() -> int:
