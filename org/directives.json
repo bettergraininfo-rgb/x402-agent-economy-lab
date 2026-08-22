@@ -76,7 +76,8 @@
     {
       "id": "DIR-011",
       "title": "Migrate Sui rail to x402 v2 exact scheme settled via sui-x402-facilitator (dual-dialect, keep legacy path)",
-      "status": "planned",
+      "status": "completed",
+      "completed": "2026-08-22T11:30:00-06:00",
       "plan": "org/plans/PLAN-facilitator-exact-scheme.md",
       "approved": "2026-08-22T10:15:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
@@ -143,6 +144,16 @@
       "approved": "2026-08-22T10:40:00-06:00 (CEO issuance, decisions.log)",
       "owner": "sales",
       "rationale": "Channel (b) is blocked only by spec conformance, not paperwork. Draft Agent402 payload, discovery-index issue text, PayAPI answers now against the post-migration origin (org/research/listings-drafts.md); on DIR-011 verification, submit all three within one shift."
+    },
+    {
+      "id": "DIR-018",
+      "title": "Force-execute DIR-012 Phase A free reject-path e2e proof this shift (no funding needed)",
+      "status": "planned",
+      "plan": "org/plans/PLAN-reject-path-e2e-now.md",
+      "approved": "2026-08-22T10:45:00-06:00 (CEO issuance, decisions.log)",
+      "owner": "builder",
+      "planner_note": "Planned 11:00 shift. Plan extracts only Phase A of PLAN-storefront-e2e-proof.md — zero cost, ledger untouched, no Phase B/funding work (that stays with DIR-016).",
+      "rationale": "Free proof idled 15+ minutes behind the funding gate; process failure per CEO. Executing it now leaves DIR-016 funding as the ONLY remaining gate before outreach may cite the store."
     }
   ]
 }

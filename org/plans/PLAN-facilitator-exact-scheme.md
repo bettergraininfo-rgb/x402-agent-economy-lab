@@ -66,6 +66,33 @@ atomic units ($0.015 / $0.030 / $0.075).
 - `git revert <commit> && pkill -f sui_market_server.py && nohup .venv/bin/python sui_market_server.py > /tmp/sui8610.log 2>&1 &`
 - Legacy path was never modified, so pre-migration behavior is restored exactly.
 
+## Execution 2026-08-22 (builder shift) — status=done
+
+Code (sui_x402_v2.py + sui_market_server.py integration) was found staged from the prior
+shift; this shift completed compile checks, live verification, and org bookkeeping.
+All VERIFY commands run for real:
+
+1. `.venv/bin/python -m py_compile sui_x402_v2.py sui_market_server.py` → exit 0.
+2. `curl -s https://sui-facilitator.onrender.com/supported` →
+   `{"kinds":[{"x402Version":2,"scheme":"exact","network":"sui:testnet","extra":{"usdc":"0xa1ec...7e29::usdc::USDC","decimals":6}}, ...]}` ✓
+3. Server restarted on :8604; `/health` → `{"status":"ok","pay_to":"0x8b355339...78c924a","settlement":"sui-devnet"}`.
+   Note: plan's VERIFY said `-X POST`, but routes are GET (`@app.get("/{path:path}")`);
+   GET used instead: `curl -si "localhost:8604/v1/sentiment?text=hello"` →
+   `HTTP/1.1 402 Payment Required` + `payment-required:` base64 header.
+4. Decoded PAYMENT-REQUIRED header:
+   `x402Version: 2 | asset: 0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC | amount: "15000" | scheme: exact | network: sui:testnet` ✓
+5. Free conformance probes (no funds):
+   - garbage payload → `(False, 'verify failed: invalid_x402_version')`
+   - well-formed fake tx → facilitator HTTP **200** `{'isValid': False, 'invalidReason': 'invalid_transaction_state'}`,
+     helper returned `(False, 'verify failed: invalid_transaction_state')` — semantic reject, no crash ✓
+6. `/bazaar` → all 3 endpoints each carry `"accepts"` with exact-scheme requirements at
+   15000 / 30000 / 75000 atomic units, payTo = seller address ✓
+7. `bash ci.sh` → ALL 7 INTEGRATION STAGES PASSED ("ALL INTEGRATION STAGES PASSED",
+   economy check BALANCED, MCP smoke tests green) — legacy dialect intact ✓
+
+ROLLBACK not needed. Live settled purchase intentionally NOT attempted (per NOTES: Circle
+faucet human-gated); structural migration is fully verified free of charge.
+
 ## ESTIMATED REVENUE IMPACT
 Indirect but structural: unblocks DIR-003 listings (Agent402 = one POST, discovery-index =
 one issue, PayAPI free listing) and makes us callable by stock x402 clients — i.e., converts
