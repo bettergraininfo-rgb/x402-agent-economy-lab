@@ -1,5 +1,9 @@
-# never commit keys or env
 agent_wallet_testnet.json
+solana_agent_wallet.json
+solana_seller_wallet.json
+sui_agent_wallet.json
+sui_buyer_wallet.json
+sui_seller_wallet.json
 .env
 *.key
 __pycache__/
