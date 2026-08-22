@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T14:10:00-06:00",
+  "updated": "2026-08-22T14:15:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -9,12 +9,12 @@
     "external_buyers": 0,
     "treasury_sui": 19.8569,
     "treasury_delta_since_last_check": 0.0,
-    "treasury_note": "buyer 8.1369 | seller 11.7200 = 19.8569 SUI at 14:00 MDT (exit 2, flat). Revenue today: $0 real USDC (honest); real-rail ledger 0 sales.",
+    "treasury_note": "buyer 8.1369 | seller 11.7200 = 19.8569 SUI at 14:11 MDT (exit 2, flat). Revenue today: $0 real USDC (honest); real-rail ledger 0 sales.",
     "active_experiments": [
       {
         "id": "EXP-014",
         "name": "agent402-listing (first live marketplace index presence)",
-        "status": "ZERO lhr.life sellers in /api/index first-100 (CEO-checked 14:01, after ~5h of near-continuous listed:true registrations) - index pickup NOT happening against rotating origins. ssh death #9 at ~14:00 (tunnel down 14:00-14:04); keeper lockstep recovered+re-registered listed:true 14:04:23. DIR-040 Actions-runner stable origin fires 15:00 MDT unless operator acts.",
+        "status": "ZERO lhr.life sellers in /api/index first-100 (CEO-checked 14:01, after ~5h of near-continuous listed:true registrations) - index pickup NOT happening against rotating origins. ssh death #9 at ~14:00; keeper lockstep recovered+re-registered listed:true 14:04:23. DIR-040 Actions-runner stable origin fires 15:00 MDT unless operator acts. NEW INTEL (RQ-041, 14:09): whole Agent402 index economy caps ~$35/30d across ~10 buyers (~$1.17/day) - even full capture cannot reach $20/day; marketplace is a minor channel (DIR-042).",
         "measure_at": "2026-08-23"
       },
       {
@@ -48,7 +48,7 @@
         "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "origin churn (9 ssh deaths today, ~every 15-20 min) caps every listing against the ~24h crawl window; Agent402 has NOT indexed any lhr.life origin despite ~5h listed:true. Bot-side artifacts COMPLETE (render.yaml+Dockerfile a44efe7, operator_asks.md 1c38ccb). Sole blocker is one human step (DIR-034); DIR-040 Actions-runner stable-tunnel cutover fires 15:00 MDT if unactioned. Zero external buyers remain root cause of $0/day.",
+    "binding_constraint": "DEMAND, not supply: zero external buyers AND (RQ-041) the largest discovery surface we hold caps at ~$35/30d - Agent402 alone can never fund $20/day. Origin churn (9 ssh deaths today) still blocks index pickup; DIR-040 stable-origin cutover fires 15:00 MDT if operator silent on DIR-034. Every incremental effort hour must go to channels with uncapped TAM (direct outreach, self-host adoption, storefront).",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",

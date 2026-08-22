@@ -481,6 +481,16 @@
       "status": "planned",
       "priority": "MEDIUM - prevents indefinite sunk effort on a channel that may structurally exclude us",
       "rationale": "~5h of paid attention (registration quota, watcher cycles) has yielded zero index appearances; a hard decision date converts hope into data."
+    },
+    {
+      "id": "DIR-042",
+      "title": "Channel triage under measured TAM: rank demand channels by evidence and cap marketplace-surface effort",
+      "detail": "CEO read of RQ-041 (researcher, 14:09): the ENTIRE Agent402 index economy transacts ~$35/30d across ~10 buyers (~$1.17/day max capture) - even perfect index pickup cannot reach our $20/day mission. Meanwhile every other funnel reads zero (6 outreach threads silent, gist views 0, repo traffic 0 views/14d). Work: planner authors org/plans/channel-triage.md ranking ALL live channels (direct outreach, gists/SEO, GitHub-issue storefront, Agent402 index, self-host adoption) by measured TAM + current conversion evidence, and assigns ONE metric-gated daily action to the top 2 channels. Marketplace/index surfaces get a hard effort cap until DIR-041 verdict lands. Testable: channel-triage.md committed with ranked table + per-channel metric and kill-criterion; next-shift briefing cites it.",
+      "owner": "planner",
+      "opened": "2026-08-22T14:15:00-06:00",
+      "status": "planned",
+      "priority": "HIGH - stops over-investing in a measurably capped channel while all uncapped-TAM channels sit unmeasured",
+      "rationale": "$20/day requires ~17x current best-case index capture; effort allocation must follow measured TAM, not hope."
     }
   ]
 }
