@@ -1,8 +1,13 @@
 # x402 Agent Economy Lab
 
+[![integration](https://github.com/bettergraininfo-rgb/x402-agent-economy-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/bettergraininfo-rgb/x402-agent-economy-lab/actions/workflows/ci.yml)
+
 A working laboratory for the **x402 agent-payment protocol** (https://x402.org):
 AI agents that discover services, negotiate prices, pay per request, and run
 an autonomous micro-economy — with live on-chain data as the product.
+
+**MCP-ready:** any Model Context Protocol agent (Claude Code, Cursor, etc.)
+can connect to `mcp_bazaar_server.py` and buy bazaar services as native tools.
 
 Built and verified end-to-end. Settlement is simulated (`payment_core.MockFacilitator`);
 every protocol behavior (402 challenge, signed retries, replay/tamper rejection,

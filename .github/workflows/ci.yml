@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           uv venv --clear .venv
-          uv pip install --python .venv/bin/python fastapi "uvicorn[standard]" httpx x402 cdp-sdk
+          uv pip install --python .venv/bin/python fastapi "uvicorn[standard]" httpx x402 cdp-sdk "mcp[cli]"
 
       - name: Run full integration suite
         run: bash ci.sh

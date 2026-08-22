@@ -49,8 +49,11 @@ sleep 2
 $PY chainfeed_client.py
 kill $S4
 
-echo "=== [6/6] A2A economy with balanced ledger ==="
+echo "=== [6/7] A2A economy with balanced ledger ==="
 $PY a2a_economy.py
+
+echo "=== [7/7] MCP server: agents buying via Model Context Protocol ==="
+$PY mcp_bazaar_client_test.py
 
 echo ""
 echo "ALL INTEGRATION STAGES PASSED"
