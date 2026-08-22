@@ -167,7 +167,7 @@ def verify_onchain(digest: str, min_amount: int, attempts: int = 5) -> tuple[boo
     return True, f"verified {paid} MIST received"
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def root():
     """Origin manifest for x402 index crawlers (Agent402 probes origin root)."""
     return {
@@ -184,28 +184,42 @@ def root():
     }
 
 
-@app.get("/.well-known/x402")
-@app.get("/.well-known/x402.json")
+@app.get("/.well-known/x402", include_in_schema=False)
+@app.get("/.well-known/x402.json", include_in_schema=False)
 def well_known_x402(request: Request):
     """Agent402 service manifest (spec: agent402-service-manifest/1)."""
     base = str(request.base_url).rstrip("/")
     if request.headers.get("x-forwarded-proto", "").lower() == "https":
         base = base.replace("http://", "https://", 1)
+    # Rich objects (not bare URLs): Agent402's manifest parser reads
+    # price_usd|priceUsd|price|amount off object entries — explicit prices
+    # stop our rows ranking last among equals and skip quote-probe dependence
+    # (DIR-031/RQ-034). method is typed GET because that is how these routes
+    # verifiably answer (unpaid GET -> 402).
+    usd = {"/v1/sentiment": 0.015, "/v1/entity-extract": 0.030,
+           "/v1/summarize": 0.075}
     return {
         "spec": "agent402-service-manifest/1",
         "version": 1,
-        "resources": [f"{base}{ep}" for ep in SERVICES],
+        "resources": [
+            {"url": f"{base}{ep}", "method": "GET", "price": usd[ep],
+             "name": ep.lstrip("/"),
+             "description": ("Pay-per-call NLP: sentiment score, entity "
+                             "extraction, or summarization — x402 v2 exact "
+                             "scheme, sui:testnet USDC.")}
+            for ep in SERVICES
+        ],
         "payment": "x402 v2 exact scheme (sui:testnet USDC) - unauthenticated "
                    "request returns HTTP 402 with accepts[] requirements",
     }
 
 
-@app.get("/health")
+@app.get("/health", include_in_schema=False)
 def health():
     return {"status": "ok", "pay_to": PAY_TO, "settlement": "sui-devnet"}
 
 
-@app.get("/bazaar")
+@app.get("/bazaar", include_in_schema=False)
 def bazaar():
     return {"services": [
         {"endpoint": ep, "price_sui": cfg["price"] / LAMPORT,
@@ -214,7 +228,7 @@ def bazaar():
     ]}
 
 
-@app.get("/stats")
+@app.get("/stats", include_in_schema=False)
 def stats():
     return {"revenue_mist": sum(e["amount"] for e in ledger),
             "sales": len(ledger),
@@ -228,7 +242,7 @@ def _by_svc():
     return out
 
 
-@app.get("/{path:path}")
+@app.get("/{path:path}", include_in_schema=False)
 def paid(request: Request, path: str, text: str = ""):
     endpoint = "/" + path
     cfg = SERVICES.get(endpoint)

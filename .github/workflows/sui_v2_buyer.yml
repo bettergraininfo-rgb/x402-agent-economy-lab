@@ -1,6 +1,9 @@
-# sui_v2_buyer.yml — DIR-020 fallback route: one REAL x402 v2 exact-scheme
-# SETTLE on Sui testnet from a GitHub Actions runner (fresh IP) when the host
-# IP is faucet-rate-limited (429 loop proven locally 2026-08-22).
+# sui_v2_buyer.yml — DIR-020: one REAL x402 v2 exact-scheme SETTLE on Sui
+# testnet via the hosted non-custodial facilitator. Self-healing: the Sui
+# testnet faucet is saturated (persistent 429 from BOTH host and fresh
+# runner IPs, proven 2026-08-22 19:00-19:26Z), so this retries on cadence
+# until one run gets funded and settles; that run commits the proof marker
+# org/state/DIRECTIVE_DIR020_DONE.txt, after which all later runs no-op.
 # Fresh throwaway buyer wallet is created ON the runner; no secrets needed.
 # SELLER_ADDRESS is the public pay-to address only.
 name: sui-v2-buyer-settle
@@ -8,7 +11,10 @@ name: sui-v2-buyer-settle
 on:
   workflow_dispatch:
   schedule:
-    - cron: "23 */3 * * *"
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: write
 
 jobs:
   settle:
@@ -26,6 +32,13 @@ jobs:
           SELLER_ADDRESS: "0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a"
         run: python3 sui_v2_buyer.py
 
-      - name: Record result
-        if: always()
-        run: echo "see step log above for (ok, '<digest> payer=0x…') or UNFUNDED"
+      - name: Commit proof marker (only after a real settle)
+        if: success()
+        run: |
+          if [ -f org/state/DIRECTIVE_DIR020_DONE.txt ]; then
+            git config user.name "bettergraininfo-rgb"
+            git config user.email "bettergraininfo-rgb@users.noreply.github.com"
+            git add org/state/DIRECTIVE_DIR020_DONE.txt
+            git commit -m "builder: DIR-020 REAL x402 v2 exact-scheme settle proven on sui:testnet"
+            git push
+          fi

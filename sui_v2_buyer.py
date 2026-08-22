@@ -131,6 +131,12 @@ def on_chain_check(digest: str, seller: str) -> None:
 
 
 def main() -> int:
+    marker = os.path.join(ROOT, "org", "state", "DIRECTIVE_DIR020_DONE.txt")
+    if os.path.exists(marker):
+        with open(marker) as f:
+            print("DIR-020 already proven; digest:", f.read().strip())
+        return 0
+
     sk, buyer = create_or_load_wallet()
     seller = seller_address()
     print("buyer :", buyer)
@@ -162,6 +168,10 @@ def main() -> int:
     print((ok, result))
     if ok:
         digest = result.split()[0]
+        os.makedirs(os.path.dirname(marker), exist_ok=True)
+        with open(marker, "w") as f:
+            f.write(f"{digest} buyer={buyer} seller={seller} amount={AMOUNT} "
+                    f"asset=0x2::sui::SUI network=sui:testnet\n")
         on_chain_check(digest, seller)
     return 0 if ok else 1
 

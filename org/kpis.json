@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T13:07:00-06:00",
+  "updated": "2026-08-22T13:25:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -9,12 +9,12 @@
     "external_buyers": 0,
     "treasury_sui": 19.8569,
     "treasury_delta_since_last_check": 0.0,
-    "treasury_note": "buyer 8.1369 | seller 11.7200 = 19.8569 SUI at 13:01 MDT (exit 2). AUDITOR FLAG: +0.13 SUI vs the 12:00 figure (19.7269) with no ledger entry - likely faucet/PoW credit, NOT revenue; explain.",
+    "treasury_note": "buyer 8.1369 | seller 11.7200 = 19.8569 SUI at 13:20 MDT (exit 2, flat vs 13:01). +0.13 SUI vs noon remains unexplained - flagged to auditor as non-revenue.",
     "active_experiments": [
       {
         "id": "EXP-014",
         "name": "agent402-listing (first live marketplace index presence)",
-        "status": "UNPLANNED ROTATION 13:01:13 (ssh death #5 today) killed the 12:41 confirmed listing after ~20 min; keeper lockstep auto-re-registered https://da6d5c66044ea4.lhr.life listed:true 13:01:29 (health:1, sui:testnet). DIR-032 trigger FIRED. Crawl clock reset - re-check GET agent402.tools/api/index from ~14:00 MDT.",
+        "status": "ROTATION #6 13:21:13 (ssh death #6) orphaned the 13:01 listing after ~20 min; keeper lockstep auto-re-registered https://8c3e26aa935e39.lhr.life listed:true 13:21:26 (health:1). Crawl clock reset AGAIN - /api/index still zero lhr.life sellers at 13:22. Re-check from ~14:20 MDT against current origin. DIR-032 Render escalation is the fix; DIR-035 artifacts deadline 14:00 MDT.",
         "measure_at": "2026-08-23"
       },
       {
@@ -48,7 +48,7 @@
         "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "origin churn: ssh tunnels die ~every 20min, so no listing survives its own crawl window - DIR-032 ACTIVATED (persistent hosting); its Render route is gated on ONE human step (account creation), escalated to operator 13:05 MDT. Zero external buyers remain root cause of $0/day.",
+    "binding_constraint": "origin churn CONTINUES: ssh death #6 today at 13:21, every listing dies in ~20 min against a 24h crawl window. Permanent fix = DIR-032/034 Render persistent hosting (operator-gated, one human step) with DIR-023 Actions-runner tunnel as operator-independent fallback from 15:00 MDT. Zero external buyers remain root cause of $0/day.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",

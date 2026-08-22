@@ -64,6 +64,9 @@ def requirements(endpoint: str) -> dict:
         "asset": TESTNET_USDC,
         "payTo": _seller_address(),
         "maxTimeoutSeconds": MAX_TIMEOUT_SECONDS,
+        # Asset metadata: Agent402/x402scan price rows from extra.decimals
+        # (missing extra -> price:null -> ranked last among equals, DIR-033).
+        "extra": {"name": "USDC", "decimals": 6},
     }
 
 

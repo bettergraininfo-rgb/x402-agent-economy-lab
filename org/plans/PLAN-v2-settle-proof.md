@@ -1,7 +1,7 @@
 # PLAN — DIR-020: One real x402 v2 exact-scheme SETTLE on Sui testnet
 
 **Directive:** DIR-020 | **Owner:** builder | **Planned:** planner, 2026-08-22 ~12:30 MDT shift
-**Status:** ready
+**Status:** in-flight — settle automation armed; goal NOT yet met (faucet saturation)
 **Why:** Listings currently cite a *challenge* (402 shape), not a proven *settle*. One real
 facilitator `/settle` broadcast on `sui:testnet` turns every listing claim into "settle path
 proven on-chain".
@@ -86,3 +86,34 @@ precise asset gap by 15:00 MDT, else re-scope per that note. Builder priority or
 shift: DIR-032 Render artifacts FIRST (trigger already fired 13:01), then this plan inside
 the timebox. If faucet 429-cooldown blocks locally, go straight to the Actions-runner
 fallback in step 2 — do not wait out the cooldown on host.
+
+## Execution 2026-08-22 13:05–13:30 MDT (builder)
+**Status: NOT DONE — settle goal unmet this shift; self-healing automation armed.**
+
+Steps executed in order:
+1. `git pull --ff-only` → Already up to date.
+2. Local faucet probe (fresh wallet 0x548b1abd…07e7ec): **11 attempts over ~8 min, ALL
+   HTTP 429** `Too Many Requests! Wait for Ns` (N=51–59s, never resolves — global
+   saturation, not a host cooldown). Script exited cleanly code 2 per plan design.
+3. `sui_v2_buyer.py` created (~180 lines): fresh throwaway buyer wallet, testnet GraphQL,
+   SUI-denominated reqs (exact / sui:testnet / 15000000 MIST / 0x2::sui::SUI / payTo seller),
+   `build_split_transfer_tx`+`sign` from sui_a2a_pay, `settle_via_facilitator` from
+   sui_x402_v2. py_compile OK.
+4. Actions-runner fallback per plan step 2 contingency: `.github/workflows/sui_v2_buyer.yml`
+   dispatched 3× (runs 32593164506 uv-missing → fixed; 32593199355 fastapi-missing → fixed;
+   32593285986 deps OK but **faucet 429 ×8 from fresh runner IP too** — UNFUNDED exit 2).
+   Runner IP does NOT bypass this rate limit.
+5. Facilitator liveness re-probed: `https://sui-facilitator.onrender.com/supported` →
+   `{"kinds":[{x402Version:2,scheme:exact,network:sui:testnet,...}]}` HTTP 200. Settle PATH
+   endpoints live; only funding is blocked.
+6. Automation armed: workflow now scheduled */15 (per user cadence standard); script writes
+   org/state/DIRECTIVE_DIR020_DONE.txt ONLY on facilitator success (digest+buyer+seller+
+   amount+asset), workflow auto-commits the marker; all later runs no-op on marker presence.
+   Next runs will land the proof autonomously when the faucet grants.
+7. ci.sh ALL GREEN (integration stages passed). Ledger untouched; servers untouched;
+   no existing wallet key material read (seller address only).
+
+Honest VERIFY status: `(True, '<digest> payer=0x…')` NOT yet produced — no settle occurred,
+so no digest, no balance delta, no replay-guard run. Directive stays OPEN; do NOT cite a
+proven settle in listings until DIRECTIVE_DIR020_DONE.txt lands with a real digest.
+Rollback: nothing to revert (standalone script + new workflow file only).
