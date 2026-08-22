@@ -44,22 +44,28 @@ def load_kp():
 
 
 def try_airdrop(pubkey: str) -> dict:
-    """Try each public RPC until one dispenses funds."""
+    """Try each RPC x decreasing amounts until one dispenses funds."""
     reasons = []
     for url in RPCS:
-        out = rpc("requestAirdrop", [pubkey, 500_000_000], rpc_url=url)  # 0.5 SOL
-        if "result" in out:
-            for _ in range(20):
-                st = rpc("getSignatureStatuses", [[out["result"]]], rpc_url=url)
-                v = st.get("result", {}).get("value", [None])[0]
-                if v and v.get("confirmationStatus") in ("confirmed", "finalized"):
-                    return {"ok": True, "sig": out["result"], "rpc": url}
-                if v and v.get("err"):
+        for lamports in (500_000_000, 100_000_000, 10_000_000):
+            out = rpc("requestAirdrop", [pubkey, lamports], rpc_url=url)
+            if "result" in out:
+                for _ in range(20):
+                    st = rpc("getSignatureStatuses", [[out["result"]]], rpc_url=url)
+                    v = st.get("result", {}).get("value", [None])[0]
+                    if v and v.get("confirmationStatus") in ("confirmed", "finalized"):
+                        return {"ok": True, "sig": out["result"], "rpc": url,
+                                "lamports": lamports}
+                    if v and v.get("err"):
+                        break
+                    time.sleep(2)
+                reasons.append(f"{url}@{lamports}: confirm timeout")
+            else:
+                msg = out.get("error", {}).get("message", "?")[:60]
+                reasons.append(f"{url}@{lamports}: {msg}")
+                # 429-style limit -> don't hammer same URL with more attempts
+                if "limit" in msg.lower():
                     break
-                time.sleep(2)
-            reasons.append(f"{url}: confirmation timeout")
-        else:
-            reasons.append(f"{url}: {out.get('error', {}).get('message', '?')[:80]}")
     return {"ok": False, "reason": "; ".join(reasons)}
 
 
