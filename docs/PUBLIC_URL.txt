@@ -5,3 +5,4 @@ backend: sui_market_server.py :8604 (x402 v2 exact scheme, sui:testnet USDC)
 verified live at write time: GET /.well-known/x402 = 200
 NOTE: prior origin bcb3c875793cc7.lhr.life is DEAD (503) after the 12:00 rotation.
 https://bathroom-promotes-implies-fiction.trycloudflare.com runner-spike 2026-08-22T18:09:17Z
+https://hospital-championship-beings-tobacco.trycloudflare.com runner-spike 2026-08-22T18:15:14Z
