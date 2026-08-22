@@ -1,0 +1,9 @@
+[package]
+name = "agent_escrow"
+edition = "2024.beta"
+
+[addresses]
+agent_escrow = "0x0"
+
+[environments]
+devnet = { chain-id = "62f06689" }
