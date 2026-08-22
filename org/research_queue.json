@@ -4,22 +4,29 @@
       "id": "RQ-002",
       "question": "What is the exact technical path and cost to serve an EVM/Base x402 endpoint from this box (public HTTPS, CDP or x402.org facilitator registration, Sepolia vs mainnet gas/faucet constraints)?",
       "added": "2026-08-22",
-      "priority": 2,
-      "why": "prerequisite engineering question before any Bazaar listing; network allowlist may block some steps - identify workarounds (GitHub Actions)"
-    },
-    {
-      "id": "RQ-003",
-      "question": "Which x402 listing surface converts best for a Sui-derived data feed: Coinbase Bazaar (requires EVM port), PayAPI Market, true402, Agent402, or the new sui:testnet facilitator (sui-facilitator.onrender.com)? What does each require technically and what has actually settled there?",
-      "added": "2026-08-22",
       "priority": 1,
-      "why": "DIR-005 execution depends on choosing 1-2 surfaces; wrong surface burns a build cycle"
+      "why": "now the blocking prerequisite for DIR-009 (Bazaar + Agent402 listing); network allowlist may block some steps - identify workarounds (GitHub Actions deploy, free hosts like the Render free tier the Sui facilitator uses)"
     },
     {
       "id": "RQ-004",
-      "question": "Can our existing Sui-native 402 server (sui_market_server.py) settle through the new sui:testnet x402 facilitator without a rewrite \u2014 is its scheme spec-conformant with our signed-SUI-transfer dialect, and does it support mainnet?",
+      "question": "Can our existing Sui-native 402 server settle through sui-facilitator.onrender.com without a rewrite?",
+      "added": "2026-08-22",
+      "priority": 3,
+      "why": "PARTIALLY ANSWERED 2026-08-22: facilitator is live on mainnet+testnet, zero fees, asset-agnostic; our server's custom X-SUI-TX-DIGEST dialect is NOT v2-conformant - a wrapper (PAYMENT-REQUIRED/PAYMENT-SIGNATURE headers, verify/settle calls) is required. Remaining question: is the wrapper worth building at all given near-zero Sui-side discovery demand? Deprioritized pending DIR-009."
+    },
+    {
+      "id": "RQ-005",
+      "question": "What are Agent402.tools' exact seller registration requirements and health-probe mechanics (origin registration API, uptime thresholds for routing, supported payment schemes), and can a Base-settled endpoint register from behind our network allowlist?",
       "added": "2026-08-22",
       "priority": 2,
-      "why": "if yes, DIR-003's EVM-port prerequisite may be unnecessary for Sui-settled buyers"
+      "why": "Agent402 routes buyer tasks by health rank across 1.6k+ Base sellers; registration details determine whether DIR-009 can list there in one cycle"
+    },
+    {
+      "id": "RQ-006",
+      "question": "Which derived on-chain signal feeds earn in Bazaar/Agent402 top quartiles with NO incumbent already selling (the Sui whale feed is taken by the sui-facilitator author), and which can we build solely from owned assets (Sui GraphQL watcher, escrow/settlement analytics, x402 flow data)?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "DIR-005 as scoped (whale feed $0.01/call) now competes head-on with the facilitator's own demo product; we need a differentiated feed spec before the builder burns a cycle"
     }
   ],
   "answered": [
@@ -29,6 +36,13 @@
       "verdict": "feasible (derived Sui signal feed only; raw data is commoditized by Inodra/Surflux free tiers)",
       "finding": "org/research/findings.md#2026-08-22--rq-001",
       "directive_proposed": "DIR-005: Sui whale-transfer feed at $0.01/call via new sui:testnet x402 facilitator + one EVM marketplace"
+    },
+    {
+      "id": "RQ-003",
+      "answered": "2026-08-22",
+      "verdict": "feasible — decided: one EVM/Base port unlocks Bazaar + Agent402 (real demand surfaces); PayAPI/true402 backlog; Sui facilitator is not a demand channel and its author already sells the whale feed",
+      "finding": "org/research/findings.md#2026-08-22--rq-003",
+      "directive_proposed": "DIR-009: single EVM x402 port of strongest differentiated endpoint, dual-listed on CDP Bazaar + Agent402 same cycle"
     }
   ]
 }

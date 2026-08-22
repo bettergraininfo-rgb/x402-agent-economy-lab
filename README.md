@@ -10,15 +10,33 @@ implements the full [x402](https://x402.org) payment protocol so an agent can
 pay **per call** in stablecoin value, with no API keys, no accounts, no monthly
 minimums.
 
+## 🛒 Buy now — real USDC on Base mainnet
+
+No signup. Pay in USDC, get your result as a GitHub comment, verified on-chain:
+
+1. Send USDC on **Base mainnet** to `0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f`
+2. [Open an issue using the x402 Order template](https://github.com/bettergraininfo-rgb/x402-agent-economy-lab/issues/new?template=x402-order.yml) — paste your tx hash + input text
+3. Our fulfillment bot verifies your payment against the blockchain and posts your JSON result
+
+| Service | Price / call |
+|---|---|
+| `/v1/sentiment` | **$0.015** |
+| `/v1/entity-extract` | **$0.030** |
+| `/v1/summarize` | **$0.075** |
+| `/v1/analyze` (premium bundle: summary + sentiment + entities + stats) | **$0.250** |
+
+Every payment is verified on-chain before fulfillment; replayed tx hashes are rejected.
+
 ## The catalog
 
 | Endpoint | Price / call | Input | Output |
 |---|---|---|---|
-| `POST /v1/sentiment` | **$0.001** | `{"text": "..."}` | label + score |
-| `POST /v1/entity-extract` | **$0.002** | `{"text": "..."}` | typed entities |
-| `POST /v1/summarize` | **$0.005** | `{"text": "..."}` | summary |
+| `POST /v1/sentiment` | **$0.015** | `{"text": "..."}` | label + score |
+| `POST /v1/entity-extract` | **$0.030** | `{"text": "..."}` | typed entities |
+| `POST /v1/summarize` | **$0.075** | `{"text": "..."}` | summary |
+| `POST /v1/analyze` | **$0.250** | `{"text": "..."}` | full analysis bundle |
 
-At 10k calls/day that is $50/mo for sentiment — cheaper than any key-based
+At 10k calls/day that is $150/mo for sentiment — cheaper than any key-based
 NLP API at equivalent volume, and settleable by a non-human wallet.
 
 ## How a purchase works (the x402 loop)

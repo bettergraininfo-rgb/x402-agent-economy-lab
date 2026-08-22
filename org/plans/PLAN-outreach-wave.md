@@ -1,7 +1,7 @@
-# PLAN-outreach-wave.md (DIR-009 — renumbered from decisions.log "DIR-007 outbound outreach")
+# PLAN-outreach-wave.md (DIR-010 — renumbered twice by Planner: decisions.log called it "DIR-007", first reserved as DIR-009, then displaced by the higher-priority public-access directive which took DIR-009)
 
 **Status:** ready | **Owner bot:** Sales | **Shift budget:** <10 min
-**Note:** Renumbered DIR-007 → DIR-009 by Planner 2026-08-22 because directives.json already assigns DIR-007 to the premium analysis tier (kpis.json DIR-002). Source authority: org/decisions.log CEO entry 09:45 ("ISSUED DIR-007 outbound outreach + DIR-008 pricing A/B checkpoint") — here implemented as DIR-009 to eliminate the ID collision.
+**Note:** Final ID is DIR-010 because directives.json assigns DIR-007 to the premium analysis tier (kpis.json DIR-002) and DIR-009 to public buyer access. Source authority: org/decisions.log CEO entry 09:45 ("ISSUED DIR-007 outbound outreach + DIR-008 pricing A/B checkpoint").
 **Scope guard:** GitHub is reachable from this network; most other outbound channels (email APIs, social, faucet-style sites) are blocked. This plan uses GitHub ONLY — issues/discussions/discussions-on-our-own-repo. No spending, no keys.
 
 ## GOAL

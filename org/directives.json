@@ -36,9 +36,11 @@
     {
       "id": "DIR-009",
       "title": "Public buyer access path: expose the x402 server beyond 127.0.0.1 (tunnel or hosted runner) with stable URL in README",
-      "status": "new",
+      "status": "planned",
+      "plan": "org/plans/PLAN-public-buyer-access.md",
       "approved": "2026-08-22T10:00:00-06:00",
       "owner": "builder",
+      "planner_note": "Planned same shift. Primary route is a GitHub order-intake rail (issues as orders, on-chain verification reused from sui_market_server) because tunnels are likely network-blocked; tunnel attempts included as a timeboxed step anyway.",
       "rationale": "Structural blocker: no external agent can reach a localhost-bound server, so external purchases are impossible regardless of price or marketing. One verifiable public URL unblocks every demand-gen directive."
     },
     {
@@ -49,6 +51,26 @@
       "approved": "2026-08-22 (kpis.json DIR-002, decision: APPROVE after DIR-001 — DIR-001 confirmed landed)",
       "owner": "builder",
       "rationale": "Highest-leverage product move per CEO: current sales earn $0.001-0.075 each; a bundled report at $0.02 and bulk batch at $0.05 lift revenue per sale 4-10x with zero new infrastructure (composed from existing services)."
+    },
+    {
+      "id": "DIR-008",
+      "title": "Pricing A/B checkpoint: if zero external sales by 2026-08-29, cut all prices 50% once",
+      "status": "scheduled",
+      "plan": null,
+      "due": "2026-08-29",
+      "owner": "planner",
+      "source": "org/decisions.log CEO entry 2026-08-22T09:45; numbered DIR-008 per that log (the 'DIR-007 outreach' item in the same entry was renumbered to avoid collision with the analysis-tier directive).",
+      "rationale": "Pre-committed pricing experiment so repricing risk is bounded and evaluated on data."
+    },
+    {
+      "id": "DIR-010",
+      "title": "Outbound outreach wave: >=2 external contacts per 24h pointing x402 developers at our bazaar catalog",
+      "status": "planned",
+      "plan": "org/plans/PLAN-outreach-wave.md",
+      "approved": "2026-08-22 (CEO issuance in decisions.log 09:45)",
+      "owner": "sales",
+      "note": "Renumbered DIR-007 -> DIR-009 -> DIR-010 by Planner: directives.json already assigns DIR-007 to the premium analysis tier and DIR-009 to public buyer access. Kill criterion: escalate if zero replies after 48h. Self-posted fallback contacts do NOT count toward the tally.",
+      "rationale": "Zero distribution is the #1 bottleneck (all 14 lifetime sales were self-settlement tests). GitHub is the only reliably reachable channel."
     }
   ]
 }

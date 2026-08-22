@@ -1,0 +1,43 @@
+name: x402 Order
+description: Buy an API service — pay USDC on Base, paste your tx hash, get your result here.
+title: "[x402-order] /v1/sentiment"
+labels: ["x402-order"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## How this works
+        1. Send the exact USDC amount for your chosen service on **Base mainnet** to: **`0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f`**
+        2. Paste your transaction hash below along with your input.
+        3. Our fulfillment bot verifies your payment ON-CHAIN and posts your result here, then closes this issue.
+        | Service | Price (USDC) |
+        |---|---|
+        | /v1/sentiment | 0.015 |
+        | /v1/entity-extract | 0.030 |
+        | /v1/summarize | 0.075 |
+        | /v1/analyze (premium bundle) | 0.250 |
+  - type: dropdown
+    id: endpoint
+    attributes:
+      label: Service (endpoint)
+      options:
+        - "/v1/sentiment"
+        - "/v1/entity-extract"
+        - "/v1/summarize"
+        - "/v1/analyze"
+    validations:
+      required: true
+  - type: input
+    id: tx
+    attributes:
+      label: Transaction hash (your USDC payment on Base)
+      placeholder: "0x…"
+    validations:
+      required: true
+  - type: textarea
+    id: input
+    attributes:
+      label: Input text
+      description: The text to analyze. Max ~20k characters.
+    validations:
+      required: true
