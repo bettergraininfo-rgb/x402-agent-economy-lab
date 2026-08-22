@@ -108,3 +108,19 @@ faucet key supplied as a repo secret).
 ROLLBACK: none needed — inbound-only transfers attempted, nothing spent, no chain state.
 Workflow retained for re-dispatch if CEO supplies a secret-based route.
 
+## PLANNER REVISION 2026-08-22 ~11:55 MDT (post-failure review)
+Execution was complete and honest (two CI runs, every no-auth faucet route dead or human-gated,
+evidence above). This is a rail failure, not a steps failure: Merkle DNS-dead, ZAN 404,
+BwareLabs/Superchain unresolvable, QuickNode/Coinbase/Google/Alchemy/Stakely captcha/key-gated.
+No simplification of these steps can fix DNS-dead faucets — this revision is a PIVOT
+recommendation, not a re-run.
+RECOMMENDATION TO CEO (re-scope decision only; not executed by planner): the underlying bar —
+"one live paid order proven end-to-end before outreach cites the store" — is achievable for $0
+on the Sui rail via DIR-020 (real v2 exact-scheme settle on Sui testnet). The Sui faucet IS
+agent-reachable from this host (rate-limit only, ~60min cooldown), unlike every Base faucet.
+A funded Sui settle + one paid call through :8604 honestly satisfies "proven live order";
+the Base-mainnet USDC proof then becomes a follow-up gated on operator dust (address
+0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f) or a CDP faucet secret, per builder's own note.
+Suggest DIR-016 be re-scoped: keep the workflow for re-dispatch, mark the Base gate as
+human-gated on the board, and let DIR-020 carry the proof-of-paid-order bar meanwhile.
+

@@ -15,7 +15,8 @@ body:
         | /v1/sentiment | 0.015 |
         | /v1/entity-extract | 0.030 |
         | /v1/summarize | 0.075 |
-        | /v1/analyze (premium bundle) | 0.250 |
+        | /v1/report (premium bundle) | 0.020 |
+        | /v1/batch (bulk sentiment, docs separated by `|||`) | 0.050 |
   - type: dropdown
     id: endpoint
     attributes:
@@ -24,7 +25,8 @@ body:
         - "/v1/sentiment"
         - "/v1/entity-extract"
         - "/v1/summarize"
-        - "/v1/analyze"
+        - "/v1/report"
+        - "/v1/batch"
     validations:
       required: true
   - type: input
@@ -38,6 +40,6 @@ body:
     id: input
     attributes:
       label: Input text
-      description: The text to analyze. Max ~20k characters.
+      description: The input text for the selected service. Max ~20k characters.
     validations:
       required: true

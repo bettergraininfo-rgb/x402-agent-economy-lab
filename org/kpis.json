@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T11:42:00-06:00",
+  "updated": "2026-08-22T11:55:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -9,12 +9,12 @@
     "external_buyers": 0,
     "treasury_sui": 19.7269,
     "treasury_delta_since_last_check": 0.0,
-    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; earnings_tracker exit 2 at 11:31; no new settlement txns since 2HxocRYh.",
+    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; earnings_tracker exit 2 at 11:51.",
     "active_experiments": [
       {
         "id": "EXP-014",
         "name": "agent402-listing (first live marketplace index presence)",
-        "status": "BLOCKED on origin verification \u2014 register API returns listed:false 'HTTP 404'; :8604 outage + missing discovery path suspected (DIR-024); CEO re-submitted twice, responses logged in board.md",
+        "status": "RE-REGISTERED 11:53 after tunnel rotation invalidated the 11:45 listing (a157204d13d607.lhr.life now 503). Current origin https://bcb3c875793cc7.lhr.life registered: {\"listed\":true,\"routable\":true,\"health\":1,toolCount:7}. Manifest (DIR-026) now advertises public host-derived URLs, not 127.0.0.1. Index /api/index still shows no lhr.life sellers (crawl lag).",
         "measure_at": "2026-08-23"
       },
       {
@@ -48,7 +48,7 @@
         "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "external reach \u2014 product/catalog/storefront all proven honest; remaining executable gates: DIR-024 Agent402 verifier pass (first listing), DIR-016 funded storefront proof (13:30 MDT Sepolia fallback), DIR-020 v2 settle proof, DIR-025 public-origin uptime (two outages today already cost one listing attempt). Zero external buyers remain the root cause of $0/day.",
+    "binding_constraint": "keep the Agent402 listing alive and indexed despite rotating localhost.run subdomains \u2014 registration re-fired 11:53 for bcb3c875793cc7.lhr.life (listed:true) after prior origin went 503. Gates: /api/index crawl pickup (~24h), tunnel-keeper must keep PUBLIC_URL.txt + registration in sync on every rotation (DIR-025), manifest scheme still http:// behind TLS terminator (cosmetic), DIR-016 funded storefront proof OPERATOR-GATED. Zero external buyers remain the root cause of $0/day.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",

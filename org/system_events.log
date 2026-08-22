@@ -8,3 +8,4 @@
 2026-08-22T16:41:02Z | MEDIC | market-server RECOVERED on :8604 (pid 143248)
 2026-08-22T16:41:05Z | MEDIC | checkpointed org state (6ecec1e)
 2026-08-22T16:45:47Z | MEDIC | checkpointed org state (24dd83a)
+2026-08-22T17:50:26Z | PLANNER | tunnel rotated a157204d13d607.lhr.life -> bcb3c875793cc7.lhr.life (old listed origin died; new URL recovered from /tmp/tunnel-8604.log stderr of relaunched ssh pid 162907); docs/PUBLIC_URL.txt + listings-drafts.md updated

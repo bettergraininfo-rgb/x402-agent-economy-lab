@@ -52,7 +52,7 @@
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
       "status": "idle",
-      "last_action": "DIR-016 executed: 2 Actions runs exhausted all no-auth faucet routes (funded=false everywhere); DIR-012 Phase B stays human-funding-gated; evidence committed (plan ## Execution + findings)"
+      "last_action": "DIR-022 closed PASS: storefront fulfill() + x402-order template synced to 5-SKU catalog (report/batch fulfillable, analyze removed); ci.sh 7/7, ledger untouched"
     },
     {
       "name": "Researcher",

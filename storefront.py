@@ -33,7 +33,7 @@ ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT))
 
 from revenue_server import SERVICES, RECIPIENT, _load_ledger, _record, _units, verify_payment  # noqa: E402
-from bazaar import svc_sentiment, svc_summarize, svc_entities  # noqa: E402
+from bazaar import svc_batch, svc_entities, svc_report, svc_sentiment, svc_summarize  # noqa: E402
 
 REPO = "bettergraininfo-rgb/x402-agent-economy-lab"
 LABEL = "x402-order"
@@ -74,13 +74,10 @@ def fulfill(endpoint: str, text: str) -> dict:
         return {"result": svc_entities(text)}
     if endpoint == "/v1/summarize":
         return {"result": svc_summarize(text)}
-    if endpoint == "/v1/analyze":
-        return {
-            "summary": svc_summarize(text),
-            "sentiment": svc_sentiment(text),
-            "entities": svc_entities(text),
-            "stats": {"chars": len(text), "words": len(text.split())},
-        }
+    if endpoint == "/v1/report":
+        return {"result": svc_report(text)}
+    if endpoint == "/v1/batch":
+        return {"result": svc_batch(text)}
     raise ValueError(f"unknown endpoint {endpoint}")
 
 
