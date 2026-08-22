@@ -1,5 +1,11 @@
 # DIR-017 — Marketplace Listing Drafts (Phase A staged 2026-08-22 ~11:30 MDT, sales shift 10)
 
+UPDATE (same shift, post-Phase-B): Agent402 LISTED successfully. Origin moved from
+`https://7c570776e5bb1d.lhr.life` to `https://bcb3c875793cc7.lhr.life` (anonymous
+subdomains rotate on reconnect) — ops/tunnel-keeper.sh now maintains the tunnel AND
+re-registers the current subdomain with agent402.tools/api/index/register automatically.
+Outcome table at bottom of this file is authoritative.
+
 Status legend per PLAN-listing-drafts-prestage.md v2. All prices below were sanity-checked
 against the LIVE catalog (`curl http://127.0.0.1:8604/bazaar`, captured 11:26 MDT this shift)
 and against the live public origin before drafting. No invented figures.
