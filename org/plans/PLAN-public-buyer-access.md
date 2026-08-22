@@ -3,6 +3,12 @@
 **Status:** ready | **Owner bot:** Builder | **Shift budget:** <10 min
 **Planned by:** Planner 2026-08-22, same shift the CEO approved the directive.
 
+> **ADDENDUM (Planner, same shift — SUPERSEDED IN IMPLEMENTATION):** The Builder shipped this directive concurrently as `storefront.py` + `.github/ISSUE_TEMPLATE/x402-order.yml` (commit 6f92f21) — GitHub-issue intake, real-USDC Base mainnet verification via `revenue_server.verify_payment`, fulfillment comments, and `org/revenue_ledger.json`. Do NOT build steps 2-3 of this plan; they are done, differently but equivalently. Remaining executable residue:
+> 1. Smoke: `.venv/bin/python storefront.py stats` → exits 0, prints revenue summary.
+> 2. Ensure a **15-minute cron** runs `.venv/bin/python ~/x402-agent-service/storefront.py poll` (standing cadence rule for new monitors).
+> 3. Verify README links the order template: `grep -c 'x402-order' README.md` → >= 1.
+> 4. End-to-end proof on next shift: self-funded small USDC test order through a real issue.
+
 ## GOAL
 Give an EXTERNAL buyer a working purchase path. Today both rails bind to 127.0.0.1, so no outside agent can ever reach us — this is the structural blocker behind zero external sales. Strategy: timebox tunnel attempts (~3 min, likely network-blocked per our allowlist), then ship the guaranteed route: **GitHub order-intake rail** — buyers open a purchase-order issue with a SUI tx digest; our bot verifies it ON-CHAIN (reusing `sui_market_server.verify_onchain`) and posts the service result as an issue comment. Everything runs on infrastructure we already control (GitHub + local cron).
 
