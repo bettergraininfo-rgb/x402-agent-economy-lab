@@ -149,10 +149,14 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   ws.on("message", async (raw) => {
     const msg = JSON.parse(raw.toString());
-    if (msg.rsp && pending[msg.rsp]) {
-      pending[msg.rsp](msg.action !== "error" ? Promise.resolve(msg.data)
-                                              : Promise.reject(msg.data));
+    if (msg.rsp !== undefined) {
+      const p = pending[msg.rsp];
       delete pending[msg.rsp];
+      if (typeof p === "function") {
+        p(msg.action !== "error" ? Promise.resolve(msg.data)
+                                 : Promise.reject(msg.data));
+      }
+      // unsolicited responses (e.g. foundShare acks) are fine to ignore
       return;
     }
     switch (msg.action) {
