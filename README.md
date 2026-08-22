@@ -55,6 +55,15 @@ means one payment buys exactly one call.
 At 10k calls/day that is $150/mo for sentiment — cheaper than any key-based
 NLP API at equivalent volume, and settleable by a non-human wallet.
 
+## What agents actually use this for
+
+| Job | Endpoint | Why |
+|---|---|---|
+| Triage a feed of posts/reviews/tickets before escalation | `/v1/batch` | One payment, per-doc labels + distribution over `|||`-separated docs |
+| Pull names/orgs/places out of fetched pages to ground a decision | `/v1/entity-extract` | Typed entities as JSON — no LLM hop needed for structured extraction |
+| Compress long policy/report text before spending tokens on a big-model call | `/v1/summarize` | Fixed $0.075 cost regardless of model pricing |
+| One-shot analysis bundle for an agent's due-diligence step | `/v1/report` | Sentiment + summary + entities in a single paid call |
+
 ## How a purchase works (the x402 loop)
 
 ```text
@@ -126,10 +135,39 @@ discover services autonomously.
 - **Researchers** — a runnable micro-economy: buyer swarms with budget
   guardrails, demand shocks, price elasticity, all observable.
 
-## MCP-ready
+## Connect from Claude Code / Cursor (MCP)
 
-Any Model Context Protocol host (Claude Code, Cursor, …) can connect
-`mcp_bazaar_server.py` and purchase bazaar services as native tools.
+`mcp_bazaar_server.py` is a stdio MCP server that exposes the bazaar as native
+tools: `list_services`, `buy_service`, `wallet_status`. It parses both our
+challenge dialects — legacy custom (sim rail) and **x402 v2 exact scheme**
+(live Sui rail).
+
+```json
+{
+  "mcpServers": {
+    "x402-nlp-bazaar": {
+      "command": "/path/to/x402-agent-economy-lab/.venv/bin/python",
+      "args": ["/path/to/x402-agent-economy-lab/mcp_bazaar_server.py"],
+      "env": { "BAZAAR_URL": "https://<current-public-origin>" }
+    }
+  }
+}
+```
+
+The public origin rotates (ephemeral tunnel); the current URL is kept in
+[`docs/PUBLIC_URL.txt`](docs/PUBLIC_URL.txt) and registered on
+[Agent402](https://agent402.tools). Point `BAZAAR_URL` at either.
+
+**Verified live:** `list_services` returns the catalog from the public origin,
+and `buy_service` negotiates a correct v2 challenge ($0.015 / $0.030 / $0.075,
+`sui:testnet`, atomic-unit amounts) with price-cap and budget guards.
+
+**Honest limit:** the shim holds no signing keys. On the live rail,
+`buy_service` returns the full v2 exact-scheme requirements plus signing
+instructions instead of pretending to settle — your agent signs with any stock
+x402 client, or you use the zero-infrastructure [issue storefront](#-buy-now--real-usdc-on-base-mainnet).
+Against a local sim rail (`market_server.py`) the legacy paid path settles
+end-to-end.
 
 ## Repository map
 

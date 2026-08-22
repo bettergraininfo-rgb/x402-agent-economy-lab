@@ -58,14 +58,46 @@ async def list_services_impl() -> dict:
         return r.json()
 
 
+def _parse_challenge(r) -> dict:
+    """Decode a 402 challenge from either dialect.
+
+    v2 exact scheme (live Sui rail): base64 PAYMENT-REQUIRED header whose body
+    carries accepts[] with atomic-unit amounts (USDC, 6 decimals).
+    Legacy custom dialect (sim rail): flat body/header with amount_usdc.
+    """
+    raw = _hdr(r.headers, "PAYMENT-REQUIRED")
+    ch = _unb64(raw) if raw else r.json()
+    if isinstance(ch, dict) and ch.get("accepts"):
+        req = ch["accepts"][0]
+        return {
+            "dialect": "x402-v2-exact",
+            "price_usdc": int(req["amount"]) / 1_000_000,
+            "pay_to": req.get("payTo"),
+            "network": req.get("network"),
+            "asset": req.get("asset"),
+            "requirements": req,
+            "x402_version": ch.get("x402Version", 2),
+        }
+    # legacy flat challenge
+    return {
+        "dialect": "legacy-custom",
+        "price_usdc": float(ch["amount_usdc"]),
+        "pay_to": ch.get("pay_to"),
+        "network": ch.get("network"),
+        "asset": None,
+        "requirements": ch,
+        "x402_version": 1,
+    }
+
+
 async def buy_service_impl(endpoint: str, text: str, max_price: float | None) -> dict:
     async with httpx.AsyncClient(timeout=15) as c:
         r = await c.get(BAZAAR_URL + endpoint, params={"text": text})
         if r.status_code != 402:
             return {"error": f"unexpected status {r.status_code}", "body": r.json()}
 
-        accepts = _unb64(_hdr(r.headers, "PAYMENT-REQUIRED"))
-        price = float(accepts["amount_usdc"])
+        ch = _parse_challenge(r)
+        price = ch["price_usdc"]
 
         if max_price is not None and price > max_price:
             return {"error": f"price ${price} exceeds your max {max_price}"}
@@ -73,7 +105,29 @@ async def buy_service_impl(endpoint: str, text: str, max_price: float | None) ->
             return {"error": f"budget exhausted: spent ${state['spent']:.4f} "
                              f"of ${AGENT_BUDGET_USDC}"}
 
-        payload = PaymentPayload(requirements=accepts, payer=AGENT_WALLET,
+        if ch["dialect"] == "x402-v2-exact":
+            # v2 exact settlement needs a base64 x402-v2 payment payload signed
+            # by a funded Sui testnet keypair (settled by the hosted
+            # facilitator). This shim does not hold keys; return the challenge
+            # so the calling agent can sign it with any stock x402 v2 client.
+            return {
+                "status": "payment_required",
+                "dialect": ch["dialect"],
+                "price_usdc": price,
+                "network": ch["network"],
+                "pay_to": ch["pay_to"],
+                "how_to_pay": (
+                    "Sign an x402 v2 exact-scheme payment payload for these "
+                    "requirements with a funded Sui testnet keypair and POST "
+                    "it back as the base64 PAYMENT-SIGNATURE header. For real "
+                    "USDC on Base mainnet, use the GitHub-issue storefront: "
+                    "https://github.com/bettergraininfo-rgb/"
+                    "x402-agent-economy-lab/issues/new?template=x402-order.yml"
+                ),
+                "requirements": ch["requirements"],
+            }
+
+        payload = PaymentPayload(requirements=ch["requirements"], payer=AGENT_WALLET,
                                  amount_usdc=price)
         payload.sign()
         r2 = await c.get(BAZAAR_URL + endpoint, params={"text": text},
