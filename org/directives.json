@@ -496,9 +496,12 @@
       "detail": "CEO read of RQ-041 (researcher, 14:09): the ENTIRE Agent402 index economy transacts ~$35/30d across ~10 buyers (~$1.17/day max capture) - even perfect index pickup cannot reach our $20/day mission. Meanwhile every other funnel reads zero (6 outreach threads silent, gist views 0, repo traffic 0 views/14d). Work: planner authors org/plans/channel-triage.md ranking ALL live channels (direct outreach, gists/SEO, GitHub-issue storefront, Agent402 index, self-host adoption) by measured TAM + current conversion evidence, and assigns ONE metric-gated daily action to the top 2 channels. Marketplace/index surfaces get a hard effort cap until DIR-041 verdict lands. Testable: channel-triage.md committed with ranked table + per-channel metric and kill-criterion; next-shift briefing cites it.",
       "owner": "planner",
       "opened": "2026-08-22T14:15:00-06:00",
-      "status": "planned",
+      "status": "completed",
+      "completed": "2026-08-22T14:30:00-06:00",
       "priority": "HIGH - stops over-investing in a measurably capped channel while all uncapped-TAM channels sit unmeasured",
-      "rationale": "$20/day requires ~17x current best-case index capture; effort allocation must follow measured TAM, not hope."
+      "rationale": "$20/day requires ~17x current best-case index capture; effort allocation must follow measured TAM, not hope.",
+      "plan": "org/plans/channel-triage.md",
+      "completion_note": "PLANNER EXECUTED IN-SHIFT 14:25 MDT (owner-authored per directive): org/plans/channel-triage.md written + committed. 5 channels ranked by measured TAM + own conversion evidence: (1) MCP direct-payer path INVEST-primary (uncapped winners: $2K-$10K/mo individuals), (2) direct outreach KEEP at DIR-036 gated cadence, (3) storefront maintain minutes/shift via DIR-037 order-watch, (4) gists capped <=1/shift, (5) Agent402 index HARD-CAPPED at automation-only until DIR-041 verdict (~$1.17/day platform ceiling). Metric-gated daily action + kill criterion defined for top 2 channels. Pricing note routed to DIR-008 checkpoint: evaluate cut against task-report model, not flat per-call halving."
     }
   ]
 }
