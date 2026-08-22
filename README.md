@@ -25,7 +25,19 @@ No signup. Pay in USDC, get your result as a GitHub comment, verified on-chain:
 | `/v1/summarize` | **$0.075** |
 | `/v1/analyze` (premium bundle: summary + sentiment + entities + stats) | **$0.250** |
 
-Every payment is verified on-chain before fulfillment; replayed tx hashes are rejected.
+### What happens after you pay
+
+| Step | What occurs | How you can check it |
+|---|---|---|
+| 1. You send USDC | Your transfer lands on Base mainnet | Any Base explorer — your tx hash |
+| 2. You open the order issue | Intake labels it `x402-order` | Issue appears instantly |
+| 3. Fulfillment bot polls (~10 min) | It re-reads **the chain**, not your claim: recipient must match our wallet, amount ≥ list price, tx hash never seen before | Bot comments the verification result |
+| 4. Verified → result posted | JSON output as an issue comment; order logged to the public ledger [`org/revenue_ledger.json`](org/revenue_ledger.json) | Ledger commit history |
+| Invalid tx (wrong amount / replayed / not found) | Order is **rejected and closed** — no result, ledger untouched | Rejection comment cites the exact reason |
+
+The verification logic is ~100 lines of readable Python ([`storefront.py`](storefront.py)) —
+the bot trusts the blockchain, never the buyer's screenshot. Replay protection
+means one payment buys exactly one call.
 
 > 📖 **New here?** Read the [first machine-payment walkthrough](docs/tutorial-first-machine-payment.md) — a complete, honest tour of both purchase paths with real captured requests and responses.
 
@@ -87,6 +99,12 @@ discover services autonomously.
 - Agent-to-agent commerce: two independent nodes discovering and paying each
   other, ledger balanced to the cent
 - Dynamic pricing: prices adapt to demand shocks within [0.4x, 3x]
+- **Storefront order lifecycle, both branches tested live**: a fake tx hash
+  was rejected by on-chain verification, its issue auto-closed, ledger
+  untouched — and verified payments post results + ledger entries
+- Spec-conformant x402 challenges: our Sui rail emits v2-shaped `402`s
+  (base64 `payment-required` envelope, `accepts[]` with the `exact` scheme),
+  readable by standard x402 clients
 
 **In progress (honest status):**
 - Hosted public endpoint — the servers above run anywhere; we are standing up
