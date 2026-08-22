@@ -1,10 +1,70 @@
 {
   "bots": [
-    {"name": "Coder", "role": "builds features in autonomous loops", "status": "running", "last_action": "building dashboard panels"},
-    {"name": "Reviewer", "role": "reviews Coder's output before merge", "status": "idle", "last_action": "awaiting first review"},
-    {"name": "Debugger", "role": "tests endpoints and fixes bugs", "status": "running", "last_action": "validating API responses"},
-    {"name": "VisualDesigner", "role": "UI polish and layout", "status": "idle", "last_action": "theme applied (dark glassmorphism)"},
-    {"name": "Miner", "role": "earns crypto via PoW (GitHub Actions)", "status": "scheduled", "last_action": "2.9 PoWC earned, claimed"},
-    {"name": "TreasuryMonitor", "role": "tracks on-chain balances every 15min", "status": "running", "last_action": "20.1 SUI total, stable"}
+    {
+      "name": "Coder",
+      "role": "builds features in autonomous loops",
+      "status": "running",
+      "last_action": "task: add /api/escrow-claim endpoint + escrow panel live data"
+    },
+    {
+      "name": "Reviewer",
+      "role": "reviews Coder's output before merge",
+      "status": "idle",
+      "last_action": "queue empty"
+    },
+    {
+      "name": "Debugger",
+      "role": "tests endpoints and fixes bugs",
+      "status": "idle",
+      "last_action": "all tests passing"
+    },
+    {
+      "name": "VisualDesigner",
+      "role": "UI polish and layout",
+      "status": "idle",
+      "last_action": "theme v1 applied"
+    },
+    {
+      "name": "Miner",
+      "role": "earns crypto via PoW (GitHub Actions)",
+      "status": "scheduled",
+      "last_action": "next PoW run via GitHub Actions"
+    },
+    {
+      "name": "TreasuryMonitor",
+      "role": "tracks on-chain balances every 15min",
+      "status": "running",
+      "last_action": "watching Sui devnet every 15min"
+    },
+    {
+      "name": "CEO-Orchestrator",
+      "role": "runs the business: approves/kills directives, owns KPIs",
+      "status": "running",
+      "last_action": "mission: $20/day (baseline $0.16/day)"
+    },
+    {
+      "name": "Planner",
+      "role": "turns approved directives into executable plans",
+      "status": "idle",
+      "last_action": ""
+    },
+    {
+      "name": "Builder",
+      "role": "executes one plan per shift, verifies honestly",
+      "status": "idle",
+      "last_action": ""
+    },
+    {
+      "name": "Researcher",
+      "role": "researches revenue opportunities, cites sources",
+      "status": "idle",
+      "last_action": ""
+    },
+    {
+      "name": "Sales",
+      "role": "finds real buyers for our x402 API",
+      "status": "idle",
+      "last_action": ""
+    }
   ]
 }

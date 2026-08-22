@@ -234,6 +234,23 @@ def escrow():
     return EScrow
 
 
+@app.get("/api/escrow-claim-info")
+def escrow_claim_info():
+    """Claim info for the agent_escrow Move package (how to create/release/cancel)."""
+    return {
+        "package": "0x19c5dff9e7caba014247cc755479d5a01912b24c981e3411c0e0c1aa83482cc5",
+        "module": "escrow",
+        "functions": ["create", "release", "cancel"],
+        "seller_address": "0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a",
+        "how_it_works": (
+            "Buyer calls escrow::create with SUI to lock funds on-chain; the seller "
+            "(or buyer, to back out) then calls release or cancel to settle the "
+            "escrow object — release pays the locked SUI to the seller address, "
+            "cancel refunds it to the buyer."
+        ),
+    }
+
+
 @app.get("/api/logs")
 def logs():
     rows = _read_jsonl(BOTLOG, limit=120)

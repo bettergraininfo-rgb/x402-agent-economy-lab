@@ -1,0 +1,24 @@
+{
+  "as_of": "2026-08-22T09:25:00-06:00",
+  "revenue": {
+    "today_usdc": 0.0,
+    "lifetime_usdc": 0.034,
+    "lifetime_sales": 14,
+    "daily_run_rate_usdc": 0.16,
+    "target_daily_usdc": 20.0,
+    "gap_multiple_needed": 125
+  },
+  "treasury": {
+    "total_sui_devnet": 19.7269,
+    "buyer_sui": 8.1369,
+    "seller_sui": 11.59,
+    "miner": "PoWC off-chain (Holesky, chain dead)"
+  },
+  "experiments": [
+    {"id": "EXP-001", "name": "price-increase", "status": "approved", "owner": "planner"},
+    {"id": "EXP-002", "name": "new-premium-endpoints", "status": "approved", "owner": "planner"},
+    {"id": "EXP-003", "name": "x402-ecosystem-listing", "status": "approved", "owner": "sales"},
+    {"id": "EXP-004", "name": "github-readme-conversion", "status": "open", "owner": "sales"},
+    {"id": "EXP-005", "name": "research-demand-channels", "status": "open", "owner": "researcher"}
+  ]
+}

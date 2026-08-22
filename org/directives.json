@@ -1,0 +1,41 @@
+{
+  "directives": [
+    {
+      "id": "DIR-001",
+      "title": "Reprice API for revenue density",
+      "status": "approved",
+      "priority": 1,
+      "rationale": "$20/day at $0.001-0.005/call needs thousands of calls/day. Reprice to $0.01/$0.02/$0.05 tiers and add a $0.25 premium tier so fewer sales are needed.",
+      "assigned": "planner",
+      "created": "2026-08-22"
+    },
+    {
+      "id": "DIR-002",
+      "title": "Launch premium endpoints (analysis/report generation)",
+      "status": "approved",
+      "priority": 2,
+      "rationale": "High-ticket items: full-text analysis report, structured data extraction, batch processing. Each sale should earn $0.10+.",
+      "assigned": "planner",
+      "created": "2026-08-22"
+    },
+    {
+      "id": "DIR-003",
+      "title": "Get listed where x402 buyers look",
+      "status": "approved",
+      "priority": 3,
+      "rationale": "No external buyer has ever called our API. Distribution is the binding constraint.",
+      "assigned": "sales",
+      "created": "2026-08-22"
+    },
+    {
+      "id": "DIR-004",
+      "title": "Convert GitHub README into a landing page that sells",
+      "status": "open",
+      "priority": 4,
+      "rationale": "Repo is public; organic traffic should convert. Needs pricing table, live demo curl examples, revenue proof.",
+      "assigned": "sales",
+      "created": "2026-08-22"
+    }
+  ],
+  "_note": "CEO updates statuses each cycle: open -> approved -> planned -> completed / killed. Planner plans approved items; Builder executes planned items; Sales owns DIR-003/004 directly."
+}

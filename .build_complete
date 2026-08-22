@@ -1,0 +1,9 @@
+{
+  "bot": "Coder",
+  "summary": "escrow claim info endpoint + panel section added",
+  "files": [
+    "dashboard_api.py",
+    "dashboard/index.html"
+  ],
+  "ts": 1787412182.6934757
+}

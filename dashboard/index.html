@@ -131,6 +131,18 @@
   .escrow-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
   .lock-ring{display:flex;align-items:center;gap:14px}
 
+  /* ---------- escrow claim info ---------- */
+  .claim-section{margin-top:14px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.08)}
+  .claim-title{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--warn);margin-bottom:9px}
+  .claim-fn{display:flex;gap:9px;align-items:baseline;padding:6px 8px;border-radius:9px;
+            background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);margin-bottom:6px}
+  .claim-fn:hover{border-color:rgba(255,200,87,.3)}
+  .claim-fn-name{font-size:11.5px;font-weight:700;color:var(--warn);white-space:nowrap}
+  .claim-fn-desc{font-size:10.5px;color:var(--dim);line-height:1.45}
+  .claim-seller{margin-top:8px;font-size:10.5px;color:var(--dim)}
+  .claim-seller .mono{color:#c3d2ea;word-break:break-all;cursor:pointer}
+  .claim-how{margin-top:9px;font-size:10.5px;color:#aab8cf;line-height:1.55}
+
   /* ---------- console log ---------- */
   .console{background:rgba(2,6,14,.65);border:1px solid rgba(255,255,255,.07);border-radius:12px;
            font-family:'SF Mono','JetBrains Mono',Consolas,monospace;font-size:11.5px;line-height:1.75;
@@ -224,6 +236,14 @@
       </div>
     </div>
     <div class="escrow-pkg mono" id="pkgId" title="click to copy">—</div>
+    <div class="claim-section">
+      <div class="claim-title">Escrow Claim — agent_escrow::escrow</div>
+      <div class="claim-fn"><span class="claim-fn-name mono">create</span><span class="claim-fn-desc">Buyer locks SUI into a new on-chain escrow object.</span></div>
+      <div class="claim-fn"><span class="claim-fn-name mono">release</span><span class="claim-fn-desc">Settles the escrow and pays the locked funds to the seller.</span></div>
+      <div class="claim-fn"><span class="claim-fn-name mono">cancel</span><span class="claim-fn-desc">Refunds the locked funds back to the buyer.</span></div>
+      <div class="claim-seller">Seller address: <span class="mono" id="claimSeller" title="click to copy">—</span></div>
+      <div class="claim-how" id="claimHow"></div>
+    </div>
   </div>
 
   <!-- ============ bot workforce ============ -->
@@ -251,7 +271,7 @@ document.getElementById('apiBaseLabel').textContent = API_BASE;
 
 /* ================= STATE ================= */
 let balChart = null;
-let lastData = { overview:null, txs:null, agents:null, bots:null, escrow:null, logs:null };
+let lastData = { overview:null, txs:null, agents:null, bots:null, escrow:null, logs:null, claimInfo:null };
 const botSpark = {};   // name -> history array
 
 const fmt = n => Number(n).toLocaleString('en-US',{maximumFractionDigits:4});
@@ -435,6 +455,15 @@ function renderLogs(logs){
   con.scrollTop = con.scrollHeight;
 }
 
+function renderClaimInfo(ci){
+  if(!ci) return;
+  const seller = document.getElementById('claimSeller');
+  seller.textContent = shortAddr(ci.seller_address);
+  seller.title = ci.seller_address || 'click to copy';
+  seller.onclick = () => navigator.clipboard?.writeText(ci.seller_address||'');
+  document.getElementById('claimHow').textContent = ci.how_it_works || '';
+}
+
 /* ================= FETCH LAYER ================= */
 async function getJSON(path){
   const r = await fetch(API_BASE+path,{cache:'no-store'});
@@ -454,7 +483,8 @@ function setOnline(ok){
 async function pollAll(){
   const jobs = [
     ['overview','/api/overview'],['txs','/api/txs'],['agents','/api/agents'],
-    ['bots','/api/bots'],['escrow','/api/escrow'],['logs','/api/logs']
+    ['bots','/api/bots'],['escrow','/api/escrow'],['logs','/api/logs'],
+    ['claimInfo','/api/escrow-claim-info']
   ];
   let anyOK=false;
   await Promise.all(jobs.map(async ([key,path])=>{
@@ -469,6 +499,7 @@ async function pollAll(){
   renderTxs(lastData.txs?.txs);
   renderBots(lastData.bots?.bots);
   renderEscrow(lastData.escrow);
+  renderClaimInfo(lastData.claimInfo);
   renderLogs(lastData.logs?.logs);
   setOnline(anyOK);
 }
