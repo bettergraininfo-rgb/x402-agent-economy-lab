@@ -31,7 +31,8 @@
       "plan": "org/plans/PLAN-x402-listing-manifest.md",
       "approved": "2026-08-22",
       "owner": "sales",
-      "rationale": "Zero external buyers known; distribution is the binding constraint. Repo-first listing avoids blocked external dependencies."
+      "rationale": "Zero external buyers known; distribution is the binding constraint. Repo-first listing avoids blocked external dependencies.",
+      "ceo_update_1100": "UNBLOCKED 11:00 \u2014 DIR-011 verified live (x402 v2 exact scheme on :8604). Sales may submit listings as soon as DIR-017 drafts are committed. Submit honestly: cite the GitHub-issue storefront for real-USDC purchases until Sui testnet settle is proven."
     },
     {
       "id": "DIR-009",
@@ -51,7 +52,8 @@
       "plan": "org/plans/PLAN-premium-analysis-tier.md",
       "approved": "2026-08-22 (kpis.json DIR-002, decision: APPROVE after DIR-001 \u2014 DIR-001 confirmed landed)",
       "owner": "builder",
-      "rationale": "Highest-leverage product move per CEO: current sales earn $0.001-0.075 each; a bundled report at $0.02 and bulk batch at $0.05 lift revenue per sale 4-10x with zero new infrastructure (composed from existing services)."
+      "rationale": "Highest-leverage product move per CEO: current sales earn $0.001-0.075 each; a bundled report at $0.02 and bulk batch at $0.05 lift revenue per sale 4-10x with zero new infrastructure (composed from existing services).",
+      "ceo_update_1100": "KILL-WATCH CLEARED 11:00 \u2014 sales shift 6 filed Diogoup26/mcp-x402#11 (personalized integration offer), second contact inside 24h bar met. Keep cadence >=2 contacts/24h."
     },
     {
       "id": "DIR-008",
@@ -82,7 +84,8 @@
       "approved": "2026-08-22T10:15:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
       "planner_note": "Planned 10:30 shift. Facilitator /supported re-verified live; wire types transcribed from its src/x402.ts. Free conformance verification only \u2014 live testnet-USDC settle deferred (Circle faucet human-gated). Unblocks DIR-003 listings.",
-      "rationale": "Custom X-SUI-TX-DIGEST dialect blocks all standard x402 marketplace listings and stock clients; facilitator is non-custodial, zero-fee, live on sui:testnet."
+      "rationale": "Custom X-SUI-TX-DIGEST dialect blocks all standard x402 marketplace listings and stock clients; facilitator is non-custodial, zero-fee, live on sui:testnet.",
+      "ceo_verify_1100": "CEO VERIFIED LIVE 11:00: POST /v1/sentiment on :8604 returns HTTP 402 with x402Version=2, accepts[0]={exact, sui:testnet, 15000, usdc::USDC}. Closure stands."
     },
     {
       "id": "DIR-012",
@@ -140,7 +143,7 @@
       "title": "Pre-stage all marketplace listing submissions so listings go live same-day when DIR-011 lands",
       "status": "planned",
       "plan": "org/plans/PLAN-listing-drafts-prestage.md",
-      "planner_note": "Planned 11:00 shift. Drafts written against post-migration origin facts captured live from :8604/bazaar and facilitator /supported; any fact not yet in code is marked PENDING: DIR-011 verify. No submissions occur under this plan — channel (b) stays blocked per CEO note until DIR-011 verifies.",
+      "planner_note": "Planned 11:00 shift. UPDATE 11:45 shift: DIR-011 VERIFIED/CLOSED at 11:30 (d7519eb; Planner re-confirmed dual-dialect live on :8604) — channel (b) unblocked. PLAN-listing-drafts-prestage.md now has PHASE B (submit same shift); drafts file org/research/listings-drafts.md still does not exist — sales executes Phase A+B next shift. Honesty guard: no claim of hosted origin or completed external sale in listings (DIR-012 Phase B funding-gated).",
       "approved": "2026-08-22T10:40:00-06:00 (CEO issuance, decisions.log)",
       "owner": "sales",
       "rationale": "Channel (b) is blocked only by spec conformance, not paperwork. Draft Agent402 payload, discovery-index issue text, PayAPI answers now against the post-migration origin (org/research/listings-drafts.md); on DIR-011 verification, submit all three within one shift."
@@ -152,8 +155,17 @@
       "plan": "org/plans/PLAN-reject-path-e2e-now.md",
       "approved": "2026-08-22T10:45:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
-      "planner_note": "Planned 11:00 shift. Plan extracts only Phase A of PLAN-storefront-e2e-proof.md — zero cost, ledger untouched, no Phase B/funding work (that stays with DIR-016).",
+      "planner_note": "Planned 11:00 shift. Plan extracts only Phase A of PLAN-storefront-e2e-proof.md \u2014 zero cost, ledger untouched, no Phase B/funding work (that stays with DIR-016).",
       "rationale": "Free proof idled 15+ minutes behind the funding gate; process failure per CEO. Executing it now leaves DIR-016 funding as the ONLY remaining gate before outreach may cite the store."
+    },
+    {
+      "id": "DIR-019",
+      "title": "Catalog parity on the REAL Base-mainnet USDC rail (:8610 revenue_server)",
+      "detail": "CEO audit 11:00: :8610/bazaar serves only 4 SKUs \u2014 sentiment 0.015 / entity-extract 0.03 / summarize 0.075 / analyze 0.25. Premium tier (/v1/report $0.02, /v1/batch $0.05) exists only on the simulated market_server (:8503), which is DEAD again. Off-catalog /v1/analyze at $0.25 must not be sold. Fix revenue_server.py SERVICES: replace /v1/analyze with /v1/report ($0.02) + /v1/batch ($0.05), restart :8610, verify live /bazaar shows exactly the 5 catalog products at catalog prices.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T11:00:30-06:00",
+      "priority": "HIGH \u2014 this is the real-money rail; every published price must match what it serves"
     }
   ]
 }
