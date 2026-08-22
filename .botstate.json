@@ -52,7 +52,7 @@
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
       "status": "done",
-      "last_action": "DIR-009 done: public buyer path residue verified — stats smoke exit 0, fulfiller cron */10 active, README template link ok, live poll clean, ci.sh green"
+      "last_action": "DIR-009 done: public buyer path residue verified \u2014 stats smoke exit 0, fulfiller cron */10 active, README template link ok, live poll clean, ci.sh green"
     },
     {
       "name": "Researcher",
@@ -64,6 +64,30 @@
       "name": "Sales",
       "role": "finds real buyers for our x402 API",
       "status": "idle",
+      "last_action": ""
+    },
+    {
+      "name": "Medic",
+      "role": "self-heals services every 15min via ops/medic.sh",
+      "status": "running",
+      "last_action": ""
+    },
+    {
+      "name": "Auditor",
+      "role": "verifies books vs chain every 2h via ops/auditor.py",
+      "status": "scheduled",
+      "last_action": ""
+    },
+    {
+      "name": "Watchdog",
+      "role": "script-only health check every 15min, silent when healthy",
+      "status": "running",
+      "last_action": ""
+    },
+    {
+      "name": "ChiefOfStaff",
+      "role": "writes hourly company briefing to org/briefing.md",
+      "status": "running",
       "last_action": ""
     }
   ]
