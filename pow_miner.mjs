@@ -218,13 +218,16 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
                 `~${rate} H/s`);
   }
 
-  // claim
+  // claim — requires the session id in the body (ClaimPage.tsx pattern)
   console.log("[miner] claiming…");
   const final = await api("getSessionStatus?session=" + start.session + "&details=1");
   console.log("[miner] final balance:", final.balance, "wei");
   if (BigInt(final.balance || "0") > 0n) {
-    const claim = await api("claimReward", "POST", {});
-    console.log("[miner] claim response:", JSON.stringify(claim).slice(0, 300));
+    const claim = await api("claimReward", "POST", { session: start.session });
+    console.log("[miner] claim response:", JSON.stringify(claim).slice(0, 400));
+    if (claim.status === "claimed" || claim.claimHash) {
+      console.log("[miner] CLAIM SUBMITTED — payout tx:", claim.claimHash);
+    }
   }
 
   try { sendReq("closeSession"); } catch {}
