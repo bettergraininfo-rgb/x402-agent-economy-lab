@@ -1,0 +1,6 @@
+# never commit keys or env
+agent_wallet_testnet.json
+.env
+*.key
+__pycache__/
+.venv/
