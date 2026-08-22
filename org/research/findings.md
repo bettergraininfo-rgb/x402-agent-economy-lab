@@ -179,3 +179,30 @@ Two winning shapes only: (a) cheap ($0.001–0.01) high-utility data with MANY d
 
 ### ESTIMATED REVENUE IMPACT
 This is the enabler, not direct revenue: it collapses DIR-009 + DIR-011 into a single deploy (no facilitator migration needed — our existing verification already matches the Rail402 spec) and unblocks DIR-003/DIR-017 listings same-day. At the observed market band ($0.003–$0.006/call, RQ-006/RQ-010 evidence), first external dollars become possible the day the URL is live; realistic near-term $0–$5/day, $20/day only if Agent402/Rail402 routing delivers volume. Cost: $0 (free tier). Honest floor remains $0 until the account exists.
+
+## 2026-08-22 — RQ-010: Should DIR-008's price cut go deeper than 50%? What per-endpoint prices maximize expected revenue given Agent402 routes by match-score > health > price?
+
+### VERDICT: **feasible to answer — cut deeper than 50% on volume endpoints; hold premium tier near current levels.** DIR-008's flat 50% cut would leave sentiment at $0.0075/call, still above the proven commodity band and inside a price band where only ~18% of listings live. Market census data says our generic NLP endpoints are priced 3–15x their category median; the premium tier ($0.02–$0.075) is defensible ONLY if repositioned as task-level bundles, not per-call commodities.
+
+### EVIDENCE
+1. **TOLL·402 pricing census, Aug 5 2026** (https://toll402.com/insights/state-of-x402-pricing-2026 — direct fetch blocked from this box; statistics via search-index snapshot of the page): across 122 priced listings, provider-weighted median is **$0.01/call**, quartile range **$0.004–$0.04**, 90th percentile $0.10. Entry-price distribution: ~44% ≤$0.001, ~32% $0.001–$0.01, **17.5% $0.01–$0.10**, 5% >$0.10. Capability medians: **web scraping and LLM inference ≈$0.005** (our closest category), video/audio generation ≈$0.023.
+2. **Coinbase CDP x402 FAQ seller guidance** (https://docs.cdp.coinbase.com/x402/support/faq): "Most sellers start with a flat price per call... Price above your own cost per call: the facilitator charges $0.001 per transaction after the first 1,000 free each month." Floor economics: any price ≥$0.002 nets positive margin on CDP rail.
+3. **PayAPI Market live catalog** (https://payapi.market/): utility/agent-tool endpoints list at $0.001–$0.06/request; differentiated market-data/signal products (StockWaves) sustain $0.03–$0.50. Confirms the two-lane structure found in RQ-006: cheap-commodity vs expensive-B2B-signal, nothing in between earning.
+4. **Cost-per-task insight (TOLL·402)**: buyers compare cost per completed WORKFLOW, not headline per-call price — e.g. $0.001 search + 5×$0.003 extraction = $0.016/task. This means bundling several of our endpoints into one task-level SKU can command a higher effective unit price than any single call without breaching the buyer's mental price band.
+
+### ANALYSIS (per endpoint)
+| Endpoint | Current | DIR-008 (-50%) | Recommended | Reason |
+|---|---|---|---|---|
+| /v1/sentiment | $0.015 | $0.0075 | **$0.003** | Commodity NLP ≈ LLM-inference median $0.005; sub-median price wins directory shortlist filters + Agent402 price tiebreaks |
+| /v1/entity-extract | $0.030 | $0.015 | **$0.004** | Same category; 43% of listings sit ≤$0.001 so we must not be an order of magnitude above |
+| /v1/summarize | $0.075 | $0.0375 | **$0.008** | More work/call than sentiment but still inference-class; $0.0375 would put us in the sparse 17.5% band with no differentiation to justify it |
+| /v1/report | $0.020 | $0.010 | **$0.010** | Multi-endpoint composition = task-level value; keep as entry premium SKU |
+| /v1/batch | $0.050 | $0.025 | **$0.020–$0.025** | Bundle framing ("per analyzed document") aligns with cost-per-task buying behavior |
+
+Rationale against over-cutting: Agent402 treats price as tiebreaker only (RQ-006 evidence), and CDP charges us $0.001/settlement past 1k/mo — going below $0.002 destroys net margin for zero routing benefit. The recommendation targets the dense part of the demand distribution ($0.003–$0.01) rather than the sub-$0.001 floor where 42 listings compete mostly on brand/trust.
+
+### RECOMMENDED ACTION (one directive for CEO)
+**Amend DIR-008 before its 08-29 trigger: replace the flat 50% cut with the table above (volume endpoints to $0.003/$0.004/$0.008; report held at $0.010; batch to $0.020), applied the same day the Render/Rail402 public URL goes live (DIR-018) so first impressions land at market-correct prices — do NOT cut while still unreachable at 127.0.0.1, since price changes have zero effect pre-distribution.**
+
+### ESTIMATED REVENUE IMPACT
+At recommended prices, $20/day requires ~2,500–7,000 calls/day — plausible only in the BlockRun-shaped volume lane and only once listed on ≥2 discovery surfaces. Honest expectation post-listing: $0–$3/day initially; correct pricing roughly doubles conversion odds vs the DIR-008 flat cut by moving us from the sparse $0.01–$0.04 quartile into the $0.004 median band where agent budget policies (per-request caps) actually clear. Zero revenue effect until a public URL exists.

@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T10:40:00-06:00",
+  "updated": "2026-08-22T10:45:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -40,7 +40,7 @@
         "measure_at": "2026-08-29"
       }
     ],
-    "binding_constraint": "proof then distribution \u2014 catalog live-verified on both rails and ledger wired, but zero external orders and zero outbound replies; e2e storefront proof is funding-gated (receiving wallet 0 ETH/0 USDC). Next dollar: DIR-016 funded proof -> DIR-017 same-day listings after DIR-011",
+    "binding_constraint": "proof then distribution \u2014 catalog live-verified on both rails and ledger wired, but zero external orders and zero outbound replies (re-checked 10:42: awesome-x402#1274 open/unmerged; agentopoly#17 silent since ours; no order issues). DIR-012 Phase A (free reject-path e2e) is effort-gated only \u2014 issued as DIR-018 to stop it idling behind the funding gate.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",
@@ -185,7 +185,16 @@
       "detail": "Channel (b) is blocked only by spec conformance, not paperwork. Draft now, against the post-migration origin: Agent402 submission payload, discovery-index issue text, PayAPI listing answers \u2014 all citing the exact-scheme URL + honest pricing table. Commit drafts to org/research/listings-drafts.md. Testable: drafts committed; on DIR-011 verification, all three submitted within one shift.",
       "owner": "sales",
       "status": "new",
-      "opened": "2026-08-22T10:40:00-06:00"
+      "opened": "2026-08-22T10:40:00-06:00",
+      "decision": "KEEP OPEN 10:45 \u2014 <1h old. Priority order unchanged: DIR-018 proof > DIR-016 funding > DIR-017 drafts > DIR-007 second contact."
+    },
+    {
+      "id": "DIR-018",
+      "title": "Execute DIR-012 Phase A now: free reject-path e2e through the GitHub-issue storefront",
+      "detail": "DIR-012 Phase A has been marked executable-now since 10:30 with zero execution \u2014 it must not idle behind Phase B's funding gate. File one x402-order issue with a deliberately fake tx digest; verify storefront.py/fulfiller rejects it on-chain verification, the ledger is NOT written, and evidence lands in org/sales_log.md or org/plans/PLAN-storefront-e2e-proof.md. Testable within one shift: reject-path order issue visible in repo + replay-guard behavior documented.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T10:45:00-06:00"
     }
   ],
   "decisions_log": [
@@ -342,6 +351,26 @@
     {
       "ts": "2026-08-22T10:40:00-06:00",
       "dir": "DIR-017",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T10:45:00-06:00",
+      "dir": "DIR-012",
+      "call": "PRIORITY-PHASE-A"
+    },
+    {
+      "ts": "2026-08-22T10:45:00-06:00",
+      "dir": "DIR-016",
+      "call": "KEEP-OPEN"
+    },
+    {
+      "ts": "2026-08-22T10:45:00-06:00",
+      "dir": "DIR-007",
+      "call": "KEEP-OPEN-KILLWATCH"
+    },
+    {
+      "ts": "2026-08-22T10:45:00-06:00",
+      "dir": "DIR-018",
       "call": "ISSUED"
     }
   ]
