@@ -28,7 +28,7 @@ if (!ADDR || !/^0x[0-9a-fA-F]{40}$/.test(ADDR)) {
   console.error("usage: node pow_miner.mjs <0x-address> [max_seconds]");
   process.exit(1);
 }
-const BASE = "https://sepolia-faucet.pk910.de";
+const BASE = process.env.POW_FAUCET_URL || "https://sepolia-faucet.pk910.de";
 const CLIVER = "2.5.0";
 const deadline = Date.now() + parseInt(MAX_SECONDS, 10) * 1000;
 
@@ -106,11 +106,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   // PoW params live in the faucet config: modules.pow
   const powCfg = cfg.modules?.pow;
   if (!powCfg) { console.error("[miner] no pow module in config"); process.exit(2); }
-  const powParams = powCfg.params;          // {a,t,v,i,m,p,l}
-  const difficulty = powCfg.difficulty;     // leading zero bits
+  const powParams = powCfg.powParams || powCfg.params; // {a,t,v,i,m,p,l}
+  const difficulty = powCfg.powDifficulty ?? powCfg.difficulty;
+  console.log("[miner] instance:", BASE);
   console.log("[miner] powParams:", JSON.stringify(powParams),
-              "difficulty:", difficulty,
-              "reward/share:", powCfg.reward);
+              "difficulty:", difficulty);
 
   const start = await api("startSession?cliver=" + CLIVER, "POST", { addr: ADDR });
   if (!start.session || start.status === "failed") {

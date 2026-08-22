@@ -28,6 +28,7 @@ jobs:
       - name: Mine PoW shares (20 min)
         run: |
           set +e
+          POW_FAUCET_URL="https://demo4.faucets.pk910.de" \
           node pow_miner.mjs \
             "0xdC0750D5fB649bab3B8b02d31CDab12Dcae0cC51" \
             1150 2>&1 | tee mine.log
