@@ -33,7 +33,7 @@
       "status": "planned",
       "plan": "org/plans/PLAN-premium-analysis-tier.md",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "APPROVE — after DIR-001 lands."
+      "decision": "KEEP APPROVED — sequenced after DIR-001 lands."
     },
     {
       "id": "DIR-003",
