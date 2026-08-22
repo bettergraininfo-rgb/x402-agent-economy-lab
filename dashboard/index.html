@@ -502,6 +502,55 @@ function renderClaimInfo(ci){
   document.getElementById('claimHow').textContent = ci.how_it_works || '';
 }
 
+/* ================= OPS LAYER ================= */
+function renderOps(ops){
+  if(!ops) return;
+  const svcRow = document.getElementById('opsServices');
+  if(svcRow && Array.isArray(ops.services)){
+    svcRow.innerHTML = ops.services.map(s=>`
+      <div class="svc-pill">
+        <span class="svc-dot ${s.up?'up':'down'}"></span>
+        <span>${esc(s.name)}</span>
+        <span class="svc-port">:${s.port}</span>
+        <span class="svc-lat">${s.up ? ((s.latency_ms??'—')+'ms') : 'DOWN'}</span>
+      </div>`).join('');
+  }
+  const rm = ops.real_money||{};
+  const lifeEl = document.getElementById('rmLifetime');
+  if(lifeEl) lifeEl.textContent = '$'+(rm.lifetime_usdc!=null ? (+rm.lifetime_usdc).toFixed(2) : '—');
+  const salesEl = document.getElementById('rmSales');
+  if(salesEl) salesEl.textContent = rm.sales!=null ? rm.sales : '—';
+  const addrEl = document.getElementById('rmAddr');
+  if(addrEl && rm.recipient){
+    addrEl.textContent = shortAddr(rm.recipient);
+    addrEl.onclick = () => navigator.clipboard?.writeText(rm.recipient||'');
+  }
+  const netEl = document.getElementById('rmNetwork');
+  if(netEl && rm.network) netEl.textContent = rm.network;
+  const auditEl = document.getElementById('opsAudit');
+  if(auditEl) auditEl.innerHTML = ops.last_audit
+    ? esc(ops.last_audit)
+    : '<span class="lg-msg">no auditor verdict yet</span>';
+  const con = document.getElementById('opsLog');
+  if(con && Array.isArray(ops.ops_events)){
+    con.innerHTML = ops.ops_events.length ? ops.ops_events.map(e=>{
+      const ts = e.ts ? hhmmss(typeof e.ts==='number'?e.ts:Date.parse(e.ts)/1000) : '--:--:--';
+      let lvl='';
+      const msg=(e.event||'').toString().toLowerCase();
+      if(msg.includes('fail')||msg.includes('down')||msg.includes('corrupt')) lvl='lg-err';
+      else if(msg.includes('warn')||msg.includes('restart')) lvl='lg-warn';
+      return `<div class="log-line"><span class="lg-ts">[${ts}]</span> <span class="lg-bot">${esc(e.bots||'system')}</span> <span class="${lvl||'lg-msg'}">${esc(e.event||JSON.stringify(e))}</span></div>`;
+    }).join('') : '<div class="empty-note">no ops events yet</div>';
+    con.scrollTop = con.scrollHeight;
+  }
+  const briefEl = document.getElementById('opsBrief');
+  if(briefEl && ops.briefing_ts){
+    const mins = Math.max(0, Math.round((Date.now()-Date.parse(ops.briefing_ts))/60000));
+    briefEl.textContent = `briefing ${mins}min ago`;
+  }
+}
+
+
 /* ================= FETCH LAYER ================= */
 async function getJSON(path){
   const r = await fetch(API_BASE+path,{cache:'no-store'});
@@ -522,7 +571,7 @@ async function pollAll(){
   const jobs = [
     ['overview','/api/overview'],['txs','/api/txs'],['agents','/api/agents'],
     ['bots','/api/bots'],['escrow','/api/escrow'],['logs','/api/logs'],
-    ['claimInfo','/api/escrow-claim-info']
+    ['claimInfo','/api/escrow-claim-info'],['ops','/api/ops']
   ];
   let anyOK=false;
   await Promise.all(jobs.map(async ([key,path])=>{
@@ -539,6 +588,7 @@ async function pollAll(){
   renderEscrow(lastData.escrow);
   renderClaimInfo(lastData.claimInfo);
   renderLogs(lastData.logs?.logs);
+  renderOps(lastData.ops);
   setOnline(anyOK);
 }
 

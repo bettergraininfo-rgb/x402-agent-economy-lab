@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 
 import httpx
 from fastapi.responses import JSONResponse
@@ -45,6 +46,11 @@ def b64e(o: object) -> str:
 
 def _seller_address() -> str:
     # Address only; private keys are never read.
+    # SELLER_ADDRESS env override lets keyless hosts (e.g. Actions runners,
+    # DIR-023) serve challenges with the public pay-to address alone.
+    env = os.environ.get("SELLER_ADDRESS", "").strip()
+    if env:
+        return env
     with open("sui_seller_wallet.json") as f:
         return json.load(f)["address"]
 

@@ -24,6 +24,10 @@ jobs:
         run: pip install --quiet fastapi uvicorn httpx
 
       - name: Start sui_market_server :8604 + sanity check
+        env:
+          # Public pay-to address only (same constant as sui_market_server.PAY_TO);
+          # no keys on the runner.
+          SELLER_ADDRESS: "0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a"
         run: |
           nohup python3 -m uvicorn sui_market_server:app --host 127.0.0.1 --port 8604 > server.log 2>&1 &
           sleep 5
@@ -31,6 +35,10 @@ jobs:
           code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8604/bazaar)
           echo "local bazaar http=$code"
           [ "$code" = "200" ] || { echo "server failed to boot"; tail -50 server.log; exit 1; }
+          # prove the 402 v2 challenge path works keyless before tunneling
+          code402=$(curl -s -o /tmp/402.json -w '%{http_code}' "http://127.0.0.1:8604/v1/sentiment?text=hi")
+          echo "local sentiment http=$code402"
+          [ "$code402" = "402" ] || { echo "no 402 challenge"; cat /tmp/402.json; tail -30 server.log; exit 1; }
 
       - name: Install cloudflared
         run: |

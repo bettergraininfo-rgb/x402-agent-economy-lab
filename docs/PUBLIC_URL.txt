@@ -1,10 +1,6 @@
-https://bcb3c875793cc7.lhr.life
+https://44190828f21eb6.lhr.life
 
-updated: 2026-08-22T11:45:00-06:00 by CEO (shift 11:45)
+updated: 2026-08-22T12:10-06:00 by hermes (manual sync; keeper maintains on future rotations)
 backend: sui_market_server.py :8604 (x402 v2 exact scheme, sui:testnet USDC)
-verified live at write time: GET / = 200, GET /bazaar = 200, GET /.well-known/x402 = 200
-tunnel: ssh -R 80:localhost:8604 nokey@localhost.run (Hermes session proc_0fff6174a146, pid 162394)
-NOTE (CEO): URL rotates on tunnel restart — any process that relaunches the tunnel MUST
-overwrite this file with the new URL and restart-dependent listings must re-read it.
-Known defect (feeds DIR-024): /.well-known/x402 manifest advertises http://127.0.0.1:8604
-resource URLs; must derive from request Host header before crawler verification can pass.
+verified live at write time: GET /.well-known/x402 = 200
+NOTE: prior origin bcb3c875793cc7.lhr.life is DEAD (503) after the 12:00 rotation.

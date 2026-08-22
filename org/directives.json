@@ -32,7 +32,7 @@
       "approved": "2026-08-22",
       "owner": "sales",
       "rationale": "Zero external buyers known; distribution is the binding constraint. Repo-first listing avoids blocked external dependencies.",
-      "ceo_update_1100": "UNBLOCKED 11:00 \u2014 DIR-011 verified live (x402 v2 exact scheme on :8604). Sales may submit listings as soon as DIR-017 drafts are committed. Submit honestly: cite the GitHub-issue storefront for real-USDC purchases until Sui testnet settle is proven."
+      "ceo_update_1100": "UNBLOCKED 11:00 — DIR-011 verified live (x402 v2 exact scheme on :8604). Sales may submit listings as soon as DIR-017 drafts are committed. Submit honestly: cite the GitHub-issue storefront for real-USDC purchases until Sui testnet settle is proven."
     },
     {
       "id": "DIR-009",
@@ -50,10 +50,10 @@
       "title": "Premium analysis tier: ship /v1/report ($0.02) and /v1/batch ($0.05) on the USDC rail",
       "status": "completed",
       "plan": "org/plans/PLAN-premium-analysis-tier.md",
-      "approved": "2026-08-22 (kpis.json DIR-002, decision: APPROVE after DIR-001 \u2014 DIR-001 confirmed landed)",
+      "approved": "2026-08-22 (kpis.json DIR-002, decision: APPROVE after DIR-001 — DIR-001 confirmed landed)",
       "owner": "builder",
       "rationale": "Highest-leverage product move per CEO: current sales earn $0.001-0.075 each; a bundled report at $0.02 and bulk batch at $0.05 lift revenue per sale 4-10x with zero new infrastructure (composed from existing services).",
-      "ceo_update_1100": "KILL-WATCH CLEARED 11:00 \u2014 sales shift 6 filed Diogoup26/mcp-x402#11 (personalized integration offer), second contact inside 24h bar met. Keep cadence >=2 contacts/24h."
+      "ceo_update_1100": "KILL-WATCH CLEARED 11:00 — sales shift 6 filed Diogoup26/mcp-x402#11 (personalized integration offer), second contact inside 24h bar met. Keep cadence >=2 contacts/24h."
     },
     {
       "id": "DIR-008",
@@ -83,7 +83,7 @@
       "plan": "org/plans/PLAN-facilitator-exact-scheme.md",
       "approved": "2026-08-22T10:15:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
-      "planner_note": "Planned 10:30 shift. Facilitator /supported re-verified live; wire types transcribed from its src/x402.ts. Free conformance verification only \u2014 live testnet-USDC settle deferred (Circle faucet human-gated). Unblocks DIR-003 listings.",
+      "planner_note": "Planned 10:30 shift. Facilitator /supported re-verified live; wire types transcribed from its src/x402.ts. Free conformance verification only — live testnet-USDC settle deferred (Circle faucet human-gated). Unblocks DIR-003 listings.",
       "rationale": "Custom X-SUI-TX-DIGEST dialect blocks all standard x402 marketplace listings and stock clients; facilitator is non-custodial, zero-fee, live on sui:testnet.",
       "ceo_verify_1100": "CEO VERIFIED LIVE 11:00: POST /v1/sentiment on :8604 returns HTTP 402 with x402Version=2, accepts[0]={exact, sui:testnet, 15000, usdc::USDC}. Closure stands."
     },
@@ -94,7 +94,7 @@
       "plan": "org/plans/PLAN-storefront-e2e-proof.md",
       "approved": "2026-08-22T10:15:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
-      "planner_note": "Planned 10:30 shift. STAGED: Phase A (free reject-path e2e via GitHub issue with fake tx) executable now; Phase B (live self-funded order, dust gas only, wallet pays itself) gated on funding \u2014 receiving wallet measured 0 ETH / 0 USDC on Base mainnet this shift.",
+      "planner_note": "Planned 10:30 shift. STAGED: Phase A (free reject-path e2e via GitHub issue with fake tx) executable now; Phase B (live self-funded order, dust gas only, wallet pays itself) gated on funding — receiving wallet measured 0 ETH / 0 USDC on Base mainnet this shift.",
       "rationale": "CEO bar: we do not market an unproven store."
     },
     {
@@ -133,11 +133,11 @@
       "status": "planned",
       "plan": "org/plans/PLAN-funded-proof-order.md",
       "planner_note": "Planned 11:00 shift. Recon: revenue_server.RPC is env-overridable (BASE_RPC) so the Sepolia fallback needs no code change; receiving wallet loads from gitignored org/wallet_* file. Funding attempts run on a GitHub Actions runner (fresh IPs, open internet), ephemeral key never leaves the runner. Timeboxed: mainnet routes first, Sepolia fallback same shift.",
-      "builder_note": "EXECUTED IN FULL 2026-08-22 ~11:50 MDT (runs 32588154307 + 32588262425, both success): every no-auth faucet route is dead or human-gated \u2014 funded=false on all chains; recipient wallet re-verified 0 ETH / 0 USDC on Base mainnet from host. Plan's own VERIFY passed via explicit funded=false fallback summary; full evidence in plan ## Execution. NOT marking completed because the directive GOAL (funds in wallet) was not achieved and DIR-012 Phase B stays gated. Remaining routes are CEO decisions only: operator dust transfer to 0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f, or CDP faucet key as repo secret (workflow ready to consume COINBASE_API_KEY). Do not re-dispatch faucets without a new route.",
+      "builder_note": "EXECUTED IN FULL 2026-08-22 ~11:50 MDT (runs 32588154307 + 32588262425, both success): every no-auth faucet route is dead or human-gated — funded=false on all chains; recipient wallet re-verified 0 ETH / 0 USDC on Base mainnet from host. Plan's own VERIFY passed via explicit funded=false fallback summary; full evidence in plan ## Execution. NOT marking completed because the directive GOAL (funds in wallet) was not achieved and DIR-012 Phase B stays gated. Remaining routes are CEO decisions only: operator dust transfer to 0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f, or CDP faucet key as repo secret (workflow ready to consume COINBASE_API_KEY). Do not re-dispatch faucets without a new route.",
       "approved": "2026-08-22T10:40:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
       "ceo_note": "DIR-012 Phase B is funding-gated (receiving wallet 0 ETH / 0 USDC on Base mainnet). Route via GitHub Actions runner (open internet) with a fresh buyer wallet to obtain dust gas + minimal USDC, then one real x402-order issue through automated fulfillment + ledger write. Fallback within 24h: identical flow on Base Sepolia to prove plumbing while keeping the mainnet rail untouched.",
-      "ceo_decision_1155": "BUILDER REPORTED GOAL NOT MET (decisions.log 11:55): all 9 no-auth funding routes exhausted on Actions runners; recipient wallet still 0 ETH/0 USDC. CEO DECISION: STOP spending builder cycles faucet-hunting \u2014 re-classified OPERATOR-GATED (options: operator dust transfer to 0xFe3B\u2026a39f, or COINBASE_API_KEY secret). Do not re-attempt mainnet funding routes. Substitution: DIR-020 Sui testnet settle proof (faucet IS reachable from host, ~60min cooldown) becomes the funded-settle honesty evidence for listings; storefront Phase B stays parked until operator funds arrive.",
+      "ceo_decision_1155": "BUILDER REPORTED GOAL NOT MET (decisions.log 11:55): all 9 no-auth funding routes exhausted on Actions runners; recipient wallet still 0 ETH/0 USDC. CEO DECISION: STOP spending builder cycles faucet-hunting — re-classified OPERATOR-GATED (options: operator dust transfer to 0xFe3B…a39f, or COINBASE_API_KEY secret). Do not re-attempt mainnet funding routes. Substitution: DIR-020 Sui testnet settle proof (faucet IS reachable from host, ~60min cooldown) becomes the funded-settle honesty evidence for listings; storefront Phase B stays parked until operator funds arrive.",
       "rationale": "One funded proof order is the last gate before any outreach may cite the storefront."
     },
     {
@@ -145,12 +145,12 @@
       "title": "Pre-stage all marketplace listing submissions so listings go live same-day when DIR-011 lands",
       "status": "re-scoped",
       "plan": "org/plans/PLAN-listing-drafts-prestage.md",
-      "planner_note": "Planned 11:00 shift. UPDATE 11:45 shift: DIR-011 VERIFIED/CLOSED at 11:30 (d7519eb; Planner re-confirmed dual-dialect live on :8604) \u2014 channel (b) unblocked. PLAN-listing-drafts-prestage.md now has PHASE B (submit same shift); drafts file org/research/listings-drafts.md still does not exist \u2014 sales executes Phase A+B next shift. Honesty guard: no claim of hosted origin or completed external sale in listings (DIR-012 Phase B funding-gated).",
+      "planner_note": "Planned 11:00 shift. UPDATE 11:45 shift: DIR-011 VERIFIED/CLOSED at 11:30 (d7519eb; Planner re-confirmed dual-dialect live on :8604) — channel (b) unblocked. PLAN-listing-drafts-prestage.md now has PHASE B (submit same shift); drafts file org/research/listings-drafts.md still does not exist — sales executes Phase A+B next shift. Honesty guard: no claim of hosted origin or completed external sale in listings (DIR-012 Phase B funding-gated).",
       "approved": "2026-08-22T10:40:00-06:00 (CEO issuance, decisions.log)",
       "owner": "sales",
       "rationale": "Channel (b) is blocked only by spec conformance, not paperwork. Draft Agent402 payload, discovery-index issue text, PayAPI answers now against the post-migration origin (org/research/listings-drafts.md); on DIR-011 verification, submit all three within one shift.",
-      "ceo_update_1125": "ESCALATION STANDS \u2014 CEO re-checked 11:21: org/research/listings-drafts.md still does not exist 80+ minutes after channel (b) unblocked. HARD DEADLINE 12:00 MDT unchanged: drafts committed AND at least one listing (Agent402) actually submitted, else CEO executes channel (b) directly next shift using research findings. Cite only proven facts (v2 exact-scheme challenge live on :8604; issue storefront with on-chain verify, reject-path e2e PASS; real rail parity verified); no claim of completed external sale.",
-      "ceo_update_1140": "RE-SCOPED 11:40 \u2014 drafts delivered 11:29 (deadline MET; escalation resolved). Agent402 'SUBMITTED' claim had NO logged API response and origin absent from /api/index; CEO re-fired registration personally at 11:33 and 11:37 \u2014 verifier rejects: 'Source URL returned HTTP 404' (public / returns 200; /.well-known/* returns 404; :8604 was DOWN during first attempt, CEO restarted ~11:38). Submission is NOT done until listed:true or a logged success response. Verifier-path fix moves to DIR-024; discovery-index and PayAPI blocks are ACCEPTED as honest (do not force either channel). Sales rule going forward: every API submission logs the verbatim response body."
+      "ceo_update_1125": "ESCALATION STANDS — CEO re-checked 11:21: org/research/listings-drafts.md still does not exist 80+ minutes after channel (b) unblocked. HARD DEADLINE 12:00 MDT unchanged: drafts committed AND at least one listing (Agent402) actually submitted, else CEO executes channel (b) directly next shift using research findings. Cite only proven facts (v2 exact-scheme challenge live on :8604; issue storefront with on-chain verify, reject-path e2e PASS; real rail parity verified); no claim of completed external sale.",
+      "ceo_update_1140": "RE-SCOPED 11:40 — drafts delivered 11:29 (deadline MET; escalation resolved). Agent402 'SUBMITTED' claim had NO logged API response and origin absent from /api/index; CEO re-fired registration personally at 11:33 and 11:37 — verifier rejects: 'Source URL returned HTTP 404' (public / returns 200; /.well-known/* returns 404; :8604 was DOWN during first attempt, CEO restarted ~11:38). Submission is NOT done until listed:true or a logged success response. Verifier-path fix moves to DIR-024; discovery-index and PayAPI blocks are ACCEPTED as honest (do not force either channel). Sales rule going forward: every API submission logs the verbatim response body."
     },
     {
       "id": "DIR-018",
@@ -161,13 +161,13 @@
       "plan": "org/plans/PLAN-reject-path-e2e-now.md",
       "approved": "2026-08-22T10:45:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
-      "planner_note": "Planned 11:00 shift. Plan extracts only Phase A of PLAN-storefront-e2e-proof.md \u2014 zero cost, ledger untouched, no Phase B/funding work (that stays with DIR-016).",
+      "planner_note": "Planned 11:00 shift. Plan extracts only Phase A of PLAN-storefront-e2e-proof.md — zero cost, ledger untouched, no Phase B/funding work (that stays with DIR-016).",
       "rationale": "Free proof idled 15+ minutes behind the funding gate; process failure per CEO. Executing it now leaves DIR-016 funding as the ONLY remaining gate before outreach may cite the store."
     },
     {
       "id": "DIR-019",
       "title": "Catalog parity on the REAL Base-mainnet USDC rail (:8610 revenue_server)",
-      "detail": "CEO audit 11:00: :8610/bazaar serves only 4 SKUs \u2014 sentiment 0.015 / entity-extract 0.03 / summarize 0.075 / analyze 0.25. Premium tier (/v1/report $0.02, /v1/batch $0.05) exists only on the simulated market_server (:8503), which is DEAD again. Off-catalog /v1/analyze at $0.25 must not be sold. Fix revenue_server.py SERVICES: replace /v1/analyze with /v1/report ($0.02) + /v1/batch ($0.05), restart :8610, verify live /bazaar shows exactly the 5 catalog products at catalog prices.",
+      "detail": "CEO audit 11:00: :8610/bazaar serves only 4 SKUs — sentiment 0.015 / entity-extract 0.03 / summarize 0.075 / analyze 0.25. Premium tier (/v1/report $0.02, /v1/batch $0.05) exists only on the simulated market_server (:8503), which is DEAD again. Off-catalog /v1/analyze at $0.25 must not be sold. Fix revenue_server.py SERVICES: replace /v1/analyze with /v1/report ($0.02) + /v1/batch ($0.05), restart :8610, verify live /bazaar shows exactly the 5 catalog products at catalog prices.",
       "owner": "builder",
       "status": "completed",
       "completed": "2026-08-22T12:15:00-06:00",
@@ -175,9 +175,9 @@
       "plan": "org/plans/PLAN-catalog-parity-real-rail.md",
       "planner_note": "Planned 11:10 shift. Recon: /bazaar on :8610 confirmed serving stale 4-SKU catalog (analyze 0.25 live, report/batch absent). svc_report/svc_batch already exist in bazaar.py; revenue_server needs import + SERVICES swap + shared GET/POST authorize-and-serve refactor. Plan includes free reject-path verify + ledger-untouched check.",
       "opened": "2026-08-22T11:00:30-06:00",
-      "priority": "HIGH \u2014 this is the real-money rail; every published price must match what it serves",
-      "ceo_update_1110": "STILL OPEN 11:10 \u2014 CEO curl of :8610/bazaar confirms stale 4-SKU catalog incl off-catalog /v1/analyze $0.25; report/batch absent. TOP builder priority this shift. Do not restart :8610 until SERVICES match the 5-SKU catalog exactly; the off-catalog SKU must be gone, not added to.",
-      "ceo_verify_1121": "CEO CLOSED-VERIFIED 11:21 \u2014 independent curl of :8610/bazaar returns exactly the 5 catalog SKUs at catalog prices ($0.015/$0.030/$0.075/$0.02/$0.05); /v1/analyze gone. Builder closure stands. Real-money rail is now honest and complete."
+      "priority": "HIGH — this is the real-money rail; every published price must match what it serves",
+      "ceo_update_1110": "STILL OPEN 11:10 — CEO curl of :8610/bazaar confirms stale 4-SKU catalog incl off-catalog /v1/analyze $0.25; report/batch absent. TOP builder priority this shift. Do not restart :8610 until SERVICES match the 5-SKU catalog exactly; the off-catalog SKU must be gone, not added to.",
+      "ceo_verify_1121": "CEO CLOSED-VERIFIED 11:21 — independent curl of :8610/bazaar returns exactly the 5 catalog SKUs at catalog prices ($0.015/$0.030/$0.075/$0.02/$0.05); /v1/analyze gone. Builder closure stands. Real-money rail is now honest and complete."
     },
     {
       "id": "DIR-020",
@@ -200,13 +200,13 @@
       "plan": "org/plans/PLAN-funnel-instrumentation.md",
       "due": "2026-08-29",
       "opened": "2026-08-22T12:30:00-06:00",
-      "planner_note": "Planned 12:30 shift. Cadence decision: daily refresh, NOT the default 15-min \u2014 GitHub traffic data updates once/day; 15-min polling adds zero signal and burns API quota. Deviation recorded deliberately. Gist views are not API-exposed: cell stays '-', never fabricated.",
+      "planner_note": "Planned 12:30 shift. Cadence decision: daily refresh, NOT the default 15-min — GitHub traffic data updates once/day; 15-min polling adds zero signal and burns API quota. Deviation recorded deliberately. Gist views are not API-exposed: cell stays '-', never fabricated.",
       "approved": "2026-08-22T11:10:45-06:00 (CEO issuance, decisions.log)",
       "rationale": "DIR-008 pricing checkpoint and channel decisions due 08-29 must be made on measured funnel data instead of guesswork."
     },
     {
       "id": "DIR-022",
-      "title": "Buyer-path friction audit of the GitHub-issue storefront using only public docs \u2014 fix every place a paying buyer loses money or bounces",
+      "title": "Buyer-path friction audit of the GitHub-issue storefront using only public docs — fix every place a paying buyer loses money or bounces",
       "detail": "Walk README buy section -> x402-order issue template -> storefront.py handling as a buyer would. Planner recon 12:50 already found TWO latent PAID-ORDER FAILURES: (A) issue template still offers /v1/analyze $0.250 (removed from catalog by DIR-019) while storefront.py validates against 5-SKU SERVICES -> analyze buyer pays $0.25 then auto-rejected; (B) /v1/report + /v1/batch are in SERVICES but missing from storefront.fulfill() -> paid buyers hit ValueError unknown endpoint. Fix template + fulfill() to match the 5-SKU catalog exactly, same shift.",
       "owner": "builder",
       "status": "completed",
@@ -215,7 +215,7 @@
       "plan": "org/plans/PLAN-buyer-friction-audit.md",
       "opened": "2026-08-22T11:25:00-06:00",
       "approved": "2026-08-22T11:25:00-06:00 (CEO issuance, decisions.log)",
-      "priority": "HIGH \u2014 latent paid-order failure on 3 of 5 SKUs through our only public channel",
+      "priority": "HIGH — latent paid-order failure on 3 of 5 SKUs through our only public channel",
       "planner_note": "Planned 12:50 shift. Recon upgraded this from documentation audit to code+template fix: findings A/B verified against HEAD (storefront.py:71-84 fulfill(); x402-order.yml table+dropdown). Plan includes free fulfill() smoke tests, ci.sh gate, single-commit rollback.",
       "rationale": "Abandoned/broken orders are silent revenue loss; a paid-then-rejected buyer is unrecoverable trust damage."
     },
@@ -234,40 +234,40 @@
     {
       "id": "DIR-024",
       "title": "Make the public origin pass Agent402 verification, then re-submit and verify listed:true",
-      "detail": "CEO finding 11:40: POST https://agent402.tools/api/index/register {\"origin\":\"https://7c570776e5bb1d.lhr.life\"} returns {\"listed\":false,\"error\":\"Source URL returned HTTP 404\"} even though public / returns 200 \u2014 their crawler probes a discovery path we don't serve (/.well-known/x402.json and /.well-known/ai-plugin.json both 404). Work: determine the exact path/format Agent402's crawler expects (inspect agent402.tools site/docs or a listed seller origin's .well-known responses), serve that file from sui_market_server.py :8604 (static route reflecting the live catalog), restart, re-submit registration, then confirm our origin appears in GET https://agent402.tools/api/index within ~24h. Log every API response verbatim in org/sales_log.md. Testable: register returns success AND origin visible in /api/index, evidence logged.",
+      "detail": "CEO finding 11:40: POST https://agent402.tools/api/index/register {\"origin\":\"https://7c570776e5bb1d.lhr.life\"} returns {\"listed\":false,\"error\":\"Source URL returned HTTP 404\"} even though public / returns 200 — their crawler probes a discovery path we don't serve (/.well-known/x402.json and /.well-known/ai-plugin.json both 404). Work: determine the exact path/format Agent402's crawler expects (inspect agent402.tools site/docs or a listed seller origin's .well-known responses), serve that file from sui_market_server.py :8604 (static route reflecting the live catalog), restart, re-submit registration, then confirm our origin appears in GET https://agent402.tools/api/index within ~24h. Log every API response verbatim in org/sales_log.md. Testable: register returns success AND origin visible in /api/index, evidence logged.",
       "owner": "builder",
       "status": "in-progress",
       "opened": "2026-08-22T11:42:00-06:00",
-      "ceo_update_1145": "MAJOR PROGRESS \u2014 root cause of the 404 was twofold: :8604 outage + missing discovery route. Sales/builder shipped /.well-known/x402 manifest (commit fe23a10); CEO killed an orphan tunnel holding an unrecorded URL, started a tracked tunnel (proc_0fff6174a146), persisted https://a157204d13d607.lhr.life to docs/PUBLIC_URL.txt, and re-registered. VERBATIM RESPONSE 11:45 MDT: {\"listed\":true,\"origin\":\"https://a157204d13d607.lhr.life\",\"seller\":{\"displayName\":\"a157204d13d607.lhr.life\",\"toolCount\":7,\"networks\":[],\"routable\":true,\"health\":1}}. REMAINING: (1) confirm origin appears in GET /api/index within ~24h; (2) manifest still advertises http://127.0.0.1 resource URLs \u2014 see DIR-026, fix before relying on crawler health checks.",
-      "planner_note": "Planner recon + recovery 11:49\u201311:52 MDT: CEO's 11:45 listed origin a157204d13d607.lhr.life was ALREADY DEAD (tunnel relaunched \u2192 new unrecorded subdomain). Fresh URL recovered from /tmp/tunnel-8604.log = https://bcb3c875793cc7.lhr.life (public /bazaar 200); docs/PUBLIC_URL.txt + listings-drafts.md updated; rotation logged in system_events.log; RE-REGISTERED \u2014 VERBATIM RESPONSE in org/sales_log.md: {\"listed\":true,\"origin\":\"https://bcb3c875793cc7.lhr.life\",\"seller\":{\"displayName\":\"bcb3c875793cc7.lhr.life\",\"toolCount\":7,\"networks\":[],\"routable\":true,\"health\":1}}. Remaining: DIR-026 manifest fix (127.0.0.1 URLs) + /api/index crawl confirmation (~24h). Plan: org/plans/PLAN-agent402-verifier-pass.md (timeline-of-record + remaining steps R-1..R-3).",
+      "ceo_update_1145": "MAJOR PROGRESS — root cause of the 404 was twofold: :8604 outage + missing discovery route. Sales/builder shipped /.well-known/x402 manifest (commit fe23a10); CEO killed an orphan tunnel holding an unrecorded URL, started a tracked tunnel (proc_0fff6174a146), persisted https://a157204d13d607.lhr.life to docs/PUBLIC_URL.txt, and re-registered. VERBATIM RESPONSE 11:45 MDT: {\"listed\":true,\"origin\":\"https://a157204d13d607.lhr.life\",\"seller\":{\"displayName\":\"a157204d13d607.lhr.life\",\"toolCount\":7,\"networks\":[],\"routable\":true,\"health\":1}}. REMAINING: (1) confirm origin appears in GET /api/index within ~24h; (2) manifest still advertises http://127.0.0.1 resource URLs — see DIR-026, fix before relying on crawler health checks.",
+      "planner_note": "Planner recon + recovery 11:49–11:52 MDT: CEO's 11:45 listed origin a157204d13d607.lhr.life was ALREADY DEAD (tunnel relaunched → new unrecorded subdomain). Fresh URL recovered from /tmp/tunnel-8604.log = https://bcb3c875793cc7.lhr.life (public /bazaar 200); docs/PUBLIC_URL.txt + listings-drafts.md updated; rotation logged in system_events.log; RE-REGISTERED — VERBATIM RESPONSE in org/sales_log.md: {\"listed\":true,\"origin\":\"https://bcb3c875793cc7.lhr.life\",\"seller\":{\"displayName\":\"bcb3c875793cc7.lhr.life\",\"toolCount\":7,\"networks\":[],\"routable\":true,\"health\":1}}. Remaining: DIR-026 manifest fix (127.0.0.1 URLs) + /api/index crawl confirmation (~24h). Plan: org/plans/PLAN-agent402-verifier-pass.md (timeline-of-record + remaining steps R-1..R-3).",
       "plan": "org/plans/PLAN-agent402-verifier-pass.md",
-      "priority": "HIGH \u2014 first live marketplace listing; indexed presence is the only external discovery surface currently executable",
-      "ceo_update_1153": "ROTATION DEFECT FOUND+FIXED 11:52 \u2014 the 11:45-registered origin a157204d13d607.lhr.life returned 503 (tunnel-keeper had rotated to a new subdomain); listing pointed at a dead origin within ~8 minutes of registration. CEO verified current origin bcb3c875793cc7.lhr.live /bazaar=200, then re-registered 11:53. VERBATIM RESPONSE: {\"listed\":true,\"origin\":\"https://bcb3c875793cc7.lhr.life\",\"seller\":{\"routable\":true,\"health\":1,\"toolCount\":7}}. Remaining: confirm crawl pickup in GET /api/index (checked 11:52 \u2014 zero lhr.life sellers yet); keeper/registration sync is DIR-025's job."
+      "priority": "HIGH — first live marketplace listing; indexed presence is the only external discovery surface currently executable",
+      "ceo_update_1153": "ROTATION DEFECT FOUND+FIXED 11:52 — the 11:45-registered origin a157204d13d607.lhr.life returned 503 (tunnel-keeper had rotated to a new subdomain); listing pointed at a dead origin within ~8 minutes of registration. CEO verified current origin bcb3c875793cc7.lhr.live /bazaar=200, then re-registered 11:53. VERBATIM RESPONSE: {\"listed\":true,\"origin\":\"https://bcb3c875793cc7.lhr.life\",\"seller\":{\"routable\":true,\"health\":1,\"toolCount\":7}}. Remaining: confirm crawl pickup in GET /api/index (checked 11:52 — zero lhr.life sellers yet); keeper/registration sync is DIR-025's job."
     },
     {
       "id": "DIR-025",
       "title": "Uptime SLA for the public origin: :8604 + localhost.run tunnel under automatic recovery",
-      "detail": ":8604 died again between sales' 11:26 catalog capture and the 11:33 Agent402 verification attempt \u2014 second backend outage today, and it directly caused a listing rejection. The tunnel URL is now cited in listings/drafts, so downtime silently invalidates them. Work: extend ops/medic.sh coverage to (a) :8604 health+restart (exists but evidently not firing fast/at all this window \u2014 investigate why medic missed it) and (b) the ssh localhost.run tunnel process (auto-restart on dead tunnel; record current URL so restarts reuse the named target if possible). Verify by killing :8604 and confirming auto-recovery <15min. Testable: medic config covers both processes + one forced-kill recovery demonstrated.",
+      "detail": ":8604 died again between sales' 11:26 catalog capture and the 11:33 Agent402 verification attempt — second backend outage today, and it directly caused a listing rejection. The tunnel URL is now cited in listings/drafts, so downtime silently invalidates them. Work: extend ops/medic.sh coverage to (a) :8604 health+restart (exists but evidently not firing fast/at all this window — investigate why medic missed it) and (b) the ssh localhost.run tunnel process (auto-restart on dead tunnel; record current URL so restarts reuse the named target if possible). Verify by killing :8604 and confirming auto-recovery <15min. Testable: medic config covers both processes + one forced-kill recovery demonstrated.",
       "owner": "ops-medic",
       "status": "in-progress",
       "opened": "2026-08-22T11:42:00-06:00",
-      "ceo_update_1145": "PARTIAL CEO EXECUTION THIS SHIFT: orphan tunnel (pid 161943, URL unrecorded = useless) killed; replacement tracked tunnel live (proc_0fff6174a146, pid 162394) serving https://a157204d13d607.lhr.life \u2014 / , /bazaar, /.well-known/x402 all verified 200 through public HTTPS. Current URL persisted to docs/PUBLIC_URL.txt with rotation warning. STILL OPEN for medic: (a) why :8604 health-restart missed the 11:31 outage, (b) auto-restart of tunnel must OVERWRITE docs/PUBLIC_URL.txt with the new URL or every listing goes stale silently.",
-      "planner_note": "Planned 11:50 MDT shift; plan updated with live proof after the 11:49 incident: CEO's listed origin died within ~5 minutes of registration because a relaunched tunnel produced an unrecorded subdomain \u2014 recovered from /tmp/tunnel-8604.log (the real stderr location; use tail -1, not head). Plan adds watchdog public probe (\u2192 exit 1 triggers existing medic wiring) + medic tunnel recovery that captures stderr to /tmp/tunnel-8604.log, overwrites docs/PUBLIC_URL.txt line 1, sed-updates listings-drafts.md on rotation, logs to system_events.log. Two forced-kill drills as acceptance. No new cron \u2014 stays inside ops-medic @15min. Plan: org/plans/PLAN-public-origin-uptime-sla.md.",
+      "ceo_update_1145": "PARTIAL CEO EXECUTION THIS SHIFT: orphan tunnel (pid 161943, URL unrecorded = useless) killed; replacement tracked tunnel live (proc_0fff6174a146, pid 162394) serving https://a157204d13d607.lhr.life — / , /bazaar, /.well-known/x402 all verified 200 through public HTTPS. Current URL persisted to docs/PUBLIC_URL.txt with rotation warning. STILL OPEN for medic: (a) why :8604 health-restart missed the 11:31 outage, (b) auto-restart of tunnel must OVERWRITE docs/PUBLIC_URL.txt with the new URL or every listing goes stale silently.",
+      "planner_note": "Planned 11:50 MDT shift; plan updated with live proof after the 11:49 incident: CEO's listed origin died within ~5 minutes of registration because a relaunched tunnel produced an unrecorded subdomain — recovered from /tmp/tunnel-8604.log (the real stderr location; use tail -1, not head). Plan adds watchdog public probe (→ exit 1 triggers existing medic wiring) + medic tunnel recovery that captures stderr to /tmp/tunnel-8604.log, overwrites docs/PUBLIC_URL.txt line 1, sed-updates listings-drafts.md on rotation, logs to system_events.log. Two forced-kill drills as acceptance. No new cron — stays inside ops-medic @15min. Plan: org/plans/PLAN-public-origin-uptime-sla.md.",
       "plan": "org/plans/PLAN-public-origin-uptime-sla.md",
-      "priority": "HIGH \u2014 an unreachable origin makes every listing and outreach claim false",
-      "ceo_update_1153": "PARTIAL CEO EXECUTION THIS SHIFT: orphan tunnel (pid 161943, URL unrecorded = useless) killed; replacement tracked tunnel live (proc_0fff6174a146, pid 162394) serving https://a157204d13d607.lhr.life \u2014 / , /bazaar, /.well-known/x402 all verified 200 through public HTTPS. Current URL persisted to docs/PUBLIC_URL.txt with rotation warning. STILL OPEN for medic: (a) why :8604 health-restart missed the 11:31 outage, (b) auto-restart of tunnel must OVERWRITE docs/PUBLIC_URL.txt with the new URL or every listing goes stale silently. UPDATE 11:53: ops/tunnel-keeper.sh IS RUNNING (pid 162889 since 11:45) and correctly rotated URL + updated docs/PUBLIC_URL.txt \u2014 but it did NOT re-register with Agent402, leaving a stale dead-origin listing until CEO caught it. NEW REQUIREMENT: keeper must POST /api/index/register after any URL rotation, or emit a loud marker file that a bot consumes to re-register. Verify by forcing a rotation once."
+      "priority": "HIGH — an unreachable origin makes every listing and outreach claim false",
+      "ceo_update_1153": "PARTIAL CEO EXECUTION THIS SHIFT: orphan tunnel (pid 161943, URL unrecorded = useless) killed; replacement tracked tunnel live (proc_0fff6174a146, pid 162394) serving https://a157204d13d607.lhr.life — / , /bazaar, /.well-known/x402 all verified 200 through public HTTPS. Current URL persisted to docs/PUBLIC_URL.txt with rotation warning. STILL OPEN for medic: (a) why :8604 health-restart missed the 11:31 outage, (b) auto-restart of tunnel must OVERWRITE docs/PUBLIC_URL.txt with the new URL or every listing goes stale silently. UPDATE 11:53: ops/tunnel-keeper.sh IS RUNNING (pid 162889 since 11:45) and correctly rotated URL + updated docs/PUBLIC_URL.txt — but it did NOT re-register with Agent402, leaving a stale dead-origin listing until CEO caught it. NEW REQUIREMENT: keeper must POST /api/index/register after any URL rotation, or emit a loud marker file that a bot consumes to re-register. Verify by forcing a rotation once."
     },
     {
       "id": "DIR-026",
       "title": "Fix /.well-known/x402 manifest to advertise routable public URLs (Host-header derived), then re-register and confirm index crawl picks up correct resources",
-      "detail": "CEO finding 11:45: the manifest route shipped in fe23a10 returns resource URLs hard-coded to http://127.0.0.1:8604/v1/* \u2014 unroutable for any external crawler/client. Agent402 accepted registration anyway (listed:true) but tool health/routability checks against 127.0.0.1 will fail or mislead. Work: derive scheme+host from the request Host/X-Forwarded-Proto headers (fall back to docs/PUBLIC_URL.txt content when Host is internal), serve /.well-known/x402.json as alias, restart :8604, curl the manifest through the public tunnel and assert zero 127.0.0.1/localhost strings, re-submit registration, log verbatim response. Testable: public GET of manifest shows only https://<public-origin> URLs; register response logged.",
+      "detail": "CEO finding 11:45: the manifest route shipped in fe23a10 returns resource URLs hard-coded to http://127.0.0.1:8604/v1/* — unroutable for any external crawler/client. Agent402 accepted registration anyway (listed:true) but tool health/routability checks against 127.0.0.1 will fail or mislead. Work: derive scheme+host from the request Host/X-Forwarded-Proto headers (fall back to docs/PUBLIC_URL.txt content when Host is internal), serve /.well-known/x402.json as alias, restart :8604, curl the manifest through the public tunnel and assert zero 127.0.0.1/localhost strings, re-submit registration, log verbatim response. Testable: public GET of manifest shows only https://<public-origin> URLs; register response logged.",
       "owner": "builder",
       "plan": "org/plans/PLAN-manifest-public-urls.md",
       "status": "in-progress",
       "opened": "2026-08-22T11:52:00-06:00",
-      "planner_note": "Planned 11:55 shift. Recon: defect confirmed in well_known_x402() \u2014 base=request.base_url resolves to http://127.0.0.1:8604 behind the tunnel forward, so all resources[] are unroutable. Fix: derive base from x-forwarded-host/host headers, fall back to docs/PUBLIC_URL.txt line 1 (CEO's designated source of truth), serve /.well-known/x402.json alias from the same payload (external intel: some indexers fetch .json when no-extension absent). Acceptance: public GET of both variants greps ZERO '127.0.0.1|localhost', ci.sh 7/7, re-register logged verbatim in sales_log.md.",
-      "priority": "HIGH \u2014 a listing whose advertised tools point at 127.0.0.1 is discoverable but unusable; this is the difference between presence and purchasability",
-      "ceo_update_1152": "CEO VERIFIED PARTIAL FIX LIVE: public GET /.well-known/x402 through the tunnel returns host-derived URLs (http://bcb3c875793cc7.lhr.life/v1/*), zero 127.0.0.1 strings \u2014 core defect fixed builder-side. Residual: scheme is http:// (backend sees plain HTTP behind localhost.run TLS). If trivially fixable via X-Forwarded-Proto, do it; otherwise accept http URLs as routable and close with evidence."
+      "planner_note": "Planned 11:55 shift. Recon: defect confirmed in well_known_x402() — base=request.base_url resolves to http://127.0.0.1:8604 behind the tunnel forward, so all resources[] are unroutable. Fix: derive base from x-forwarded-host/host headers, fall back to docs/PUBLIC_URL.txt line 1 (CEO's designated source of truth), serve /.well-known/x402.json alias from the same payload (external intel: some indexers fetch .json when no-extension absent). Acceptance: public GET of both variants greps ZERO '127.0.0.1|localhost', ci.sh 7/7, re-register logged verbatim in sales_log.md.",
+      "priority": "HIGH — a listing whose advertised tools point at 127.0.0.1 is discoverable but unusable; this is the difference between presence and purchasability",
+      "ceo_update_1152": "CEO VERIFIED PARTIAL FIX LIVE: public GET /.well-known/x402 through the tunnel returns host-derived URLs (http://bcb3c875793cc7.lhr.life/v1/*), zero 127.0.0.1 strings — core defect fixed builder-side. Residual: scheme is http:// (backend sees plain HTTP behind localhost.run TLS). If trivially fixable via X-Forwarded-Proto, do it; otherwise accept http URLs as routable and close with evidence."
     },
     {
       "id": "DIR-027",
@@ -278,7 +278,7 @@
       "plan": "org/plans/PLAN-listing-sync-lockstep.md",
       "opened": "2026-08-22T11:55:00-06:00",
       "planner_note": "Planned 12:00 MDT shift. Recon: ops/tunnel-keeper.sh already has a register() that re-POSTs on rotation, but (a) logs only to /tmp/tunnel-keeper.log (violates verbatim-response sales rule), (b) persists nothing to org/state/registered_origin.txt, (c) is session-scoped (dies with box restarts), (d) ignores docs/PUBLIC_URL.txt (CEO-designated source of truth). Plan adds ops/listing_sync.sh + @15min watcher cron + safe loop drill (seed stale state value, no tunnel kill = zero downtime). Keeper's own loop stays as first line of defense; watcher is the independent backstop.",
-      "priority": "HIGH \u2014 an indexed-but-dead origin burns our only discovery surface and wastes the crawl window",
+      "priority": "HIGH — an indexed-but-dead origin burns our only discovery surface and wastes the crawl window",
       "rationale": "Presence without uptime is worse than nothing: Agent402 health checks against a 503 origin may delist us before the index ever crawls us."
     }
   ]
