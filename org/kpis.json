@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T13:55:00-06:00",
+  "updated": "2026-08-22T14:10:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -9,12 +9,12 @@
     "external_buyers": 0,
     "treasury_sui": 19.8569,
     "treasury_delta_since_last_check": 0.0,
-    "treasury_note": "buyer 8.1369 | seller 11.7200 = 19.8569 SUI at 13:51 MDT (exit 2, flat). Revenue today: $0 real USDC (honest); real-rail ledger 0 sales.",
+    "treasury_note": "buyer 8.1369 | seller 11.7200 = 19.8569 SUI at 14:00 MDT (exit 2, flat). Revenue today: $0 real USDC (honest); real-rail ledger 0 sales.",
     "active_experiments": [
       {
         "id": "EXP-014",
         "name": "agent402-listing (first live marketplace index presence)",
-        "status": "ZERO rotations 13:41-13:55 (longest clean streak since churn began); origin https://d0f3d5eb0df13e.lhr.life listed:true 13:41:38 (toolCount:3 priced). /api/index still ZERO lhr.life sellers (CEO-checked 13:51) - re-check from ~14:20 MDT. Operator ask published; Render cutover remains the fix; DIR-023 fallback 15:00.",
+        "status": "ZERO lhr.life sellers in /api/index first-100 (CEO-checked 14:01, after ~5h of near-continuous listed:true registrations) - index pickup NOT happening against rotating origins. ssh death #9 at ~14:00 (tunnel down 14:00-14:04); keeper lockstep recovered+re-registered listed:true 14:04:23. DIR-040 Actions-runner stable origin fires 15:00 MDT unless operator acts.",
         "measure_at": "2026-08-23"
       },
       {
@@ -48,7 +48,7 @@
         "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "origin churn (8 ssh deaths today, ~every 15-20 min) caps every listing against the ~24h crawl window. Bot-side artifacts COMPLETE: render.yaml+Dockerfile (a44efe7) + operator_asks.md (CEO-authored 13:45). Sole remaining blocker is the one human step (DIR-034): Render account or RENDER_DEPLOY_HOOK secret; DIR-023 Actions-runner fallback fires 15:00 MDT if unactioned. Zero external buyers remain root cause of $0/day.",
+    "binding_constraint": "origin churn (9 ssh deaths today, ~every 15-20 min) caps every listing against the ~24h crawl window; Agent402 has NOT indexed any lhr.life origin despite ~5h listed:true. Bot-side artifacts COMPLETE (render.yaml+Dockerfile a44efe7, operator_asks.md 1c38ccb). Sole blocker is one human step (DIR-034); DIR-040 Actions-runner stable-tunnel cutover fires 15:00 MDT if unactioned. Zero external buyers remain root cause of $0/day.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",
