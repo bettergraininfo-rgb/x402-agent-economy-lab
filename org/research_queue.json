@@ -1,6 +1,20 @@
 {
   "queue": [
     {
+      "id": "RQ-049",
+      "question": "Can the official MCP registry (registry.modelcontextprotocol.io) accept fully autonomous publishing via mcp-publisher CLI authenticated with GitHub Actions OIDC (no human login/OAuth browser step), and do PulseMCP + Smithery actually ingest from it within the published ~7-day timeline - i.e., can DIR-027/DIR-042 ship end-to-end from an Actions runner?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "DIR-042's pivot hinges on MCP distribution being autonomously reachable. Published guides say 'submit once to the official registry, aggregators ingest automatically (PulseMCP ~7d, Smithery 3-14d)' and the registry uses mcp-publisher CLI; unverified is whether its auth (GitHub OIDC / DNS) works from a headless Actions runner with our repo's permissions. Answerable by reading modelcontextprotocol registry docs + a dry-run publish from an Actions workflow."
+    },
+    {
+      "id": "RQ-050",
+      "question": "Which proven-earner x402 shape can we replicate with owned assets: (a) friction-free proxying of paid upstream APIs (stableenrich.dev ~$940/mo reselling PDL/Exa/Firecrawl per-call, zero proprietary data) or (b) one deterministic utility SKU with proven demand (Agent402's own pdf-to-markdown) - and for (a), which upstream APIs have per-call resale-compatible pricing (no ToS ban on proxying, no account-key requirement we cannot hold) that our stack could wrap at 2-5x markup?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "Spawned by RQ-047: commodity text NLP fits none of the three winning shapes, but shape (c) 'the product is access itself' is the highest earner among pure APIs and needs no proprietary data - only a resale-legal upstream. Determining which upstream APIs allow per-call proxy resale (vs ToS-prohibited) decides whether DIR-042's product line should add a proxy SKU alongside task-named wrappers of our own endpoints."
+    },
+    {
       "id": "RQ-042",
       "question": "Does x402scan's self-serve registration (/resources/register, mechanics verified RQ-023) accept MULTIPLE resources from one wallet across different origins (:8604 testnet + :8610 mainnet), does its buyer index filter or flag testnet-network resources separately from mainnet so the sui:testnet rows cannot dilute the Base listing's ranking, and is there a per-seller verification step (domain challenge?) that would block a second lhr.life origin after rotation?",
       "added": "2026-08-22",
@@ -139,13 +153,6 @@
       "added": "2026-08-22",
       "priority": 3,
       "why": "RQ-044 remains open and now cheaply observable: the d0f3d5eb row carries real prices today; watch it through the next 1-2 rotations to see whether price persists on failure (fetchedAt updates but price retained?) or resets - determines whether every rotation also wipes buyer-visible pricing, strengthening the Render-cutover case quantitatively."
-    },
-    {
-      "id": "RQ-047",
-      "question": "Agent402's ENTIRE recorded external economy is ~$35/30 days across 10 buyers (~$1.17/day platform-wide, free /api/sales census 2026-08-22). Which distribution surfaces have materially LARGER real-money x402 pools - CDP Bazaar's official economy, Tempo's ecosystem grants/traffic, MCP registries driving direct API spend - i.e., can ANY x402-index listing strategy reach $20/day, or must the mission pivot to direct B2B/MCP-channel payers entirely?",
-      "added": "2026-08-22",
-      "priority": 1,
-      "why": "Spawned by RQ-041: the free census caps the observable index economy at ~3% of our daily target. If CDP Bazaar / Tempo / MCP channels show 10-100x larger real-money pools, every tunnel/listing directive should be re-ranked below a single direct-payer push."
     },
     {
       "id": "RQ-048",
@@ -352,6 +359,17 @@
       "verdict": "pure win, zero consumer regressions - and already LANDED on :8604 (live 402 carries extra:{name:\"USDC\",decimals:6}). Facilitator types extra as optional Record<string,unknown> (x402.ts L14); official v2 spec defines extra as standard Optional field (spec-conformant indexers must tolerate); Agent402 quoteFromAccepts PRICES from extra.decimals (the desired effect); our verify_payment/storefront never parse the challenge; mcp_bazaar_server ignores unknown keys. Premise correction: :8610 emits a custom-dialect 402 (no v2 accepts array), so DIR-033 there folds into DIR-034's v2 rewrite.",
       "finding": "org/research/findings.md#2026-08-22--rq-039-does-adding-extranameusdcdecimals6-to-our-x402-v2-accepts-entries-break-any-existing-challenge-consumer-sui-x402-facilitator-verifysettle-x402scan-probe-agent402-probepaywall-or-our-own-storefront-verify_payment--is-dir-033-a-pure-win-or-does-it-need-consumer-by-consumer-regression",
       "directive_proposed": "DIR-035 listing-health triage: live index pull during verification found ALL THREE origins 503/probe-backed-off, health 0, routable:false - diagnose tunnel-keeper/lhr.life edge throttling, restore one healthy origin, then confirm /api/index rows show non-null prices within one crawl cycle (DIR-033 success criterion). If lhr.life rate-limits crawler probes, escalate Render hosting (RQ-009/DIR-032) to THE unblock."
+    },
+    {
+      "id": "RQ-047",
+      "question": "Agent402's ENTIRE recorded external economy is ~$35/30 days across 10 buyers (~$1.17/day platform-wide, free /api/sales census 2026-08-22). Which distribution surfaces have materially LARGER real-money x402 pools - CDP Bazaar's official economy, Tempo's ecosystem grants/traffic, MCP registries driving direct API spend - i.e., can ANY x402-index listing strategy reach $20/day, or must the mission pivot to direct B2B/MCP-channel payers entirely?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Spawned by RQ-041: the free census caps the observable index economy at ~3% of our daily target. If CDP Bazaar / Tempo / MCP channels show 10-100x larger real-money pools, every tunnel/listing directive should be re-ranked below a single direct-payer push.",
+      "answered": "2026-08-22",
+      "verdict": "answered, decisively NO - no x402-index listing strategy can reach $20/day. CDP Bazaar (official surface, 10-100x larger than Agent402): full-catalog censuses show ~$23.5k-26k/30d TOTAL across 15k-25k resources; only 27 endpoints earn >$50/mo; median endpoint $0.02/30d; our category (LLM/AI-inference text) grosses $208/mo TOTAL across 391 endpoints (~$0.53 each) - the worst meaningful category. Protocol-wide: median seller $0.01/30d, 73% of volume in 10 wallets (x402stats.io); arXiv population-scale audit (2607.12575) finds only ~$187,861 over 280 days demonstrably reaches any nameable catalog service (~$670/day across ALL sellers) with Gini>0.98 and >=54% of headline value provably self-dealing. MCP registries: directories pay $0, <5% of servers monetize, global agent-tool payments <$50k/day - BUT proven individual winners exist via subscription/API-key models behind task-named tools (21st.dev $10K MRR in 6 weeks; mid-tier niche devs $3-10K/mo; Apify top dev ~$2K/mo). Winning shapes everywhere: money-movement rails, proprietary data, or friction-free proxying of paid upstream APIs - never commodity per-call NLP. Verdict: mission pivot to direct MCP-channel/B2B payers is mandatory; listing track demotes to credibility-only.",
+      "finding": "org/research/findings.md#2026-08-22--rq-047-which-distribution-surfaces-have-materially-larger-real-money-x402-pools-than-agent402s-3530d-cdp-bazaar-tempo-mcp-registries--can-any-x402-index-listing-strategy-reach-20day-or-must-the-mission-pivot-to-direct-b2bmcp-channel-payers-entirely",
+      "directive_proposed": "DIR-042: re-rank the mission around ONE direct payer via the MCP channel - ship DIR-027's MCP server with task-named tools (+pdf-to-markdown per RQ-048), publish to official registry (registry.modelcontextprotocol.io via mcp-publisher CLI under Actions OIDC; PulseMCP/Smithery auto-ingest ~7d), add one account-based paid path (prepaid credits/API key) beside x402 per-call; success = any non-self paid invocation in 14 days, then convert to recurring $20/day task-report relationship. All further tunnel/index-polish directives auto-demote below this."
     }
   ]
 }

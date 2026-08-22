@@ -52,7 +52,7 @@
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
       "status": "idle",
-      "last_action": "DIR-035 done: operator_asks.md shipped+pushed 1c38ccb before 14:00 deadline (Render account or RENDER_DEPLOY_HOOK ask); ci.sh 7/7; tunnel/ledger untouched; reconciled CEO stale-read note in directives.json"
+      "last_action": "DIR-039 done: :8610 priced-manifest+extra-decimals port verified (manifest 5 SKUs priced, ci 7/7, ledger untouched); committed"
     },
     {
       "name": "Researcher",

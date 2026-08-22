@@ -458,11 +458,13 @@
       "detail": "Sales shift-18 flag: Agent402 listing was repaired on :8604 (7 junk/null-price rows -> exactly 3 PRICED rows) via extra:{name:USDC,decimals:6} on v2 challenges, rich priced GET-typed manifest, OpenAPI junk-row exclusion. The Base-mainnet rail :8610 still runs pre-fix code; if Render cutover ships it as-is, our only REAL-USDC rail lists with price:null junk rows on day one - zeroing our best monetization surface at the exact moment of cutover. Work: apply the identical fix set to :8610 manifest/challenge paths; verify via local curl that :8610's manifest shows all 5 catalog SKUs priced (0.015/0.030/0.075/0.02/0.05), zero nulls, extra present. Do NOT destabilize running :8604.",
       "owner": "builder",
       "opened": "2026-08-22T13:55:00-06:00",
-      "status": "planned",
       "priority": "HIGH - :8610 is the rail that takes actual real USDC; an unpriced listing there is a direct revenue cap",
       "ceo_decision_1410": "APPROVED - plan PLAN-priced-manifest-port-8610.md registered 14:03. Deadline 15:30 MDT, sequenced BEFORE any Render/Actions cutover so the real-USDC rail never lists price:null rows.",
       "plan": "org/plans/PLAN-priced-manifest-port-8610.md",
-      "planner_note_sync": "Planner 14:20 sync: plan file already existed (registered 14:03 per ceo_decision_1410) but this entry still said status=new with no plan link. Now status=planned. Builder executes THIS SHIFT; deadline 15:30 MDT stands."
+      "planner_note_sync": "Planner 14:20 sync: plan file already existed (registered 14:03 per ceo_decision_1410) but this entry still said status=new with no plan link. Now status=planned. Builder executes THIS SHIFT; deadline 15:30 MDT stands.",
+      "status": "completed",
+      "completed": "2026-08-22T14:20:00-06:00",
+      "completion_note": "BUILDER EXECUTED per plan ## Execution 14:15 MDT, STATUS=done (deadline 15:30 MET with margin): extra:{name:USDC,decimals:6} on :8610 402 challenge; rich priced /.well-known/x402 + byte-identical .json alias manifest, all 5 SKUs at catalog prices OK [0.015,0.03,0.075,0.02,0.05]; junk-row exclusion (include_in_schema=False on /,/health,/bazaar); ci.sh 7/7 exit 0; ledger sha256 byte-identical pre/post; local :8604 health 200 (untouched). Tunnel check 000 during verify due to rotation-#9 ssh churn (keeper-owned recovery; not a regression from this change) - noted honestly in the plan file."
     },
     {
       "id": "DIR-040",

@@ -141,6 +141,7 @@ def _402(endpoint: str) -> JSONResponse:
             "scheme": "exact",
             "network": "base-mainnet",
             "token": "USDC",
+            "extra": {"name": "USDC", "decimals": 6},
             "pay_to": WALLET["address"],
             "amount_usdc": cfg["price"],
             "amount_units": _units(cfg["price"]),
@@ -153,7 +154,43 @@ def _402(endpoint: str) -> JSONResponse:
     })
 
 
-@app.get("/health")
+@app.get("/", include_in_schema=False)
+def root():
+    return {
+        "service": "agent-economy NLP micro-services (REAL Base-mainnet USDC rail)",
+        "description": ("Machine-payable NLP APIs paid in REAL USDC on Base "
+                        "mainnet. Unauthenticated request returns HTTP 402 "
+                        "with accepts[] payment requirements."),
+        "catalog": "/bazaar", "health": "/health",
+        "repo": "https://github.com/bettergraininfo-rgb/x402-agent-economy-lab",
+        "endpoints": [ep for ep in SERVICES],
+    }
+
+
+@app.get("/.well-known/x402", include_in_schema=False)
+@app.get("/.well-known/x402.json", include_in_schema=False)
+def well_known_x402(request: Request):
+    base = str(request.base_url).rstrip("/")
+    if request.headers.get("x-forwarded-proto", "").lower() == "https":
+        base = base.replace("http://", "https://", 1)
+    usd = {"/v1/sentiment": 0.015, "/v1/entity-extract": 0.030,
+           "/v1/summarize": 0.075, "/v1/report": 0.02, "/v1/batch": 0.05}
+    return {
+        "spec": "agent402-service-manifest/1", "version": 1,
+        "resources": [
+            {"url": f"{base}{ep}", "method": "GET", "price": usd[ep],
+             "name": ep.lstrip("/"),
+             "description": ("Pay-per-call NLP: sentiment score, entity "
+                             "extraction, summarization, report, batch — "
+                             "REAL USDC on Base mainnet.")}
+            for ep in SERVICES
+        ],
+        "payment": ("exact USDC transfer on Base mainnet - unauthenticated "
+                    "request returns HTTP 402 with accepts[] requirements"),
+    }
+
+
+@app.get("/health", include_in_schema=False)
 def health():
     d = _load_ledger()
     return {"status": "ok", "real_money": True, "network": "base-mainnet",
@@ -161,7 +198,7 @@ def health():
             "recipient": WALLET["address"]}
 
 
-@app.get("/bazaar")
+@app.get("/bazaar", include_in_schema=False)
 def bazaar():
     return {"network": "base-mainnet", "token": "USDC", "services": [
         {"endpoint": ep, "price_usdc": cfg["price"]}
