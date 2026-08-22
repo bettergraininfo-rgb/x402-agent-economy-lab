@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# ops/watchdog.sh — silent-when-healthy fleet health check.
+# Exit 0 + empty stdout = all good (watchdog pattern: silence means healthy).
+# Any output = something needs attention (delivered verbatim by cron).
+set -u
+ROOT="$HOME/x402-agent-service"
+cd "$ROOT" || { echo "FATAL: cannot cd $ROOT"; exit 1; }
+
+issues=""
+
+# 1. Service liveness (HTTP, real request not just port open)
+check_http() {
+  local name="$1" url="$2"
+  if ! curl -sf -m 8 -o /dev/null "$url"; then
+    issues+="DOWN: $name ($url) not answering"$'\n'
+  fi
+}
+check_http "market-server :8604" "http://127.0.0.1:8604/health"
+check_http "dashboard    :8605" "http://127.0.0.1:8605/api/overview"
+check_http "revenue-server:8610" "http://127.0.0.1:8610/health"
+
+# 2. Revenue server must still point at the REAL wallet (catch config drift)
+addr="$(curl -sf -m 8 http://127.0.0.1:8610/health | grep -o '0x[0-9a-fA-F]\{40\}' | head -1)"
+if [ "$addr" != "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f" ]; then
+  issues+="CONFIG DRIFT: revenue /health recipient is '$addr' (expected 0xFe3B…a39f)"$'\n'
+fi
+
+# 3. Repo integrity
+if [ -n "$(git status --porcelain 2>/dev/null | head -20)" ]; then
+  n="$(git status --porcelain | wc -l)"
+  issues+="REPO DIRTY: $n uncommitted change(s) in $ROOT"$'\n'
+fi
+if ! git rev-parse HEAD >/dev/null 2>&1; then
+  issues+="REPO BROKEN: git rev-parse failed"$'\n'
+fi
+ahead="$(git rev-list --count origin/master..master 2>/dev/null || echo '?')"
+case "$ahead" in
+  ''|'?') issues+="GIT REMOTE: cannot compare with origin/master (push broken?)"$'\n';;
+  0) : ;;
+  *) issues+="UNPUSHED: $ahead local commit(s) ahead of origin/master"$'\n';;
+esac
+
+# 4. Critical files exist
+for f in org/kpis.json org/directives.json org/board.md org/revenue_ledger.json \
+         revenue_server.py storefront.py .github/ISSUE_TEMPLATE/x402-order.yml; do
+  [ -e "$ROOT/$f" ] || issues+="MISSING FILE: $f"$'\n'
+done
+
+# 5. Revenue ledger sanity (parseable JSON)
+python3 - <<'EOF' >> /tmp/wd_ledger.out 2>&1 || true
+import json, sys
+try:
+    d = json.load(open("org/revenue_ledger.json"))
+    assert isinstance(d.get("lifetime_usdc"), (int, float))
+except Exception as e:
+    print(f"LEDGER CORRUPT: {e}")
+EOF
+if grep -q "LEDGER CORRUPT" /tmp/wd_ledger.out 2>/dev/null; then
+  issues+="$(cat /tmp/wd_ledger.out)"
+fi
+rm -f /tmp/wd_ledger.out
+
+# 6. Cron fleet visible via hermes CLI (bots can still be listed = scheduler alive)
+if ! hermes cron list >/tmp/wd_cron.out 2>&1; then
+  issues+="SCHEDULER: hermes cron list FAILED"$'\n'
+else
+  sed -i 's/\x1b\[[0-9;]*m//g' /tmp/wd_cron.out   # strip ANSI colors
+  active="$(grep -c '\[active\]' /tmp/wd_cron.out)"
+  paused="$(grep -ciE '\[(paused|disabled)\]' /tmp/wd_cron.out)"
+  err="$(grep -Ei 'error|fail' /tmp/wd_cron.out | grep -v 'Last run:' | head -3)"
+  if [ "${active:-0}" -lt 7 ]; then
+    issues+="CRON FLEET: only $active active jobs (expected >= 7)"$'\n'
+  fi
+  if [ "${paused:-0}" -gt 0 ]; then
+    issues+="CRON FLEET: $paused job(s) show paused/disabled:"$'\n'"$(grep -i 'paused\|disabled' /tmp/wd_cron.out | head -3)"$'\n'
+  fi
+  if [ -n "$err" ]; then issues+="CRON ERRORS: $err"$'\n'; fi
+fi
+rm -f /tmp/wd_cron.out
+
+# 7. Stale business state (CEO/planner should be writing every ~15 min)
+now=$(date +%s)
+for f in org/directives.json org/kpis.json; do
+  if [ -f "$ROOT/$f" ]; then
+    age=$(( now - $(stat -c %Y "$ROOT/$f") ))
+    if [ $age -gt 3600 ]; then
+      issues+="STALE STATE: $f untouched for $((age/60)) min (management loop stalled?)"$'\n'
+    fi
+  fi
+done
+
+# Output only problems; silence = healthy
+if [ -n "$issues" ]; then echo "AGENT-ECONOMY OPS ALERT ($(date -u +%FT%TZ))"; echo "$issues"; exit 1; fi
+exit 0

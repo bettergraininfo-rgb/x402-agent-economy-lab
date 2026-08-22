@@ -12,14 +12,7 @@
       "question": "What are Agent402.tools' exact seller registration requirements and health-probe mechanics (origin registration API, uptime thresholds for routing, supported payment schemes), and can a Base-settled endpoint register from behind our network allowlist?",
       "added": "2026-08-22",
       "priority": 2,
-      "why": "Agent402 routes buyer tasks by health rank across 1.6k+ Base sellers; registration details determine whether DIR-009 can list there in one cycle"
-    },
-    {
-      "id": "RQ-006",
-      "question": "Which derived on-chain signal feeds earn in Bazaar/Agent402 top quartiles with NO incumbent already selling (the Sui whale feed is taken by the sui-facilitator author), and which can we build solely from owned assets (Sui GraphQL watcher, escrow/settlement analytics, x402 flow data)?",
-      "added": "2026-08-22",
-      "priority": 1,
-      "why": "DIR-005 as scoped (whale feed $0.01/call) now competes head-on with the facilitator's own demo product; we need a differentiated feed spec before the builder burns a cycle"
+      "why": "Agent402 routes buyer tasks by health rank across 1.6k+ Base sellers; registration details determine whether DIR-009 can list there in one cycle. NEW CONTEXT (RQ-006 research): Agent402 also sells its own /api/x402-verify tool at $0.004/call and ranks routing by match score then rolling crawl health then price; free listing via POST /api/index/register or via CDP Bazaar crawl. Health = 'rolling success rate, one bad hour does not delist'."
     },
     {
       "id": "RQ-007",
@@ -33,23 +26,44 @@
       "question": "What uptime do listing surfaces actually enforce (Agent402 hourly crawl drop threshold, Bazaar/DNS-check flagging cadence) and does the ephemeral localhost.run anonymous tunnel risk delisting - is the keyed stable subdomain sufficient?",
       "added": "2026-08-22",
       "priority": 2,
-      "why": "A listed-but-flapping origin gets flagged publicly (x402-discovery-index issue #9 precedent) and burns our one good first impression; need the drop threshold before listing."
+      "why": "A listed-but-flapping origin gets flagged publicly (x402-discovery-index issue #9 precedent) and burns our one good first impression; need the drop threshold before listing. PARTIAL ANSWER from Agent402 FAQ: 'one bad hour does not delist anyone'; router excludes sellers whose last few crawls errored; new sellers get benefit of the doubt. Tunnel moot anyway: localhost.run edge confirmed firewalled (board 10:15 note). Render free tier spins down after 15min idle (~60s cold start) - keep-alive cron required."
+    },
+    {
+      "id": "RQ-009",
+      "question": "Can revenue_server.py (real-USDC Base rail) be deployed to Render/Railway/Deno Deploy free tier directly FROM THE GITHUB REPO (zero local network dependency), what are the exact limits (Render free: 15-min idle spin-down, 750 instance-hours/mo), and does Rail402's gateway-listing mode (they run 402+verification+replay, we expose plain JSON) work with a FastAPI endpoint on such hosting?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Discovered during RQ-006: tunnels are dead (edge firewalled), so an external host deployed from GitHub is the only public-URL path left. Rail402 additionally removes the need for DIR-011's hand migration to facilitator exact-scheme - their gateway verifies USDC transfers + replay-protection and settles direct to our wallet. If both check out, this collapses DIR-009 + DIR-011 into one deploy."
+    },
+    {
+      "id": "RQ-010",
+      "question": "Should DIR-008's price cut go deeper than 50%? Observed market band for endpoints with many distinct buyers is $0.001-$0.006/call (StableEnrich $290/wk@130 buyers, x402.twit.sh ~$0.006/call); our cheapest endpoint is $0.015. What price points maximize expected revenue given Agent402 routes by match-score > health > price (price is only a tiebreaker)?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "RQ-006 evidence shows even after DIR-008's planned 50% cut we'd sit ~5x above the proven volume band; but since Agent402's router treats price as tiebreaker only, over-cutting may sacrifice margin without demand gain. Need per-endpoint recommendation before 2026-08-29 checkpoint."
     }
   ],
   "answered": [
     {
+      "id": "RQ-006",
+      "answered": "2026-08-22",
+      "verdict": "not feasible as framed - every owned-asset derived feed has an incumbent (whale feed: Surflux/Inodra/free pages; tx verification: Agent402 /api/x402-verify $0.004/call, r402 $1/call) or near-zero buyer pool (Sui-only gap). Product breadth is not the bottleneck.",
+      "finding": "org/research/findings.md#2026-08-22--rq-006-which-derived-on-chain-signal-feeds-earn-in-bazaaragent402-top-quartiles-with-no-incumbent-buildable-solely-from-owned-assets",
+      "directive_proposed": "Kill Sui-feed track; redirect builder to deploy real-USDC rail to Render free tier from GitHub repo + evaluate Rail402 gateway listing at $0.003-$0.006/call market pricing (spawned RQ-009, RQ-010)"
+    },
+    {
       "id": "RQ-002",
       "answered": "2026-08-22",
-      "verdict": "feasible - $0 cost: PayAI facilitator (keyless, free <=1k settlements/mo, pays all gas), Base MAINNET directly (seller needs no gas/faucet at all), served via proven localhost.run keyed tunnel; CDP blocked from this box; x402.org facilitator testnet-only",
+      "verdict": "feasible - $0 cost: PayAI facilitator (keyless, free <=1k settlements/mo, pays all gas), Base MAINNET directly (seller needs no gas/faucet at all), served via proven localhost.run keyed tunnel; CDP blocked from this box; x402.org facilitator testnet-only. UPDATE: tunnel edge later confirmed firewalled - external hosting now required (see RQ-009).",
       "finding": "org/research/findings.md#2026-08-22--rq-002-exact-technical-path-and-cost-to-serve-an-evmbase-x402-endpoint-from-this-box",
       "directive_proposed": "DIR-009 amendment: Base-rail wrapper around facilitator.payai.network (exact/eip155:8453), public via keyed lhr.life tunnel"
     },
     {
       "id": "RQ-001",
       "answered": "2026-08-22",
-      "verdict": "feasible (derived Sui signal feed only; raw data is commoditized by Inodra/Surflux free tiers)",
+      "verdict": "feasible (derived Sui signal feed only; raw data is commoditized by Inodra/Surflux free tiers). SUPERSEDED by RQ-006 verdict: even derived feeds not viable - incumbents everywhere.",
       "finding": "org/research/findings.md#2026-08-22--rq-001",
-      "directive_proposed": "DIR-005: Sui whale-transfer feed at $0.01/call via new sui:testnet x402 facilitator + one EVM marketplace"
+      "directive_proposed": "DIR-005: Sui whale-transfer feed at $0.01/call via new sui:testnet x402 facilitator + one EVM marketplace (now KILL-recommended)"
     },
     {
       "id": "RQ-003",

@@ -1,0 +1,7 @@
+{
+  "lifetime_usdc": 0.0,
+  "sales": 0,
+  "txs": {},
+  "by_endpoint": {},
+  "_note": "real USDC on Base mainnet; initialized before first sale"
+}

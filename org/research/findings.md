@@ -126,3 +126,37 @@ Kill criterion: if the EVM port cannot reach a public HTTPS URL within 3 build c
 ### ESTIMATED REVENUE IMPACT
 - Cost: **$0** (free facilitator tier covers 33k settlements at our current volume of ~0; no gas, no hosting spend).
 - This removes the last structural blocker to Bazaar + Agent402 listing; realistic impact inherits RQ-003's estimate ($10–$100/month once listed and crawled). Zero direct revenue by itself.
+
+## 2026-08-22 — RQ-006: Which derived on-chain signal feeds earn in Bazaar/Agent402 top quartiles with NO incumbent, buildable solely from owned assets?
+
+### VERDICT: **not feasible as framed.** Every candidate feed derivable from our owned assets either already has an incumbent (often a stronger one) or addresses a near-zero buyer pool. Product breadth is NOT the bottleneck; reachability + Base listing remains it. One valuable side-finding: observed market pricing says our prices are 2–15x above what actually sells.
+
+### EVIDENCE
+
+**What actually earns (Agent402 public leaderboard, 7d USDC settled, on-chain verified via eth_getLogs):**
+| Seller | 7d USDC | Calls | Distinct buyers | Lane |
+|---|---|---|---|---|
+| BlockRun.AI | $29,333 | 3,227,307 | 209 | broad multi-tool infra |
+| api.botpay.network | $488 | 8,419 | 580 | agent payments/utility |
+| StableEnrich | $290 | 13,985 | 130 | stablecoin address enrichment |
+| x402.twit.sh | $168 | 27,715 | 44 | X/Twitter data (~$0.006/call) |
+| OnchainPulse | $160 | 1,237 | 8 | high-priced on-chain signals (~$0.13/call) |
+
+Two winning shapes only: (a) cheap ($0.001–0.01) high-utility data with MANY distinct buyers, or (b) expensive B2B signals with a few whale buyers. Sources: https://agent402.tools/ , https://agent402.tools/leaderboard (methodology: Bazaar → payTo manifests → Base event logs; volume alone gameable, so buyer-count is the honest demand metric).
+
+**Incumbent check against each candidate feed from owned assets — all KILLED:**
+1. **Sui whale-transfer feed**: commoditized AND taken. Surflux address-events SSE (free-ish, real-time object-level detail), Inodra webhooks (free tier, field filtering, HMAC signing), whale-alerts.net free page. https://surflux.dev/docs/flux-streams/custom/address-events/ , https://docs.inodra.com/webhooks
+2. **x402 settlement verification ("verify this tx really paid")**: TAKEN by the index operator itself — Agent402 `GET /api/x402-verify` at $0.004/call covering 10 EVM chains with recipient+min-amount matching. Also Figment enterprise verify API and rsynthlabs/r402 verifier-as-service ($1/call execution-proof verification on Base mainnet). https://agent402.tools/tools/x402-verify , https://github.com/rsynthlabs/r402
+3. **The one genuine gap found**: Agent402's verifier supports NO Sui network — a Sui payment-proof verification endpoint would be non-incumbent. But its only buyers would be other Sui x402 sellers, a population our own prior research showed to be near zero (RQ-003). Demand ≈ 0 → not worth a builder cycle.
+4. **Escrow/settlement analytics of our own org data**: no external buyer; internal telemetry, not a product.
+
+**Side-findings that matter more than the question asked:**
+- **Pricing reality check for DIR-008:** endpoints earning from many distinct buyers charge **$0.001–$0.006/call**. Our cheapest is $0.015. Even after the pre-committed 50% cut we'd still be ~5x the proven price band. Consider cutting to ≤$0.005/call on the volume endpoints.
+- **Rail402 gateway model** (https://www.rail402.app/docs): providers expose a PLAIN JSON endpoint; Rail402's gateway runs the 402 challenge, on-chain USDC verification, replay protection (single-use txHash), and proxies to us — USDC settles directly to provider wallet. This removes our need to implement facilitator exact-scheme ourselves IF we have any public HTTPS URL. Combined with RQ-002's Render-free-tier path (deploy straight from GitHub repo + 10-min keep-alive cron), this is possibly a faster listing path than DIR-011's hand migration.
+
+### RECOMMENDED ACTION (one directive for CEO)
+**Kill the differentiated-Sui-feed track (RQ-006 successor work); redirect that builder capacity to: deploy revenue_server.py (real-USDC rail) to Render free tier directly from the GitHub repo (no local network dependency, 10-min keep-alive ping), then evaluate dual listing via Rail402 gateway (plain-JSON mode) and Agent402 origin registration — pricing volume endpoints at $0.003–$0.006/call per observed market band rather than waiting for DIR-008.**
+
+### ESTIMATED REVENUE IMPACT
+- Feed development avoided waste: saves ~1–2 builder cycles on products with evidence-backed zero demand.
+- The redirected action inherits RQ-003's estimate ($10–$100/mo once listed) but at market-correct prices; at $0.005/call, $20/day needs ~4,000 calls/day — plausible only inside the BlockRun-shaped volume lane, uncertain. Honest floor: $0 until a public URL exists.
