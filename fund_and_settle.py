@@ -43,29 +43,54 @@ def load_kp():
         return Keypair.from_bytes(bytes(json.load(f)["secret"]))
 
 
+def _confirm(sig: str, url: str) -> bool:
+    for _ in range(20):
+        st = rpc("getSignatureStatuses", [[sig]], rpc_url=url)
+        v = st.get("result", {}).get("value", [None])[0]
+        if v and v.get("confirmationStatus") in ("confirmed", "finalized"):
+            return True
+        if v and v.get("err"):
+            return False
+        time.sleep(2)
+    return False
+
+
+FAUCET_WEB = "https://faucet.solana.com/api/request-airdrop"
+
+
 def try_airdrop(pubkey: str) -> dict:
-    """Try each RPC x decreasing amounts until one dispenses funds."""
+    """Sources: 2 public RPCs x amount ladder + the official web faucet API."""
     reasons = []
+    # 1. RPC requestAirdrop
     for url in RPCS:
         for lamports in (500_000_000, 100_000_000, 10_000_000):
             out = rpc("requestAirdrop", [pubkey, lamports], rpc_url=url)
             if "result" in out:
-                for _ in range(20):
-                    st = rpc("getSignatureStatuses", [[out["result"]]], rpc_url=url)
-                    v = st.get("result", {}).get("value", [None])[0]
-                    if v and v.get("confirmationStatus") in ("confirmed", "finalized"):
-                        return {"ok": True, "sig": out["result"], "rpc": url,
-                                "lamports": lamports}
-                    if v and v.get("err"):
-                        break
-                    time.sleep(2)
+                if _confirm(out["result"], url):
+                    return {"ok": True, "sig": out["result"], "rpc": url,
+                            "lamports": lamports}
                 reasons.append(f"{url}@{lamports}: confirm timeout")
             else:
                 msg = out.get("error", {}).get("message", "?")[:60]
                 reasons.append(f"{url}@{lamports}: {msg}")
-                # 429-style limit -> don't hammer same URL with more attempts
                 if "limit" in msg.lower():
                     break
+    # 2. Official faucet web API (separate rate-limit bucket)
+    for amount in (500_000_000, 100_000_000):
+        try:
+            r = httpx.post(FAUCET_WEB, json={"wallet": pubkey, "amount": amount},
+                           timeout=30)
+            body = r.json()
+            sig = body.get("txSig") or body.get("signature") or body.get("result")
+            if sig and not body.get("error"):
+                if _confirm(sig, RPCS[0]):
+                    return {"ok": True, "sig": sig, "rpc": FAUCET_WEB,
+                            "lamports": amount}
+                reasons.append(f"web@{amount}: confirm timeout")
+            else:
+                reasons.append(f"web@{amount}: {str(body)[:80]}")
+        except Exception as exc:
+            reasons.append(f"web@{amount}: {exc}")
     return {"ok": False, "reason": "; ".join(reasons)}
 
 
