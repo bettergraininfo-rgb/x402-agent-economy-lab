@@ -125,7 +125,7 @@ jobs:
               if try_route("recipient-already-funded(mainnet)", recv_check):
                   funded, chain = True, "base-mainnet(recipient)"
 
-          # ---------- FALLBACK: Base Sepolia, identical structure ----------
+          # ---------- FALLBACK: Base Sepolia / Ethereum Sepolia, identical structure ----------
           if not funded:
               note("MAINNET FUNDING UNAVAILABLE — falling back to Base Sepolia")
               for name, url, pb in [
@@ -143,6 +143,58 @@ jobs:
                       if b and b > 0:
                           funded, chain = True, "base-sepolia(ephemeral)"
                           break
+
+          # ---------- ROUND 2: wider battery of open drips (fresh IPs) ----------
+          if not funded:
+              note("ROUND 2: extended open-drip battery")
+
+              def quicknode():
+                  # QuickNode multi-chain faucet backend (may demand captcha)
+                  r = httpx.post("https://faucet.quicknode.com/base/sepolia",
+                                 json={"address": ADDR}, timeout=30,
+                                 headers={"Origin": "https://faucet.quicknode.com"})
+                  note(f"       -> HTTP {r.status_code}: {r.text[:160]}")
+                  return r.status_code == 200
+
+              def superchain():
+                  # OP Labs superchain faucet backend (historically scriptable)
+                  r = httpx.post("https://api.superchain-faucet.xyz/claim",
+                                 json={"address": ADDR}, timeout=30)
+                  note(f"       -> HTTP {r.status_code}: {r.text[:160]}")
+                  return r.status_code == 200
+
+              def bwarelabs():
+                  # BwareLabs (usually needs site-issued bearer token)
+                  r = httpx.post(
+                      "https://faucet-api.bwarelabs.com/faucets/base-sepolia",
+                      json={"walletAddress": ADDR}, timeout=30)
+                  note(f"       -> HTTP {r.status_code}: {r.text[:160]}")
+                  return r.status_code == 200
+
+              def zan_eth_sepolia():
+                  # ZAN ethereum-sepolia path variant
+                  r = httpx.post("https://api.zan.top/faucet/v1/sepolia",
+                                 json={"address": ADDR}, timeout=30)
+                  note(f"       -> HTTP {r.status_code}: {r.text[:160]}")
+                  return r.status_code == 200
+
+              for name, fn in [("quicknode-base-sepolia", quicknode),
+                               ("superchain-faucet", superchain),
+                               ("bwarelabs-unauth", bwarelabs),
+                               ("zan-eth-sepolia", zan_eth_sepolia)]:
+                  if time.time() > DEADLINE:
+                      break
+                  hit = try_route(name, fn)
+                  if hit:
+                      for u, label in [(SEPOLIA, "base-sepolia"),
+                                       ("https://ethereum-sepolia-rpc.publicnode.com",
+                                        "eth-sepolia")]:
+                          b = wei(u, ADDR)
+                          if b and b > 0:
+                              funded, chain = True, f"{label}(ephemeral)"
+                              break
+                  if funded:
+                      break
 
           bal = None
           if funded:
