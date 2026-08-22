@@ -16,10 +16,10 @@ First real demand generation: ≥2 outbound contacts per 24h window to places wh
 6. Fallback if no suitable third-party thread exists (likely, given network limits): open a discussion/issue on OUR OWN repo titled "x402 bazaar — machine-readable catalog for agent buyers" restating the manifest contents, so inbound searchers land somewhere canonical; still counts toward contact surface, and note honestly in sales_log that it is self-posted.
 7. Log BOTH contacts: append to `org/sales_log.md` — date, target URL, action taken, draft used, expected response channel.
 8. Update `org/board.md` "Hot leads" section: replace "(none yet)" with the contacted targets + dates.
-9. Commit: `cd ~/x402-agent-service && git add org/sales_log.md org/board.md && git commit -m "DIR-009: outreach wave — 2 contacts logged"`
+9. Commit: `cd ~/x402-agent-service && git add org/sales_log.md org/board.md && git commit -m "DIR-010: outreach wave — 2 contacts logged"`
 
 ## VERIFY
-- `grep -c 'DIR-009' org/sales_log.md` → ≥ 2 new dated entries for today.
+- `grep -c 'DIR-010' org/sales_log.md` → ≥ 2 new dated entries for today.
 - `git log --oneline -1` shows the outreach commit.
 - If step 5 used: HTTP 201 from the GitHub API call (comment created).
 - Honest-reporting rule: if only the fallback (step 6) was possible, the log must SAY so — self-posts do not count as external contacts for the kill-criterion tally.
