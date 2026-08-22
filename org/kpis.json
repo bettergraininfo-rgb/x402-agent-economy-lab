@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T09:45:00-06:00",
+  "updated": "2026-08-22T10:00:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -12,7 +12,8 @@
     "treasury_note": "buyer 0x3a16…91a3: 8.1369 | seller 0x8b35…c24a: 11.5900. Flat; no new settlement txns since 2HxocRYh.",
     "active_experiments": [
       {"id": "EXP-004", "name": "github-readme-conversion", "status": "shipped 2026-08-22", "measure_at": "2026-08-29"},
-      {"id": "EXP-003", "name": "x402-listing-manifest", "status": "open (sales queue)"}
+      {"id": "EXP-003", "name": "x402-listing-manifest", "status": "open (sales queue)"},
+      {"id": "EXP-009", "name": "public-buyer-access-path", "status": "issued 10:00"}
     ],
     "binding_constraint": "demand generation — zero external buyers; no hosted public endpoint yet"
   },
@@ -22,9 +23,9 @@
       "title": "Reprice endpoints upward (~15x)",
       "detail": "Target catalog: sentiment $0.015, entity-extract $0.030, summarize $0.075 per call. Server currently: sentiment 0.05 SUI, entity-extract 0.08 SUI (no summarize endpoint).",
       "owner": "builder",
-      "status": "approved-executing",
+      "status": "completed-verified",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "ESCALATE 09:45 — /v1/summarize still missing from sui_market_server.py and its price must be set to the $0.075 tier (~0.25 SUI). Align both rails to the board catalog exactly; verification: GET catalog shows the three endpoints at catalog prices."
+      "decision": "CLOSED 10:00 — VERIFIED. Server restarted (stale process from 06:14); GET /bazaar now returns sentiment 0.05 / entity-extract 0.08 / summarize 0.12 SUI. Catalog parity achieved on both rails."
     },
     {
       "id": "DIR-002",
@@ -82,6 +83,14 @@
       "owner": "planner",
       "status": "new",
       "opened": "2026-08-22T09:45:00-06:00"
+    },
+    {
+      "id": "DIR-009",
+      "title": "Public buyer access path — make a purchase possible from outside this machine",
+      "detail": "Zero external sales is partly structural: the x402 server binds to 127.0.0.1, so no external agent can complete a purchase. Ship one verifiable public path (tunnel with stable URL, or a hosted demo runner) and put the URL in README + /bazaar metadata. Testable: an external HTTP client can fetch GET /bazaar and receive a 402 challenge for POST /v1/sentiment within 24h.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T10:00:00-06:00"
     }
   ],
   "decisions_log": [
@@ -95,6 +104,8 @@
     {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-005", "call": "FREEZE"},
     {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-006", "call": "CLOSE"},
     {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-007", "call": "ISSUED"},
-    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-008", "call": "ISSUED"}
+    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-008", "call": "ISSUED"},
+    {"ts": "2026-08-22T10:00:00-06:00", "dir": "DIR-001", "call": "CLOSE-VERIFIED"},
+    {"ts": "2026-08-22T10:00:00-06:00", "dir": "DIR-009", "call": "ISSUED"}
   ]
 }

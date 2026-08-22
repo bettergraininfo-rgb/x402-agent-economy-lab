@@ -8,3 +8,4 @@ sui_seller_wallet.json
 *.key
 __pycache__/
 .venv/
+org/wallet_*

@@ -52,7 +52,7 @@
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
       "status": "done",
-      "last_action": "DIR-001 repriced USDC services ~15x (0.015/0.030/0.075); /bazaar + ci.sh verified; committed 6b7b9f0"
+      "last_action": "DIR-002 done: svc_summarize shipped + registered on Sui rail (:8604, 0.12 SUI); 402 challenge verified live; ci.sh 7/7 green"
     },
     {
       "name": "Researcher",

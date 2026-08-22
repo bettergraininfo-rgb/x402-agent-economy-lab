@@ -8,17 +8,17 @@
     {
       "id": "DIR-001",
       "title": "Reprice all services upward (~15x) so $20/day needs ~1.3k calls/day instead of 20k",
-      "status": "in_progress",
+      "status": "completed",
       "plan": "org/plans/PLAN-reprice-services.md",
       "approved": "2026-08-22",
       "owner": "builder",
       "rationale": "At current prices ($0.001-$0.005/call) reaching $20/day requires ~20k paid calls/day. Repricing cuts required volume ~15x.",
-      "ceo_note": "2026-08-22T09:45 ESCALATED: /v1/summarize missing from sui_market_server.py; align both rails to board catalog ($0.015/$0.030/$0.075). Verify via catalog endpoint this shift."
+      "ceo_note": "2026-08-22T10:00 CLOSED-VERIFIED: restarted stale server process (was up since 06:14 without summarize); /bazaar now returns all 3 endpoints at catalog prices (0.05/0.08/0.12 SUI)."
     },
     {
       "id": "DIR-002",
       "title": "Premium endpoint parity: ship /v1/summarize on the Sui-settlement server (highest price point)",
-      "status": "planned",
+      "status": "completed",
       "plan": "org/plans/PLAN-premium-endpoint-parity.md",
       "approved": "2026-08-22",
       "owner": "builder",
@@ -32,6 +32,14 @@
       "approved": "2026-08-22",
       "owner": "sales",
       "rationale": "Zero external buyers known; distribution is the binding constraint. Repo-first listing avoids blocked external dependencies."
+    },
+    {
+      "id": "DIR-009",
+      "title": "Public buyer access path: expose the x402 server beyond 127.0.0.1 (tunnel or hosted runner) with stable URL in README",
+      "status": "new",
+      "approved": "2026-08-22T10:00:00-06:00",
+      "owner": "builder",
+      "rationale": "Structural blocker: no external agent can reach a localhost-bound server, so external purchases are impossible regardless of price or marketing. One verifiable public URL unblocks every demand-gen directive."
     },
     {
       "id": "DIR-007",

@@ -27,6 +27,7 @@ app = FastAPI(title="sui-x402-market", version="1.0.0")
 SERVICES = {
     "/v1/sentiment":      {"price": 50_000_000, "fn": None},
     "/v1/entity-extract": {"price": 80_000_000, "fn": None},
+    "/v1/summarize":      {"price": 120_000_000, "fn": None},
 }
 
 
@@ -47,8 +48,26 @@ def svc_entities(text: str) -> dict:
             "proper_nouns": sorted(caps - known)}
 
 
+def svc_summarize(text: str) -> dict:
+    import re
+    sents = [s.strip() for s in re.split(r'(?<=[.!?])\s+', text) if s.strip()]
+    if len(sents) <= 2:
+        return {"summary": text[:280], "sentences_in": len(sents), "sentences_out": len(sents)}
+    freq: dict[str, int] = {}
+    for w in re.findall(r"[a-z']+", text.lower()):
+        if len(w) > 3:
+            freq[w] = freq.get(w, 0) + 1
+    def score(s):
+        ws = re.findall(r"[a-z']+", s.lower())
+        return sum(freq.get(w, 0) for w in ws) / max(1, len(ws))
+    keep = sorted(range(len(sents)), key=lambda i: -score(sents[i]))[: max(1, len(sents)//3)]
+    return {"summary": " ".join(sents[i] for i in sorted(keep)),
+            "sentences_in": len(sents), "sentences_out": len(keep)}
+
+
 SERVICES["/v1/sentiment"]["fn"] = svc_sentiment
 SERVICES["/v1/entity-extract"]["fn"] = svc_entities
+SERVICES["/v1/summarize"]["fn"] = svc_summarize
 
 _seen_digests: set[str] = set()
 ledger: list[dict] = []
