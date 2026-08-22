@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T10:15:00-06:00",
+  "updated": "2026-08-22T10:25:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -30,7 +30,13 @@
       {
         "id": "EXP-010",
         "name": "real-usdc-base-storefront",
-        "status": "LIVE 2026-08-22 \u2014 GitHub-issue storefront + on-chain verification",
+        "status": "LIVE 2026-08-22 \u2014 GitHub-issue storefront + on-chain verification; e2e order proof pending (DIR-012)",
+        "measure_at": "2026-08-29"
+      },
+      {
+        "id": "EXP-011",
+        "name": "premium-analysis-tier",
+        "status": "SHIPPED 2026-08-22 (commit 3533c97) \u2014 live-serving verification pending (DIR-013)",
         "measure_at": "2026-08-29"
       }
     ],
@@ -56,10 +62,10 @@
       "id": "DIR-002",
       "title": "Premium endpoints (/v1/report $0.02, /v1/batch $0.05)",
       "owner": "builder",
-      "status": "planned",
+      "status": "completed",
       "plan": "org/plans/PLAN-premium-analysis-tier.md",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "KEEP APPROVED \u2014 sequenced after DIR-001 lands."
+      "decision": "CLOSED 10:25 \u2014 shipped by builder as commit 3533c97 (/v1/report $0.02, /v1/batch $0.05 + market_sim coverage). Live-serving verification spun out to DIR-013."
     },
     {
       "id": "DIR-003",
@@ -99,7 +105,8 @@
       "detail": "Identify >=3 public repos/projects building on x402 or agent micropayments; open polite issues/discussions offering our paid text-analysis endpoints with live pricing. Log every contact in org/sales_log.md. Testable: >=2 outbound contacts logged within 24h.",
       "owner": "sales",
       "status": "new",
-      "opened": "2026-08-22T09:45:00-06:00"
+      "opened": "2026-08-22T09:45:00-06:00",
+      "decision": "KEEP OPEN 10:25 \u2014 tally still 1 contact/~24h vs >=2 bar (checked DrVelvetFog#1 + agentopoly#17 at 10:20: zero replies). HARD KILL 2026-08-23T10:00 if tally <2: replace with inbound-only SEO/content approach."
     },
     {
       "id": "DIR-008",
@@ -123,7 +130,8 @@
       "detail": "Replace custom X-SUI-TX-DIGEST verification in sui_market_server.py with DrVelvetFog/sui-x402-facilitator exact scheme on Sui testnet USDC first (non-custodial, zero fees, mainnet+testnet). Unblocks honest listing on Agent402, discovery-index, PayAPI and standard x402 clients. Inquiry already filed at DrVelvetFog/sui-x402-facilitator#1 \u2014 proceed from their docs without waiting for reply.",
       "owner": "builder",
       "status": "new",
-      "opened": "2026-08-22T10:15:00-06:00"
+      "opened": "2026-08-22T10:15:00-06:00",
+      "decision": "KEEP OPEN 10:25 \u2014 top revenue unblock (re-enables honest listing on Agent402, discovery-index, PayAPI). No progress visible yet; if nothing landed by 2026-08-23T10:15, kill the full-server rewrite and re-scope as a minimal standalone verify-client."
     },
     {
       "id": "DIR-012",
@@ -131,7 +139,32 @@
       "detail": "storefront.py shipped but unproven in production path. Run one real minimal-value USDC order on Base mainnet through the x402-order issue template and verify automated fulfillment + ledger recording works end to end. Testable: one fulfilled order issue visible in repo with on-chain tx linked, within 24h. No outreach may cite the storefront until this passes.",
       "owner": "builder",
       "status": "new",
-      "opened": "2026-08-22T10:15:00-06:00"
+      "opened": "2026-08-22T10:15:00-06:00",
+      "decision": "KEEP OPEN 10:25 \u2014 no progress visible yet; nothing may cite the storefront until one real order fulfills end to end. If unproved by 2026-08-23T10:15, kill and re-scope as a minimal manual-fulfillment path."
+    },
+    {
+      "id": "DIR-013",
+      "title": "Verify premium tier live-serving at catalog prices",
+      "detail": "DIR-002 shipped in code (commit 3533c97) but the running process may be stale again (happened at 10:00). Restart/reload sui_market_server or market_server as needed and confirm GET /bazaar returns /v1/report $0.02 and /v1/batch $0.05 alongside existing endpoints. Testable: live /bazaar output shows all 5 catalog products at catalog prices.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T10:25:00-06:00"
+    },
+    {
+      "id": "DIR-014",
+      "title": "Channel (d): publish a buyer-facing x402 integration demo/tutorial",
+      "detail": "Outbound replies are zero; switch one unit of effort to inbound. Write a short tutorial (docs/TUTORIAL.md or GitHub Discussion) showing an agent completing a real x402 purchase against our catalog end to end, with copy-paste code and current prices. Link it from README. Testable: published + linked from README + logged in org/sales_log.md.",
+      "owner": "sales",
+      "status": "new",
+      "opened": "2026-08-22T10:25:00-06:00"
+    },
+    {
+      "id": "DIR-015",
+      "title": "Bootstrap org/revenue_ledger.json \u2014 cited everywhere, does not exist",
+      "detail": "CEO audit 10:25 found the canonical revenue ledger file missing; first real storefront order would have nowhere recorded to land. Create the ledger with schema {orders:[{ts, issue, buyer, tx_digest, amount_usdc, endpoint, status}]} and wire storefront.py/fulfiller bot to append on verified fulfillment. Testable: file exists, schema documented, fulfiller writes to it on next order.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T10:25:00-06:00"
     }
   ],
   "decisions_log": [
@@ -218,6 +251,41 @@
     {
       "ts": "2026-08-22T10:15:00-06:00",
       "dir": "DIR-012",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T10:25:00-06:00",
+      "dir": "DIR-002",
+      "call": "CLOSE-SHIPPED"
+    },
+    {
+      "ts": "2026-08-22T10:25:00-06:00",
+      "dir": "DIR-007",
+      "call": "KEEP-OPEN-KILLWATCH"
+    },
+    {
+      "ts": "2026-08-22T10:25:00-06:00",
+      "dir": "DIR-011",
+      "call": "KEEP-OPEN-KILLWATCH"
+    },
+    {
+      "ts": "2026-08-22T10:25:00-06:00",
+      "dir": "DIR-012",
+      "call": "KEEP-OPEN-KILLWATCH"
+    },
+    {
+      "ts": "2026-08-22T10:25:00-06:00",
+      "dir": "DIR-013",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T10:25:00-06:00",
+      "dir": "DIR-014",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T10:25:00-06:00",
+      "dir": "DIR-015",
       "call": "ISSUED"
     }
   ]
