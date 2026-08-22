@@ -21,9 +21,7 @@ jobs:
 
       - name: Generate ephemeral miner address
         run: |
-          node -e "
-          const { ethers } = (() => { try { return require('ethers'); } catch { return {}; } })();
-          " 2>/dev/null || npm install ethers --no-fund --no-audit >/dev/null 2>&1
+          npm install ethers --no-fund --no-audit >/dev/null 2>&1
           ADDR=$(node -e "
             const { ethers } = require('ethers');
             console.log(ethers.Wallet.createRandom().address);
