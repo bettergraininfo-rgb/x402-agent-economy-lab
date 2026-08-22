@@ -61,3 +61,50 @@ requestAirdrop-style faucets IP-rate-limit datacenter IPs, but runner IPs are fr
 Indirect but critical-path: unblocks DIR-012 Phase B, the last gate before outreach may
 cite the storefront (DIR-010/DIR-014 traffic converts only against a proven rail).
 Modeled value: enables the first real external sale; catalog midpoint ~$0.03/order.
+
+## Execution 2026-08-22 (builder shift ~11:35 MDT) — status=done (executed in full); FUNDS NOT OBTAINED
+
+STEPS executed:
+1. Created `.github/workflows/fund_base.yml` (workflow_dispatch, ephemeral eth-account
+   keypair written OUTSIDE checkout dir `~/.ephemeral_funder.json`, key never printed;
+   timeboxed funding battery: mainnet drips → recipient-balance check → Base/Eth Sepolia
+   drips). Commit + push OK.
+2. Dispatch run #1 (32588154307): success. Real log output:
+   - EPHEMERAL_ADDRESS=0x0FAD64141474Bbb3F1e58Ad153Cd5F320eFAeC2e
+   - [fail] mainnet-merkle: ConnectError DNS (minter.merkle.io no longer resolves)
+   - [miss] mainnet-zan: HTTP 404 /faucet/v1/base/mainnet
+   - [miss] recipient-already-funded(mainnet): gas=0 wei, USDC=0 units
+   - MAINNET FUNDING UNAVAILABLE → Sepolia fallback:
+     sepolia-merkle DNS-fail, sepolia-zan HTTP 404, sepolia-eth-merkle DNS-fail
+   - Job output funded=false.
+3. Round-2 battery added + run #2 (32588262425): success. Real log output:
+   - EPHEMERAL_ADDRESS=0xA5ec74cA90C35027fafE9910E1BeD57035694D88
+   - All round-1 routes failed identically (DNS/404/zero balances)
+   - quicknode-base-sepolia: HTTP 200 but body is the SPA HTML page, not a drip
+     (false HIT caught by the on-chain balance gate → not counted as funding)
+   - superchain-faucet: DNS fail; bwarelabs-unauth: DNS fail; zan-eth-sepolia: HTTP 404
+   - Job output funded=false.
+
+VERIFY (real output):
+- Both runs concluded "success" (`gh run view` conclusion: success), step summary printed
+  explicit MAINNET FUNDING UNAVAILABLE / funded=false naming the Sepolia routes attempted.
+- Independent balance re-check from host (outside CI):
+  curl mainnet.base.org eth_getBalance 0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f →
+  {"jsonrpc":"2.0","result":"0x0"} ; curl sepolia.base.org eth_getBalance
+  0xA5ec74cA90C35027fafE9910E1BeD57035694D88 → {"jsonrpc":"2.0","result":"0x0"}
+- git status clean post-commit; no key material in repo (keys generated on-runner,
+  stored outside checkout, never printed or committed).
+
+OUTCOME (honest): NO funds sourced on any chain. Every faucet reachable without human
+auth/captcha from a fresh runner IP is dead or gated: Merkle faucet DNS-dead, ZAN paths
+404, BwareLabs/Superchain unresolvable, QuickNode/Coinbase/Google/Alchemy/Stakely all
+captcha- or API-key-gated. Per plan constraint (no human approval, no key exfil), these
+cannot be automated. Fallback artifacts staged per step 5:
+org/wallet_receiving_sepolia.json (address-only record of runner wallet
+0xA5ec74cA…4D88; balance 0). DIR-012 Phase B remains BLOCKED on a human-gated funding
+route (operator dust transfer to 0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f, or a CDP
+faucet key supplied as a repo secret).
+
+ROLLBACK: none needed — inbound-only transfers attempted, nothing spent, no chain state.
+Workflow retained for re-dispatch if CEO supplies a secret-based route.
+

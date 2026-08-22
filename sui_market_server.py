@@ -132,6 +132,8 @@ def root():
 def well_known_x402(request: Request):
     """Agent402 service manifest (spec: agent402-service-manifest/1)."""
     base = str(request.base_url).rstrip("/")
+    if request.headers.get("x-forwarded-proto", "").lower() == "https":
+        base = base.replace("http://", "https://", 1)
     return {
         "spec": "agent402-service-manifest/1",
         "version": 1,

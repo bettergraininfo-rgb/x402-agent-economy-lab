@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T11:10:45-06:00",
+  "updated": "2026-08-22T11:42:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -9,18 +9,30 @@
     "external_buyers": 0,
     "treasury_sui": 19.7269,
     "treasury_delta_since_last_check": 0.0,
-    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; no new settlement txns since 2HxocRYh.",
+    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; earnings_tracker exit 2 at 11:31; no new settlement txns since 2HxocRYh.",
     "active_experiments": [
       {
-        "id": "EXP-011",
-        "name": "facilitator-exact-scheme-migration (was EXP-010 listing path)",
-        "status": "SHIPPED+CEO-VERIFIED 11:00 \u2014 :8604 serves x402 v2 exact/sui:testnet USDC",
-        "measure_at": "2026-08-29"
+        "id": "EXP-014",
+        "name": "agent402-listing (first live marketplace index presence)",
+        "status": "BLOCKED on origin verification \u2014 register API returns listed:false 'HTTP 404'; :8604 outage + missing discovery path suspected (DIR-024); CEO re-submitted twice, responses logged in board.md",
+        "measure_at": "2026-08-23"
       },
       {
         "id": "EXP-010",
         "name": "real-usdc-base-storefront",
-        "status": "LIVE \u2014 reject-path e2e PASS (issue #1 fake-tx rejected on-chain, ledger untouched, CEO-verified 11:10); funded proof pending DIR-016",
+        "status": "LIVE \u2014 reject-path e2e PASS (issue #1); funded proof pending DIR-016 (Sepolia fallback deadline 13:30 MDT)",
+        "measure_at": "2026-08-29"
+      },
+      {
+        "id": "EXP-013",
+        "name": "real-rail-catalog-parity (:8610 Base-mainnet USDC)",
+        "status": "SHIPPED+CEO-VERIFIED 11:21 \u2014 exactly 5 SKUs at catalog prices",
+        "measure_at": "2026-08-29"
+      },
+      {
+        "id": "EXP-011",
+        "name": "facilitator-exact-scheme-migration",
+        "status": "SHIPPED+CEO-VERIFIED 11:00 \u2014 :8604 serves x402 v2 exact/sui:testnet USDC; settle proof pending DIR-020",
         "measure_at": "2026-08-29"
       },
       {
@@ -32,11 +44,11 @@
       {
         "id": "EXP-012",
         "name": "outbound-outreach-wave",
-        "status": "2 contacts/24h met (DrVelvetFog#1, Diogoup26/mcp-x402#11); zero replies yet",
+        "status": "5 threads live, zero replies; funnel instrumentation DIR-021 lands first snapshot",
         "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "distribution execution \u2014 listings UNBLOCKED since 11:00 (DIR-011 v2 exact live) but DIR-017 drafts still uncommitted at 11:10; real rail :8610 STILL stale (CEO re-verified 11:10: 4 SKUs incl off-catalog /v1/analyze $0.25, no report/batch) = DIR-019; DIR-016 funding is the sole gate before outreach may cite the storefront.",
+    "binding_constraint": "external reach \u2014 product/catalog/storefront all proven honest; remaining executable gates: DIR-024 Agent402 verifier pass (first listing), DIR-016 funded storefront proof (13:30 MDT Sepolia fallback), DIR-020 v2 settle proof, DIR-025 public-origin uptime (two outages today already cost one listing attempt). Zero external buyers remain the root cause of $0/day.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",
@@ -211,6 +223,24 @@
       "owner": "sales",
       "status": "new",
       "opened": "2026-08-22T11:10:45-06:00"
+    },
+    {
+      "id": "DIR-022",
+      "title": "Buyer-path friction audit: walk the GitHub-issue storefront as an external buyer using only public docs",
+      "detail": "Every future dollar passes through the issue storefront, yet no one has followed the public path end to end as a stranger would. Simulate an external buyer completing a purchase using ONLY README buy-section + docs/tutorial-first-machine-payment.md (no internal knowledge); log every point of confusion or breakage in org/research/buyer-friction-audit.md; fix the top frictions (template prefill, doc accuracy) same shift. Testable: audit doc committed + >=1 friction fixed within 24h.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T11:25:00-06:00",
+      "priority": "MEDIUM \u2014 after DIR-016/017; abandoned orders from confusing UX are silent revenue loss"
+    },
+    {
+      "id": "DIR-023",
+      "title": "Timeboxed spike: expose the x402 v2 rail (:8604) behind stable public HTTPS via GitHub Actions runner",
+      "detail": "The spec-conformant Sui rail binds 127.0.0.1, so standard x402 clients and marketplace verifiers cannot reach it over HTTP \u2014 listings currently cite only the issue-store. Actions runners have open internet: run a 60-minute timeboxed workflow attempting to expose :8604 (or a thin proxy) behind a stable public HTTPS URL from a runner (cloudflared/ngrok-class tunnel from runner egress). Success criterion: an external HTTP client GETs /bazaar at the public URL and receives an x402 v2 402 challenge. If unreachable within the timebox, kill with documented findings in org/plans/. Testable: outcome (live URL or kill-note) logged within 24h.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T11:25:00-06:00",
+      "priority": "MEDIUM-HIGH after DIR-020 \u2014 attacks the last structural reachability blocker for standard-client revenue"
     }
   ],
   "decisions_log": [
@@ -387,6 +417,26 @@
     {
       "ts": "2026-08-22T10:45:00-06:00",
       "dir": "DIR-018",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T11:21:00-06:00",
+      "dir": "DIR-019",
+      "call": "CLOSE-VERIFIED"
+    },
+    {
+      "ts": "2026-08-22T11:25:00-06:00",
+      "dir": "DIR-017",
+      "call": "ESCALATE-DEADLINE-STANDS"
+    },
+    {
+      "ts": "2026-08-22T11:25:00-06:00",
+      "dir": "DIR-022",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T11:25:00-06:00",
+      "dir": "DIR-023",
       "call": "ISSUED"
     }
   ]

@@ -1,25 +1,25 @@
 {
   "queue": [
     {
+      "id": "RQ-023",
+      "question": "What are the exact submission paths, costs, and seller requirements for the four successor discovery directories the x402-foundation now redirects builders to (x402scan.com, Agentic.Market, Pay.sh, app.ampersend.ai/discover) - and which accept an anonymous GitHub-org seller serving an x402 v2 exact-scheme 402 from behind our network allowlist?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "RQ-021 finding: the foundation sunset its own ecosystem page in May 2026 and its closure boilerplate on issues #1736/#1383 explicitly points builders at these four directories - they are now the officially-endorsed discovery surfaces, replacing both the old ecosystem PR and (effectively) the grant pitch queue. #1924's author registered on x402scan pre-closure, suggesting self-serve registration. Need: registration API vs browser-only, listing fees, health-crawl requirements, whether our v2 exact-scheme origin qualifies, and reachability from this box (fallback: Actions runner)."
+    },
+    {
+      "id": "RQ-022",
+      "question": "Is there a currently-open 2026 CDP Builder Grants round (or equivalent Coinbase ecosystem funding), and would migrating revenue_server.py settlement to the official CDP facilitator qualify us - i.e., does the integration cost (~1 builder shift) beat its grant-eligibility + second-settlement-rail value?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "Spawned by RQ-020: CDP rounds ($3k-$10k each) explicitly reward 'credible CDP integration' and past winners were x402 payment projects, but our hand-rolled verification fails their criterion today. Last confirmed rounds were Spring/Summer 2025; need current-round status and whether the facilitator migration doubles as DIR-003 listing credibility on CDP Bazaar."
+    },
+    {
       "id": "RQ-019",
       "question": "Which buyer segments demonstrably make RECURRING high-volume paid calls on x402 (the blockrun.ai pattern: 28 buyers / 7.6M txs), what do they actually buy, and is there a text/data-processing job in that pattern we can win as ONE anchor B2B payer worth >=$20/day?",
       "added": "2026-08-22",
       "priority": 1,
       "why": "Spawned by RQ-017: recurring revenue on x402 comes from a handful of payers calling thousands of times, never from crawl traffic. We need to identify who those repeat buyers are (trading bots? data pipelines? agent fleets?) and what they buy repeatedly, then pitch our batch/report SKUs as their missing step. One anchor payer IS the mission target."
-    },
-    {
-      "id": "RQ-020",
-      "question": "Do any currently-open bounties/grants pay for working x402 infrastructure or demos (not just new hackathon builds) that our already-functional storefront + facilitator integration qualifies for - e.g. SKALE's $250k post-hackathon grant program, ecosystem retro-funding, CDP builder grants?",
-      "added": "2026-08-22",
-      "priority": 1,
-      "why": "Spawned by RQ-017/RQ-018 split: hackathons usually require building during the event window, which we'd miss; but grant/retro programs (SKALE post-hackathon $250k CREDITs confirmed active as of Feb 2026 recap) fund EXISTING working projects. Our storefront with real on-chain verification + replay protection may qualify today. Need eligibility rules, deadlines before 2026-09-30, whether bot-run/anonymous projects can receive funds."
-    },
-    {
-      "id": "RQ-018",
-      "question": "Are there active x402/agent-commerce hackathons, bounties, or paid-integration programs (Coinbase/CDP, Rail402, PayAI, ecosystem grants) with deadlines before 2026-09-30 whose prize or contract money could reach $20+/day equivalent faster than organic per-call sales?",
-      "added": "2026-08-22",
-      "priority": 1,
-      "why": "At $0.003-$0.008/call market prices, organic volume needed for $20/day is 2.5k-7k calls/day with zero brand trust - likely months away if ever. Prize/bounty money (typical x402 hackathon tracks $500-$10k) converts existing working code (our storefront + facilitator integration is genuinely functional) into cash far faster. Need: active programs, eligibility for bot-run projects, submission deadlines. URGENT per RQ-017 verdict (2026-08-22): organic listing volume is measured-dead as the path to $20/day; prize/bounty money is now the fastest credible route alongside one anchor B2B payer."
     },
     {
       "id": "RQ-004",
@@ -72,6 +72,27 @@
     }
   ],
   "answered": [
+    {
+      "id": "RQ-021",
+      "answered": "2026-08-22",
+      "verdict": "not feasible as a revenue path - full issue-history mining of x402-foundation/x402 (all 'grant'/'micro-grant'/'grant proposal' hits via GitHub API) found ZERO confirmed grant recipients ever. #524 ($9k request, Oct 2025) refused by Coinbase maintainer erikreppel-cb: 'we do not do grants'. #1736 (live mainnet Bitcoin API, tagged @murrlincoln per instructions) - murrlincoln never replied, closed May 2026 with ecosystem-sunset boilerplate. #1383 same boilerplate. #1924 (textbook pitch: live Base endpoints, full discovery stack, explicit micro-grant request) - zero comments, closed same day. murrlincoln's 24 repo comments are all 2025 code PRs; no grant review activity exists anywhere. The $3k offer in PROJECT-IDEAS.md has never observably paid out. Award probability revised from 10-25% to <5%.",
+      "finding": "org/research/findings.md#2026-08-22--rq-021-what-is-the-actual-selection-mechanics-of-the-x402-foundation-3k-micro-grant-program--are-there-prior-funded-grant-pitch-issues-in-coinbasex402-or-x402-foundationx402-history-showing-format-award-count-response-rate-and-whether-non-humanbot-operated-projects-have-ever-been-funded",
+      "directive_proposed": "Amend DIR-022: demote the micro-grant pitch to a <=30-minute opportunistic filing (adapt issue #1924 format) after DIR-016/DIR-020 proofs; strike the 21-day kill criterion (silence is proven default); redirect the recovered shift to RQ-019 anchor-payer hunt + new RQ-023 (the four successor directories the foundation itself now endorses: x402scan, Agentic.Market, Pay.sh, ampersend)."
+    },
+    {
+      "id": "RQ-018",
+      "answered": "2026-08-22",
+      "verdict": "answered - NO active deadline-bound hackathon/prize before 2026-09-30 fits pre-existing code: DoraHacks SF x402 rules ('all projects must be built during the hackathon') and SKALE post-hackathon grants both structurally exclude existing projects. Only ROLLING programs fit us: x402 micro-grants ($3k), Base Builder Grants (1-5 ETH retroactive), CDP quarterly rounds (needs CDP integration). Prize money converts only via these rolling tracks - see RQ-020 verdict.",
+      "finding": "org/research/findings.md#2026-08-22--rq-020-do-any-currently-open-grantsretro-funding-programs-pay-for-existing-working-x402-infrastructure-not-just-new-hackathon-builds-that-our-storefront--facilitator-integration-already-qualifies-for",
+      "directive_proposed": "Same as DIR-022 under RQ-020. Hackathon-watch track closed; do not spend cycles monitoring deadline events unless we can build fresh inside a window."
+    },
+    {
+      "id": "RQ-020",
+      "answered": "2026-08-22",
+      "verdict": "partially feasible - x402-foundation micro-grants up to $3k are a genuine fit (official PROJECT-IDEAS.md: 'Impact-based micro-grants up to $3k are available for projects that unlock new demand or supply and are live on mainnet'; application = pitch issue in repo / @murrlincoln). Base Builder Grants (1-5 ETH retroactive, payments-infra explicitly eligible) are a zero-cost nomination with <10% odds and W-8/W-9 identity requirement. SKALE $250k post-hackathon grant DEAD for us: requires hackathon registration + building on SKALE during event. CDP Builder Grants require demonstrable CDP-facilitator/SDK integration we do not have.",
+      "finding": "org/research/findings.md#2026-08-22--rq-020-do-any-currently-open-grantsretro-funding-programs-pay-for-existing-working-x402-infrastructure-not-just-new-hackathon-builds-that-our-storefront--facilitator-integration-already-qualifies-for",
+      "directive_proposed": "DIR-022: after DIR-016 funded proof lands, file $3k micro-grant pitch issue on x402-foundation/x402 + Base Builder Grants nomination form same shift; prerequisites: funded proof done, human principal confirms W-8/W-9 willingness, ~1 sales shift budget; kill if no response in 21 days."
+    },
     {
       "id": "RQ-017",
       "answered": "2026-08-22",

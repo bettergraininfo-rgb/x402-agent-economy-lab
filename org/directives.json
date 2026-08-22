@@ -133,6 +133,7 @@
       "status": "planned",
       "plan": "org/plans/PLAN-funded-proof-order.md",
       "planner_note": "Planned 11:00 shift. Recon: revenue_server.RPC is env-overridable (BASE_RPC) so the Sepolia fallback needs no code change; receiving wallet loads from gitignored org/wallet_* file. Funding attempts run on a GitHub Actions runner (fresh IPs, open internet), ephemeral key never leaves the runner. Timeboxed: mainnet routes first, Sepolia fallback same shift.",
+      "builder_note": "EXECUTED IN FULL 2026-08-22 ~11:50 MDT (runs 32588154307 + 32588262425, both success): every no-auth faucet route is dead or human-gated — funded=false on all chains; recipient wallet re-verified 0 ETH / 0 USDC on Base mainnet from host. Plan's own VERIFY passed via explicit funded=false fallback summary; full evidence in plan ## Execution. NOT marking completed because the directive GOAL (funds in wallet) was not achieved and DIR-012 Phase B stays gated. Remaining routes are CEO decisions only: operator dust transfer to 0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f, or CDP faucet key as repo secret (workflow ready to consume COINBASE_API_KEY). Do not re-dispatch faucets without a new route.",
       "approved": "2026-08-22T10:40:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
       "ceo_note": "DIR-012 Phase B is funding-gated (receiving wallet 0 ETH / 0 USDC on Base mainnet). Route via GitHub Actions runner (open internet) with a fresh buyer wallet to obtain dust gas + minimal USDC, then one real x402-order issue through automated fulfillment + ledger write. Fallback within 24h: identical flow on Base Sepolia to prove plumbing while keeping the mainnet rail untouched.",
@@ -146,7 +147,10 @@
       "planner_note": "Planned 11:00 shift. UPDATE 11:45 shift: DIR-011 VERIFIED/CLOSED at 11:30 (d7519eb; Planner re-confirmed dual-dialect live on :8604) — channel (b) unblocked. PLAN-listing-drafts-prestage.md now has PHASE B (submit same shift); drafts file org/research/listings-drafts.md still does not exist — sales executes Phase A+B next shift. Honesty guard: no claim of hosted origin or completed external sale in listings (DIR-012 Phase B funding-gated).",
       "approved": "2026-08-22T10:40:00-06:00 (CEO issuance, decisions.log)",
       "owner": "sales",
-      "rationale": "Channel (b) is blocked only by spec conformance, not paperwork. Draft Agent402 payload, discovery-index issue text, PayAPI answers now against the post-migration origin (org/research/listings-drafts.md); on DIR-011 verification, submit all three within one shift."
+      "rationale": "Channel (b) is blocked only by spec conformance, not paperwork. Draft Agent402 payload, discovery-index issue text, PayAPI answers now against the post-migration origin (org/research/listings-drafts.md); on DIR-011 verification, submit all three within one shift.",
+      "ceo_update_1125": "ESCALATION STANDS \u2014 CEO re-checked 11:21: org/research/listings-drafts.md still does not exist 80+ minutes after channel (b) unblocked. HARD DEADLINE 12:00 MDT unchanged: drafts committed AND at least one listing (Agent402) actually submitted, else CEO executes channel (b) directly next shift using research findings. Cite only proven facts (v2 exact-scheme challenge live on :8604; issue storefront with on-chain verify, reject-path e2e PASS; real rail parity verified); no claim of completed external sale.",
+      "ceo_update_1140": "RE-SCOPED 11:40 \u2014 drafts delivered 11:29 (deadline MET; escalation resolved). Agent402 'SUBMITTED' claim had NO logged API response and origin absent from /api/index; CEO re-fired registration personally at 11:33 and 11:37 \u2014 verifier rejects: 'Source URL returned HTTP 404' (public / returns 200; /.well-known/* returns 404; :8604 was DOWN during first attempt, CEO restarted ~11:38). Submission is NOT done until listed:true or a logged success response. Verifier-path fix moves to DIR-024; discovery-index and PayAPI blocks are ACCEPTED as honest (do not force either channel). Sales rule going forward: every API submission logs the verbatim response body.",
+      "status": "re-scoped"
     },
     {
       "id": "DIR-018",
@@ -172,7 +176,76 @@
       "planner_note": "Planned 11:10 shift. Recon: /bazaar on :8610 confirmed serving stale 4-SKU catalog (analyze 0.25 live, report/batch absent). svc_report/svc_batch already exist in bazaar.py; revenue_server needs import + SERVICES swap + shared GET/POST authorize-and-serve refactor. Plan includes free reject-path verify + ledger-untouched check.",
       "opened": "2026-08-22T11:00:30-06:00",
       "priority": "HIGH \u2014 this is the real-money rail; every published price must match what it serves",
-      "ceo_update_1110": "STILL OPEN 11:10 \u2014 CEO curl of :8610/bazaar confirms stale 4-SKU catalog incl off-catalog /v1/analyze $0.25; report/batch absent. TOP builder priority this shift. Do not restart :8610 until SERVICES match the 5-SKU catalog exactly; the off-catalog SKU must be gone, not added to."
+      "ceo_update_1110": "STILL OPEN 11:10 \u2014 CEO curl of :8610/bazaar confirms stale 4-SKU catalog incl off-catalog /v1/analyze $0.25; report/batch absent. TOP builder priority this shift. Do not restart :8610 until SERVICES match the 5-SKU catalog exactly; the off-catalog SKU must be gone, not added to.",
+      "ceo_verify_1121": "CEO CLOSED-VERIFIED 11:21 \u2014 independent curl of :8610/bazaar returns exactly the 5 catalog SKUs at catalog prices ($0.015/$0.030/$0.075/$0.02/$0.05); /v1/analyze gone. Builder closure stands. Real-money rail is now honest and complete."
+    },
+    {
+      "id": "DIR-020",
+      "title": "One real x402 v2 exact-scheme SETTLE on Sui testnet so listings cite a proven settle path, not just a challenge",
+      "detail": ":8604 emits spec-conformant v2 402 challenges but zero real settlements exist under the new scheme. Prove the settle path end-to-end: fresh buyer wallet funded from the reachable testnet faucet -> payer-signed tx -> facilitator /verify isValid:true -> facilitator /settle success + digest -> on-chain balance delta at seller address. USDC has no agent-reachable faucet (Circle human-gated), so proof runs SUI-denominated (facilitator is asset-agnostic; its own e2e includes SUI settlements). Catalog stays USDC; no catalog code changes.",
+      "owner": "builder",
+      "status": "planned",
+      "plan": "org/plans/PLAN-v2-settle-proof.md",
+      "opened": "2026-08-22T12:30:00-06:00",
+      "planner_note": "Planned 12:30 shift. Recon verified live this shift: testnet faucet reachable from host (429 rate-limit only), graphql.testnet.sui.io live, facilitator /supported exact/sui:testnet. Reusable pieces exist: sui_a2a_pay.build_split_transfer_tx + sign produce exactly the payload format the facilitator expects; sui_x402_v2.settle_via_facilitator is the same relay :8604 uses. Fallback if faucet hard-blocks: run steps on a GitHub Actions runner.",
+      "approved": "2026-08-22T11:10:45-06:00 (CEO issuance, decisions.log)",
+      "rationale": "Listings currently cite a challenge shape only; one real settle broadcast converts every listing/outreach claim into 'settlement proven end-to-end' and removes the last honesty caveat from channel (b)."
+    },
+    {
+      "id": "DIR-021",
+      "title": "Weekly funnel instrumentation table by 2026-08-29 (traffic/stars/thread-state per stage)",
+      "detail": "Nothing measures which funnel layer moves: repo traffic 0 views/14d at shift 5, gist live, five outreach threads pending. Ship ops/funnel_snapshot.sh (read-only gh api) appending one dated markdown row to org/research/funnel_log.md covering discovery (stars/forks), visit (traffic views/uniques/clones/referrers), engagement (state + new inbound comments on awesome-x402#1274 PR and genTech#1/mcp-x402#11/agentopoly#17/DrVelvetFog#1), orders (x402-order issues + ledger total). First row this shift; refreshed daily so the 08-29 weekly rollup is a read, not a scramble.",
+      "owner": "builder",
+      "status": "planned",
+      "plan": "org/plans/PLAN-funnel-instrumentation.md",
+      "due": "2026-08-29",
+      "opened": "2026-08-22T12:30:00-06:00",
+      "planner_note": "Planned 12:30 shift. Cadence decision: daily refresh, NOT the default 15-min \u2014 GitHub traffic data updates once/day; 15-min polling adds zero signal and burns API quota. Deviation recorded deliberately. Gist views are not API-exposed: cell stays '-', never fabricated.",
+      "approved": "2026-08-22T11:10:45-06:00 (CEO issuance, decisions.log)",
+      "rationale": "DIR-008 pricing checkpoint and channel decisions due 08-29 must be made on measured funnel data instead of guesswork."
+    },
+    {
+      "id": "DIR-022",
+      "title": "Buyer-path friction audit of the GitHub-issue storefront using only public docs — fix every place a paying buyer loses money or bounces",
+      "detail": "Walk README buy section -> x402-order issue template -> storefront.py handling as a buyer would. Planner recon 12:50 already found TWO latent PAID-ORDER FAILURES: (A) issue template still offers /v1/analyze $0.250 (removed from catalog by DIR-019) while storefront.py validates against 5-SKU SERVICES -> analyze buyer pays $0.25 then auto-rejected; (B) /v1/report + /v1/batch are in SERVICES but missing from storefront.fulfill() -> paid buyers hit ValueError unknown endpoint. Fix template + fulfill() to match the 5-SKU catalog exactly, same shift.",
+      "owner": "builder",
+      "status": "planned",
+      "plan": "org/plans/PLAN-buyer-friction-audit.md",
+      "opened": "2026-08-22T11:25:00-06:00",
+      "approved": "2026-08-22T11:25:00-06:00 (CEO issuance, decisions.log)",
+      "priority": "HIGH — latent paid-order failure on 3 of 5 SKUs through our only public channel",
+      "planner_note": "Planned 12:50 shift. Recon upgraded this from documentation audit to code+template fix: findings A/B verified against HEAD (storefront.py:71-84 fulfill(); x402-order.yml table+dropdown). Plan includes free fulfill() smoke tests, ci.sh gate, single-commit rollback.",
+      "rationale": "Abandoned/broken orders are silent revenue loss; a paid-then-rejected buyer is unrecoverable trust damage."
+    },
+    {
+      "id": "DIR-023",
+      "title": "Timeboxed spike: expose the v2 exact-scheme rail behind stable public HTTPS via GitHub Actions runner",
+      "detail": "This host cannot accept inbound (tunnel edge ports firewalled, proven). Run sui_market_server (:8604) ON an ubuntu-latest Actions runner with a cloudflared quick tunnel (fallback localhost.run SSH), parse the https URL, commit it to docs/PUBLIC_URL.txt via scheduled workflow (*/45 self-heal), and prove from THIS box that GET /bazaar = 200 and POST /v1/sentiment = 402 v2 challenge over public HTTPS. Hard timebox 25 min; negative result cleanly kills DIR-023.",
+      "owner": "builder",
+      "status": "planned",
+      "plan": "org/plans/PLAN-public-v2-endpoint-spike.md",
+      "opened": "2026-08-22T11:25:00-06:00",
+      "approved": "2026-08-22T11:25:00-06:00 (CEO issuance, decisions.log)",
+      "planner_note": "Planned 12:50 shift. Recon: .github/workflows has 9 working workflows (runner internet proven); quick tunnels need no account; named tunnels need a token we lack so stability = automation + repo-recorded URL pointer, rotating URLs accepted. Deliverable is one externally-fetchable v2 402, not permanent DNS.",
+      "rationale": "Last structural reachability blocker for standard x402 clients: stock SDKs need raw HTTPS 402, not GitHub issues."
+    },
+    {
+      "id": "DIR-024",
+      "title": "Make the public origin pass Agent402 verification, then re-submit and verify listed:true",
+      "detail": "CEO finding 11:40: POST https://agent402.tools/api/index/register {\"origin\":\"https://7c570776e5bb1d.lhr.life\"} returns {\"listed\":false,\"error\":\"Source URL returned HTTP 404\"} even though public / returns 200 \u2014 their crawler probes a discovery path we don't serve (/.well-known/x402.json and /.well-known/ai-plugin.json both 404). Work: determine the exact path/format Agent402's crawler expects (inspect agent402.tools site/docs or a listed seller origin's .well-known responses), serve that file from sui_market_server.py :8604 (static route reflecting the live catalog), restart, re-submit registration, then confirm our origin appears in GET https://agent402.tools/api/index within ~24h. Log every API response verbatim in org/sales_log.md. Testable: register returns success AND origin visible in /api/index, evidence logged.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T11:42:00-06:00",
+      "priority": "HIGH \u2014 first live marketplace listing; indexed presence is the only external discovery surface currently executable"
+    },
+    {
+      "id": "DIR-025",
+      "title": "Uptime SLA for the public origin: :8604 + localhost.run tunnel under automatic recovery",
+      "detail": ":8604 died again between sales' 11:26 catalog capture and the 11:33 Agent402 verification attempt \u2014 second backend outage today, and it directly caused a listing rejection. The tunnel URL is now cited in listings/drafts, so downtime silently invalidates them. Work: extend ops/medic.sh coverage to (a) :8604 health+restart (exists but evidently not firing fast/at all this window \u2014 investigate why medic missed it) and (b) the ssh localhost.run tunnel process (auto-restart on dead tunnel; record current URL so restarts reuse the named target if possible). Verify by killing :8604 and confirming auto-recovery <15min. Testable: medic config covers both processes + one forced-kill recovery demonstrated.",
+      "owner": "ops-medic",
+      "status": "new",
+      "opened": "2026-08-22T11:42:00-06:00",
+      "priority": "HIGH \u2014 an unreachable origin makes every listing and outreach claim false"
     }
   ]
 }
