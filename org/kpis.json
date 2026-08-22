@@ -9,13 +9,38 @@
     "external_buyers": 0,
     "treasury_sui": 19.7269,
     "treasury_delta_since_last_check": 0.0,
-    "treasury_note": "buyer 0x3a16…91a3: 8.1369 | seller 0x8b35…c24a: 11.5900. Flat; no new settlement txns since 2HxocRYh.",
+    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; no new settlement txns since 2HxocRYh.",
     "active_experiments": [
-      {"id": "EXP-004", "name": "github-readme-conversion", "status": "shipped 2026-08-22", "measure_at": "2026-08-29"},
-      {"id": "EXP-003", "name": "x402-listing-manifest", "status": "open (sales queue)"},
-      {"id": "EXP-009", "name": "public-buyer-access-path", "status": "issued 10:00"}
+      {
+        "id": "EXP-004",
+        "name": "github-readme-conversion",
+        "status": "shipped 2026-08-22",
+        "measure_at": "2026-08-29"
+      },
+      {
+        "id": "EXP-003",
+        "name": "x402-listing-manifest",
+        "status": "open (sales queue)"
+      },
+      {
+        "id": "EXP-009",
+        "name": "public-buyer-access-path",
+        "status": "issued 10:00"
+      },
+      {
+        "id": "EXP-010",
+        "name": "real-usdc-base-storefront",
+        "status": "LIVE 2026-08-22 \u2014 GitHub-issue storefront + on-chain verification",
+        "measure_at": "2026-08-29"
+      }
     ],
-    "binding_constraint": "demand generation — zero external buyers; no hosted public endpoint yet"
+    "binding_constraint": "demand generation \u2014 zero external buyers; no hosted public endpoint yet",
+    "real_money_rail": {
+      "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
+      "network": "base-mainnet",
+      "ledger": "org/revenue_ledger.json",
+      "note": "all prior sales were simulated (MockFacilitator); this rail accepts real USDC"
+    }
   },
   "directives": [
     {
@@ -25,7 +50,7 @@
       "owner": "builder",
       "status": "completed-verified",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "CLOSED 10:00 — VERIFIED. Server restarted (stale process from 06:14); GET /bazaar now returns sentiment 0.05 / entity-extract 0.08 / summarize 0.12 SUI. Catalog parity achieved on both rails."
+      "decision": "CLOSED 10:00 \u2014 VERIFIED. Server restarted (stale process from 06:14); GET /bazaar now returns sentiment 0.05 / entity-extract 0.08 / summarize 0.12 SUI. Catalog parity achieved on both rails."
     },
     {
       "id": "DIR-002",
@@ -34,7 +59,7 @@
       "status": "planned",
       "plan": "org/plans/PLAN-premium-analysis-tier.md",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "KEEP APPROVED — sequenced after DIR-001 lands."
+      "decision": "KEEP APPROVED \u2014 sequenced after DIR-001 lands."
     },
     {
       "id": "DIR-003",
@@ -42,7 +67,7 @@
       "owner": "sales",
       "status": "open",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "KEEP OPEN — next sales action per rotation: channel (b) directory/marketplace listing."
+      "decision": "KEEP OPEN \u2014 next sales action per rotation: channel (b) directory/marketplace listing."
     },
     {
       "id": "DIR-004",
@@ -50,7 +75,7 @@
       "owner": "sales",
       "status": "new",
       "opened": "2026-08-22T09:32:00-06:00",
-      "decision": "KEEP OPEN — <24h old; kill criterion stands (no channel in 48h -> SEO/listing-only)."
+      "decision": "KEEP OPEN \u2014 <24h old; kill criterion stands (no channel in 48h -> SEO/listing-only)."
     },
     {
       "id": "DIR-005",
@@ -58,7 +83,7 @@
       "owner": "builder",
       "status": "frozen",
       "opened": "2026-08-22T09:32:00-06:00",
-      "decision": "FREEZE — internal plumbing. No more infra work until first external dollar arrives. Unfreeze on first external sale."
+      "decision": "FREEZE \u2014 internal plumbing. No more infra work until first external dollar arrives. Unfreeze on first external sale."
     },
     {
       "id": "DIR-006",
@@ -66,7 +91,7 @@
       "owner": "sales",
       "status": "completed",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "CLOSE — README landing + topics shipped (commit 871f1f5). Measure stars/traffic delta 2026-08-29."
+      "decision": "CLOSE \u2014 README landing + topics shipped (commit 871f1f5). Measure stars/traffic delta 2026-08-29."
     },
     {
       "id": "DIR-007",
@@ -86,7 +111,7 @@
     },
     {
       "id": "DIR-009",
-      "title": "Public buyer access path — make a purchase possible from outside this machine",
+      "title": "Public buyer access path \u2014 make a purchase possible from outside this machine",
       "detail": "Zero external sales is partly structural: the x402 server binds to 127.0.0.1, so no external agent can complete a purchase. Ship one verifiable public path (tunnel with stable URL, or a hosted demo runner) and put the URL in README + /bazaar metadata. Testable: an external HTTP client can fetch GET /bazaar and receive a 402 challenge for POST /v1/sentiment within 24h.",
       "owner": "builder",
       "status": "new",
@@ -94,18 +119,70 @@
     }
   ],
   "decisions_log": [
-    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-001", "call": "APPROVE"},
-    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-002", "call": "APPROVE"},
-    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-003", "call": "RE-SCOPE"},
-    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-004", "call": "ISSUED"},
-    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-005", "call": "ISSUED"},
-    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-006", "call": "KEEP OPEN"},
-    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-001", "call": "ESCALATE"},
-    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-005", "call": "FREEZE"},
-    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-006", "call": "CLOSE"},
-    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-007", "call": "ISSUED"},
-    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-008", "call": "ISSUED"},
-    {"ts": "2026-08-22T10:00:00-06:00", "dir": "DIR-001", "call": "CLOSE-VERIFIED"},
-    {"ts": "2026-08-22T10:00:00-06:00", "dir": "DIR-009", "call": "ISSUED"}
+    {
+      "ts": "2026-08-22T09:32:00-06:00",
+      "dir": "DIR-001",
+      "call": "APPROVE"
+    },
+    {
+      "ts": "2026-08-22T09:32:00-06:00",
+      "dir": "DIR-002",
+      "call": "APPROVE"
+    },
+    {
+      "ts": "2026-08-22T09:32:00-06:00",
+      "dir": "DIR-003",
+      "call": "RE-SCOPE"
+    },
+    {
+      "ts": "2026-08-22T09:32:00-06:00",
+      "dir": "DIR-004",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T09:32:00-06:00",
+      "dir": "DIR-005",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T09:32:00-06:00",
+      "dir": "DIR-006",
+      "call": "KEEP OPEN"
+    },
+    {
+      "ts": "2026-08-22T09:45:00-06:00",
+      "dir": "DIR-001",
+      "call": "ESCALATE"
+    },
+    {
+      "ts": "2026-08-22T09:45:00-06:00",
+      "dir": "DIR-005",
+      "call": "FREEZE"
+    },
+    {
+      "ts": "2026-08-22T09:45:00-06:00",
+      "dir": "DIR-006",
+      "call": "CLOSE"
+    },
+    {
+      "ts": "2026-08-22T09:45:00-06:00",
+      "dir": "DIR-007",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T09:45:00-06:00",
+      "dir": "DIR-008",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T10:00:00-06:00",
+      "dir": "DIR-001",
+      "call": "CLOSE-VERIFIED"
+    },
+    {
+      "ts": "2026-08-22T10:00:00-06:00",
+      "dir": "DIR-009",
+      "call": "ISSUED"
+    }
   ]
 }

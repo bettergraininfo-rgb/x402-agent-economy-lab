@@ -66,10 +66,33 @@ def svc_entities(text: str) -> dict:
     }
 
 
+def svc_report(text: str) -> dict:
+    """Premium: bundled structured analysis (sentiment + summary + entities)."""
+    return {
+        "sentiment": svc_sentiment(text),
+        "summary": svc_summarize(text),
+        "entities": svc_entities(text),
+    }
+
+
+def svc_batch(text: str) -> dict:
+    """Premium: bulk sentiment over docs separated by '|||'."""
+    docs = [d.strip() for d in text.split("|||") if d.strip()]
+    results = [{"doc": i, **svc_sentiment(d)} for i, d in enumerate(docs)]
+    labels = [r["label"] for r in results]
+    return {
+        "count": len(results),
+        "results": results,
+        "distribution": {l: labels.count(l) for l in set(labels)},
+    }
+
+
 SERVICES = {
     "/v1/sentiment":       {"price": 0.001, "seller": "svc-alpha",   "fn": svc_sentiment, "desc": "Lexicon sentiment scoring"},
     "/v1/summarize":       {"price": 0.005, "seller": "svc-beta",    "fn": svc_summarize, "desc": "Extractive summarization"},
     "/v1/entity-extract":  {"price": 0.002, "seller": "svc-alpha",   "fn": svc_entities,  "desc": "Org/proper-noun extraction"},
+    "/v1/report":          {"price": 0.020, "seller": "svc-beta",    "fn": svc_report,    "desc": "Structured analysis report"},
+    "/v1/batch":           {"price": 0.050, "seller": "svc-alpha",   "fn": svc_batch,     "desc": "Bulk sentiment (docs joined by |||)"},
 }
 
 
