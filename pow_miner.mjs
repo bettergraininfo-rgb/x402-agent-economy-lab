@@ -218,19 +218,24 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
                 `~${rate} H/s`);
   }
 
-  // claim — requires the session id in the body (ClaimPage.tsx pattern)
+  // claim — session must be CLOSED first (running -> claimable transition)
+  console.log("[miner] closing mining session…");
+  try {
+    await sendReq("closeSession");
+  } catch (e) { /* already closed */ }
+  await new Promise((r) => setTimeout(r, 2000));
+
   console.log("[miner] claiming…");
   const final = await api("getSessionStatus?session=" + start.session + "&details=1");
-  console.log("[miner] final balance:", final.balance, "wei");
+  console.log("[miner] final balance:", final.balance, "wei, status:", final.status);
   if (BigInt(final.balance || "0") > 0n) {
     const claim = await api("claimReward", "POST", { session: start.session });
     console.log("[miner] claim response:", JSON.stringify(claim).slice(0, 400));
-    if (claim.status === "claimed" || claim.claimHash) {
-      console.log("[miner] CLAIM SUBMITTED — payout tx:", claim.claimHash);
+    if (!claim.failedCode) {
+      console.log("[miner] CLAIM ACCEPTED — status:", claim.status,
+                  "txHash:", claim.claimHash || "(queued)");
     }
   }
-
-  try { sendReq("closeSession"); } catch {}
   console.log(`DONE mined_hashes=${minedHashes} shares=${sharesFound}`);
   process.exit(0);
 })().catch((e) => { console.error("[miner] fatal", e); process.exit(1); });
