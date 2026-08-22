@@ -185,6 +185,7 @@ def root():
 
 
 @app.get("/.well-known/x402")
+@app.get("/.well-known/x402.json")
 def well_known_x402(request: Request):
     """Agent402 service manifest (spec: agent402-service-manifest/1)."""
     base = str(request.base_url).rstrip("/")

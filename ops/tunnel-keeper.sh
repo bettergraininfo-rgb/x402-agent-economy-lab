@@ -52,6 +52,7 @@ healthy() {
 }
 
 log "keeper started"
+fails=0
 while true; do
   url=$(cat "$URLFILE" 2>/dev/null || true)
   ok=$(cat /tmp/registered-origin-ok 2>/dev/null || true)
@@ -66,8 +67,18 @@ while true; do
       register "$url" || true
     fi
   fi
-  if [ -z "$url" ] || ! healthy "$url"; then
-    log "tunnel unhealthy or missing (was: ${url:-none}); restarting"
+  # DIR-027 Step A churn fix: count consecutive public-probe failures. A momentary
+  # backend stall must NOT kill a live ssh tunnel (each reconnect mints a new
+  # subdomain and orphans the Agent402 listing). Only restart when the ssh PROCESS
+  # is dead, OR the probe has failed twice in a row (connection-level failure).
+  if [ -n "$url" ] && ! healthy "$url"; then
+    fails=$((fails+1))
+  else
+    fails=0
+  fi
+  ssh_pid="$(pgrep -f 'ssh .*80:localhost:8604' 2>/dev/null | head -1)"
+  if [ -z "$url" ] || ! kill -0 "$ssh_pid" 2>/dev/null || { [ "$fails" -ge 2 ] && ! healthy "$url"; }; then
+    log "tunnel unhealthy or missing (was: ${url:-none}; consecutive_probe_fails=$fails; ssh_pid=${ssh_pid:-none}); restarting"
     pkill -f 'ssh .*80:localhost:8604' 2>/dev/null
     rm -f /tmp/registered-origin-ok
     sleep 2

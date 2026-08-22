@@ -1,11 +1,32 @@
 {
   "queue": [
     {
-      "id": "RQ-029",
-      "question": "How do wallet-keyed daily free quotas work statelessly for x402 sellers (SwarmX's 3/day implementation): is quota tracked pre-payment at the 402 challenge stage or post-settlement via payer address, and can our revenue_server.py implement it without breaking the storefront verify_payment path or enabling trivial multi-wallet abuse?",
+      "id": "RQ-036",
+      "question": "What is the exact path to give the :8610 Base-mainnet real-USDC rail (5 SKUs incl. GET /v1/report and /v1/batch) a conformant /.well-known/x402 manifest plus an Agent402/x402scan registration - can it be done autonomously given :8610 currently serves no manifest route - and does dual-listing both rails split or compound discovery health?",
       "added": "2026-08-22",
       "priority": 1,
-      "why": "Spawned by RQ-027: the amended DIR-008 free tier needs an enforcement design before builder implements; wrong placement (post-payment) means the buyer pays first anyway and the hook is worthless, while pre-payment quota keyed on address is spoofable by rotating wallets. Need the mechanics + abuse bound before committing code."
+      "why": "Spawned by RQ-034 live audit: the full priced catalog lives on :8610 but has zero discovery surface (no manifest, not registered anywhere), while :8604 is listed but serves 3 testnet SKUs. RQ-034's DIR-031 fixes :8604's manifest shape; this question covers making the REAL-money rail the one that buyers can actually find."
+    },
+    {
+      "id": "RQ-035",
+      "question": "Does Agent402 route any real buyer demand to sellers whose tools carry networks=[sui:testnet] (non-Base), i.e., does /api/index or its router surface sui-network tools to Base-USDC-holding buyers at all - and is there observable evidence (index rows, routed calls, leaderboard entries) of ANY non-EVM seller receiving paid x402 traffic?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Spawned by RQ-034: our only live external listing (:8604) settles sui:testnet USDC. If Agent402's router effectively serves Base-only buyers, the listing is credibility-only and the demand-bearing listing must come from the :8610 real-USDC Base rail (RQ-036) - this determines where the next marketing/listing shift should aim."
+    },
+    {
+      "id": "RQ-033",
+      "question": "What body (if any) does the 402 Index health probe send when checking a POST/PUT resource whose listing omits probeBody, and what does Agentic.Market's /validate endpoint send when simulating a POST route - i.e., do the two remaining unverified indexers also send body-bearing probes that our required-field-gated free tier must survive?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "Spawned by RQ-031 findings: Agent402 sends body:\"{}\" on POST probes (source-verified), but 402 Index exposes a probeBody register field implying default body-sending behavior on POST health checks (docs.piprail.com/discovery/open-indexes - extraction failed this cycle, needs Actions-runner or repo mining of ryanthegentry/402index), and Agentic.Market's validate simulation shape is undocumented. Both are surfaces we plan to submit to once the bazaar-extension work (RQ-024) lands; a misfired free 200 during their first crawl would burn the submission."
+    },
+    {
+      "id": "RQ-032",
+      "question": "Is a prepaid-credits model (OpenLibx402-style: one USDC deposit spends down off-chain credits at ~1000 queries/USDC, min 0.01/max 1.00) a better conversion+abuse tradeoff than per-call 402 for our sub-cent volume SKUs, how do existing x402 sellers persist credit ledgers across server restarts cheaply, and does a credits endpoint still emit per-request 402 challenges so indexer discovery keeps working?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "Spawned by RQ-029 evidence: OpenLibx402 runs BOTH patterns side by side (RATE_LIMIT_FREE_QUERIES=3/day AND prepaid credits). Prepaid removes per-call settlement friction and IP-abuse exposure where a 402 round-trip costs more than a $0.003 call; unverified whether indexers treat a credits-gated route as payable."
     },
     {
       "id": "RQ-030",
@@ -51,7 +72,7 @@
     },
     {
       "id": "RQ-012",
-      "question": "Does a Render free-tier cold start (~60s) fail Agent402's hourly crawl health checks or Rail402's provider proxying often enough to hurt routing rank \u2014 and is a 10-min GitHub Actions keep-alive ping sufficient and free within Actions minutes quotas?",
+      "question": "Does a Render free-tier cold start (~60s) fail Agent402's hourly crawl health checks or Rail402's provider proxying often enough to hurt routing rank — and is a 10-min GitHub Actions keep-alive ping sufficient and free within Actions minutes quotas?",
       "added": "2026-08-22",
       "priority": 2,
       "why": "Spawned by RQ-009/RQ-008: Agent402 FAQ says 'one bad hour does not delist' but router excludes sellers whose last few crawls errored; cold starts during crawl windows could suppress our match ranking before we get organic traffic. Need the crawl schedule/cadence vs spin-down window before relying on free tier for production listings."
@@ -72,17 +93,17 @@
     },
     {
       "id": "RQ-013",
-      "question": "Can we get listed in TOLL\u00b7402's editorial catalog (toll402.com) and does its buyer-side per-request budget-cap behavior mean sub-$0.005 listings get materially more agent traffic than $0.01+ listings?",
+      "question": "Can we get listed in TOLL·402's editorial catalog (toll402.com) and does its buyer-side per-request budget-cap behavior mean sub-$0.005 listings get materially more agent traffic than $0.01+ listings?",
       "added": "2026-08-22",
       "priority": 2,
-      "why": "Spawned by RQ-010: TOLL\u00b7402 is an editorial 172-entry catalog that buyers use to shortlist before live 402 quotes; inclusion = a third discovery surface beyond Agent402/Rail402. Its census shows 95/122 priced entries start \u2264$0.01 \u2014 need its submission path (toll402.com was blocked from this box on direct fetch; GitHub/docs mirror may exist) and any evidence that buyer per-request caps hard-filter above $0.005."
+      "why": "Spawned by RQ-010: TOLL·402 is an editorial 172-entry catalog that buyers use to shortlist before live 402 quotes; inclusion = a third discovery surface beyond Agent402/Rail402. Its census shows 95/122 priced entries start ≤$0.01 — need its submission path (toll402.com was blocked from this box on direct fetch; GitHub/docs mirror may exist) and any evidence that buyer per-request caps hard-filter above $0.005."
     },
     {
       "id": "RQ-014",
       "question": "Which task-level bundle SKUs (e.g. 'analyze this text' = extract+sentiment+summarize in one call) should we price at $0.01-$0.02 to match buyer cost-per-completed-task behavior, and does Rail402's inputSchema support multi-step composite endpoints without extra payment code?",
       "added": "2026-08-22",
       "priority": 2,
-      "why": "Spawned by RQ-010: TOLL\u00b7402 evidence shows agents budget per WORKFLOW not per call ($0.016 typical research task), so a bundled SKU can capture 2-4x the per-call price while staying inside the buyer's task budget. Our /v1/batch is close but unpositioned as a task SKU. Need Rail402 schema constraints + which composition buyers actually search for (Rail402 registry tags/Agent402 match keywords)."
+      "why": "Spawned by RQ-010: TOLL·402 evidence shows agents budget per WORKFLOW not per call ($0.016 typical research task), so a bundled SKU can capture 2-4x the per-call price while staying inside the buyer's task budget. Our /v1/batch is close but unpositioned as a task SKU. Need Rail402 schema constraints + which composition buyers actually search for (Rail402 registry tags/Agent402 match keywords)."
     },
     {
       "id": "RQ-015",
@@ -93,6 +114,27 @@
     }
   ],
   "answered": [
+    {
+      "id": "RQ-034",
+      "answered": "2026-08-22",
+      "verdict": "answered, premise corrected both ways - manifest advertises NO prices/methods and only 3 of 5 SKUs (bare strings). Currently healthy BY ACCIDENT: string rows parse as GET-typed priceless tools; quote-probe (budgeted) learns price+network from our conformant GET 402; probePaywall never fires on priceless tools. The naive fix (rich objects method:POST) would BREAK health: probePaywall then sends POST body:{} which :8604 answers 405 -> ok:false -> rolling-health drop. Live defects found: /v1/report + /v1/batch are 404 on :8604 (exist only on :8610, which has no /.well-known/x402 at all); POST {} on all three SKUs returns 405.",
+      "finding": "org/research/findings.md#2026-08-22--rq-034-given-agent402s-probepaywall-prefers-a-get-tool-and-treats-any-non-402-as-unhealthy-does-our-well-knownx402-manifest-advertise-explicit-prices-and-method-fields-for-all-five-skus-such-that-agent402s-crawlers-skip-the-quote-probe-entirely-and-health-check-a-get-route-rather-than-a-post-sku-with-body",
+      "directive_proposed": "DIR-031: rewrite :8604 /.well-known/x402 as rich objects {path,method:GET,price,name,description} for the THREE served SKUs only (GET is how the routes verifiably answer); do not list report/batch until they exist on this origin; convert POST-with-empty/missing-fields from 405 to the standard 402 challenge; regression tests GET->402 and POST {}->402 per SKU."
+    },
+    {
+      "id": "RQ-031",
+      "answered": "2026-08-22",
+      "verdict": "premise REFUTED for one major indexer - Agent402 sends body:\"{}\" (non-empty HTTP body) on every POST probe, both live-quote and paywall health probes; its source explicitly treats any non-402 as 'route is not paywalled' -> ok:false -> rolling-health drop. A naive SwarmX empty-body free-tier gate would therefore serve Agent402 a free 200 and get us routed around during the exact discovery window we need. Safe indexers: x402scan (empty-body probes per issue #781 + DISCOVERY.md), TOLL*402 (never invokes POST/PUT/PATCH/DELETE), aeX402 (GET-only). CDP Bazaar is settle-coupled (low risk). UNRESOLVED: 402 Index exposes a probeBody register field implying body-sending POST health checks by default (RQ-033). UA/IP exemptions are unreliable - Agent402 sends no identifiable UA.",
+      "finding": "org/research/findings.md#2026-08-22--rq-031-do-x402-discovery-indexers-ever-send-non-empty-post-bodies-when-probing-paid-routes-i.e.-can-an-empty-body-free-tier-gate-misfire-and-serve-a-crawler-a-free-200-instead-of-the-required-402-and-should-we-exempt-known-indexer-uasips",
+      "directive_proposed": "Amend DIR-008 free-tier work order BEFORE implementation: replace the non-empty-body trigger with required-field validation gating - free tier fires only when parsed JSON contains all required SKU inputs; {} or missing-field bodies fall through to the existing 402 challenge regardless of payment header (also satisfies x402scan's own 'probes reach 402 before body validation' spec). Add regression test: POST /v1/sentiment with body {} must return 402, never 200."
+    },
+    {
+      "id": "RQ-029",
+      "answered": "2026-08-22",
+      "verdict": "feasible, premise corrected - SwarmX's 3/day free tier is NOT wallet-keyed: read from shipped source (src/server/x402Gate.ts), quota is checked PRE-payment at the gate (only when no payment header AND non-empty request body), keyed by client IP + cookie with effective count = MAX(cookie, ip), in-memory with 24h entry expiry. Wallet-keying pre-payment is structurally impossible (payer address only exists after settlement). Paid requests bypass the free branch entirely so verify_payment is untouched; empty-body discovery probes always get the 402 challenge and never burn quota. Abuse surface is IP rotation (not wallet rotation); bound is marginal compute plus optional server-wide daily cap.",
+      "finding": "org/research/findings.md#2026-08-22--rq-029-how-do-wallet-keyed-daily-free-quotas-work-statelessly-for-x402-sellers-swarmxs-3day-implementation-is-quota-tracked-pre-payment-at-the-402-challenge-stage-or-post-settlement-via-payer-address-and-can-our-revenue_serverpy-implement-it-without-breaking-the-storefront-verify_payment-path-or-enabling-trivial-multi-wallet-abuse",
+      "directive_proposed": "Amend DIR-008 free-tier work order: implement SwarmX's exact pattern in revenue_server.py + sui_market_server.py (IP-keyed dict, 3/day on /v1/sentiment, gate only on no-payment-header + non-empty body, X-Free-Remaining header, 200-calls/day server-wide cap). Do NOT build wallet-keyed quota."
+    },
     {
       "id": "RQ-027",
       "answered": "2026-08-22",
@@ -166,7 +208,7 @@
     {
       "id": "RQ-009",
       "answered": "2026-08-22",
-      "verdict": "feasible in architecture, gated by ONE human step (hosting account creation). Render free tier confirmed fit: Python web service, deploy from GitHub repo, 512MB/0.1CPU, 750 instance-hours/mo, 15-min spin-down (~60s cold start; keep-alive ping via Actions fixes). Rail402 gateway mode CONFIRMED via live GitHub repos + docs: we expose plain JSON, they run 402+on-chain verification+replay guard, USDC settles direct to our wallet \u2014 and their txHash-proof spec matches our existing verify_payment semantics, so DIR-011's facilitator migration may be droppable entirely. Deno Deploy ruled out (JS/TS runtime only). rail402.app itself BLOCKED from this box (publish flow unreachable). Honest discrepancy: PyPI package 'rail402-x402' advertised in docs does not exist (404).",
+      "verdict": "feasible in architecture, gated by ONE human step (hosting account creation). Render free tier confirmed fit: Python web service, deploy from GitHub repo, 512MB/0.1CPU, 750 instance-hours/mo, 15-min spin-down (~60s cold start; keep-alive ping via Actions fixes). Rail402 gateway mode CONFIRMED via live GitHub repos + docs: we expose plain JSON, they run 402+on-chain verification+replay guard, USDC settles direct to our wallet — and their txHash-proof spec matches our existing verify_payment semantics, so DIR-011's facilitator migration may be droppable entirely. Deno Deploy ruled out (JS/TS runtime only). rail402.app itself BLOCKED from this box (publish flow unreachable). Honest discrepancy: PyPI package 'rail402-x402' advertised in docs does not exist (404).",
       "finding": "org/research/findings.md#2026-08-22--rq-009-can-revenue_serverpy-deploy-to-renderrailwaydeno-deploy-free-tier-directly-from-the-github-repo-and-does-rail402s-gateway-listing-mode-work-with-a-fastapi-endpoint",
       "directive_proposed": "DIR-018: one-time human step - create Render account connected to bettergraininfo-rgb/x402-agent-economy-lab free web service; builder automates render.yaml/Dockerfile, /.well-known/agent-services.json + llms.txt discovery files (@rail402/validate-spec), 10-min Actions keep-alive. Fallback: Railway trial."
     },
@@ -194,7 +236,7 @@
     {
       "id": "RQ-003",
       "answered": "2026-08-22",
-      "verdict": "feasible \u2014 decided: one EVM/Base port unlocks Bazaar + Agent402 (real demand surfaces); PayAPI/true402 backlog; Sui facilitator is not a demand channel and its author already sells the whale feed",
+      "verdict": "feasible — decided: one EVM/Base port unlocks Bazaar + Agent402 (real demand surfaces); PayAPI/true402 backlog; Sui facilitator is not a demand channel and its author already sells the whale feed",
       "finding": "org/research/findings.md#2026-08-22--rq-003",
       "directive_proposed": "DIR-009: single EVM x402 port of strongest differentiated endpoint, dual-listed on CDP Bazaar + Agent402 same cycle"
     },

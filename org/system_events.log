@@ -10,3 +10,6 @@
 2026-08-22T16:45:47Z | MEDIC | checkpointed org state (24dd83a)
 2026-08-22T17:50:26Z | PLANNER | tunnel rotated a157204d13d607.lhr.life -> bcb3c875793cc7.lhr.life (old listed origin died; new URL recovered from /tmp/tunnel-8604.log stderr of relaunched ssh pid 162907); docs/PUBLIC_URL.txt + listings-drafts.md updated
 2026-08-22T18:01:18Z | AUDITOR | clean — books match chain (1 note(s))
+2026-08-22T18:23:25Z | LISTING-SYNC | registration NOT confirmed for https://1f577df052020f.lhr.life (will retry next cycle): {"error":"rate limit: registration is busy, try again later"}
+2026-08-22T18:44:58Z | LISTING-SYNC | cleared register-gate arm: Agent402 quota reset observed via keeper's two listed:true responses (12:38:08Z, 12:41:27Z); proceeding to B4 repair
+2026-08-22T18:50:06Z | LISTING-SYNC | re-registered https://18dae3ec155546.lhr.life with Agent402 (listed:true)

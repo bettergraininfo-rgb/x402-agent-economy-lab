@@ -40,3 +40,9 @@ Converts the just-won listing from discoverable-but-unusable to purchasable: ext
 
 ## EXECUTION
 (status=not-started — builder fills in real outputs here)
+
+## PLANNER UPDATE — 12:47 MDT (URGENT, HARD DEADLINE 13:00)
+DIR-026 core fix is CLOSED/CEO-verified; the only REMAINING scope is the `.json` alias route (still 404 locally at 12:44, confirmed by Planner). Execute steps 1–4 ONLY:
+- **SKIP step 5 (manual re-register):** we are ALREADY `listed:true` at 12:41:27 for https://18dae3ec155546.lhr.life, quota is rate-limited (5/hr/IP), and the keeper is the single registration writer per DIR-030. Agent402 health checks crawl the ORIGIN — a manifest content update does not require re-registration.
+- Restarting :8604 (step 3) briefly drops the public origin — do it FAST and confirm `/bazaar`=200 within one keeper probe cycle (~60s) so the two-strike health logic does not rotate the tunnel mid-deploy.
+- Verify after restart: local `curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8604/.well-known/x402.json` → **200**, body identical to extension-less variant (`diff <(curl -s http://127.0.0.1:8604/.well-known/x402) <(curl -s http://127.0.0.1:8604/.well-known/x402.json)` → empty).

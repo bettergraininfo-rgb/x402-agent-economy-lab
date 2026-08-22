@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T11:55:00-06:00",
+  "updated": "2026-08-22T12:45:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -9,12 +9,12 @@
     "external_buyers": 0,
     "treasury_sui": 19.7269,
     "treasury_delta_since_last_check": 0.0,
-    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; earnings_tracker exit 2 at 11:51.",
+    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; earnings_tracker exit 2 at 12:40.",
     "active_experiments": [
       {
         "id": "EXP-014",
         "name": "agent402-listing (first live marketplace index presence)",
-        "status": "RE-REGISTERED 11:53 after tunnel rotation invalidated the 11:45 listing (a157204d13d607.lhr.life now 503). Current origin https://bcb3c875793cc7.lhr.life registered: {\"listed\":true,\"routable\":true,\"health\":1,toolCount:7}. Manifest (DIR-026) now advertises public host-derived URLs, not 127.0.0.1. Index /api/index still shows no lhr.life sellers (crawl lag).",
+        "status": "CONFIRMED LISTING 12:41:27 MDT \u2014 keeper auto-registered https://18dae3ec155546.lhr.life -> {\"listed\":true,\"routable\":true,\"health\":1,\"toolCount\":7,\"networks\":[\"sui:testnet\"]}; CEO verified origin 200x2 at 12:43 and synced org/state/registered_origin.txt. Crawl window (DIR-024) now formally open. Risk: ssh connections die ~every 20min even with keepalives (12:41 drop was 4th today) \u2014 DIR-032 escalation authorized.",
         "measure_at": "2026-08-23"
       },
       {
@@ -48,7 +48,7 @@
         "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "keep the Agent402 listing alive and indexed despite rotating localhost.run subdomains \u2014 registration re-fired 11:53 for bcb3c875793cc7.lhr.life (listed:true) after prior origin went 503. Gates: /api/index crawl pickup (~24h), tunnel-keeper must keep PUBLIC_URL.txt + registration in sync on every rotation (DIR-025), manifest scheme still http:// behind TLS terminator (cosmetic), DIR-016 funded storefront proof OPERATOR-GATED. Zero external buyers remain the root cause of $0/day.",
+    "binding_constraint": "hold ONE confirmed indexed Agent402 listing long enough to be crawled: 18dae3ec155546.lhr.life registered listed:true at 12:41:27 and CEO-verified live, but ssh tunnels die ~every 20min despite keepalives (4th drop today at 12:41). DIR-032 pre-authorizes Render persistent-hosting escalation on the next unplanned rotation. Zero external buyers remain the root cause of $0/day.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",
