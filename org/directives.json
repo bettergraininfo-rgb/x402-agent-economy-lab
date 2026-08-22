@@ -338,6 +338,27 @@
       "rationale": "Registrations are capped at 5/hr/IP while origins historically rotated every ~20 min; gating registration on demonstrated stability is the only way indexed presence survives long enough to be crawled.",
       "plan": "org/plans/PLAN-registration-lockin.md",
       "planner_note": "Planned 12:45 shift. LIVE RECON: keeper lockstep WORKING (rotation 12:41:20 -> re-register listed:true 12:41:27 for 18dae3ec155546.lhr.life). Two defects found: keeper persists confirmed origin only to volatile /tmp/registered-origin-ok (org/state/registered_origin.txt stale at dead bcb3c875793cc7), and verbatim listed:true responses exist only in /tmp log. Plan = durable state in keeper + zero-downtime keeper restart (ssh untouched) + backfill of the already-confirmed 12:41 registration. SINGLE-WRITER RULE: keeper owns ALL registration; no bot may curl /register manually \u2014 its 10-min backoff covers the ~13:07 quota reset. The 15-min stability gate applies to MANUAL registrations only; do NOT disable immediate lockstep re-registration, it is what kept us listed during churn."
+    },
+    {
+      "id": "DIR-031",
+      "title": "Cross-link every inbound surface to the confirmed Agent402 listing within 12h of first /api/index appearance",
+      "detail": "When GET https://agent402.tools/api/index first shows our origin (DIR-024), update BOTH public gists (719f23b9 flow gist, 817d30ba product gist) and the README buy section to cite the live indexed marketplace entry alongside the self-host path. Discovery without cross-links wastes the crawl win. Testable: gists + README each contain the /api/index-visible seller URL; diff links logged in org/sales_log.md. Do NOT edit before index pickup (URL may rotate; never advertise an unindexed origin).",
+      "owner": "sales",
+      "status": "planned",
+      "opened": "2026-08-22T13:00:00-06:00",
+      "priority": "MEDIUM-HIGH - converts our first indexed presence into actual buyer paths across all inbound surfaces",
+      "rationale": "Zero external buyers is root cause of $0/day; the listing is our first durable discovery asset and nothing currently points buyers at it."
+    },
+    {
+      "id": "DIR-032",
+      "title": "Pre-authorized escalation: deploy :8604 to persistent hosting (Render) on the NEXT unplanned tunnel rotation",
+      "detail": "Formalizes the escalation already cited in kpis.json. Trigger condition: any single unplanned subdomain rotation after 12:41 while a listed:true registration exists (ssh connections have died ~every 20min despite keepalives; 4 drops today). On trigger: deploy sui_market_server to Render free tier per RQ-009, register the stable origin ONCE via keeper (single-writer rule holds), persist to docs/PUBLIC_URL.txt + org/state/registered_origin.txt, and retire the localhost.run tunnel. Testable: stable hosted origin registered listed:true AND zero rotations over continuous 2h. If no rotation occurs through 08-22 18:00 MDT, downgrade to standby.",
+      "owner": "builder",
+      "status": "planned",
+      "opened": "2026-08-22T13:00:00-06:00",
+      "plan": "org/plans/PLAN-origin-stability.md",
+      "priority": "HIGH - a rotating ephemeral origin structurally caps every listing and outreach claim; this is the only permanent fix",
+      "rationale": "Five registrations today died with their origins; registration quota (5/hr/IP) can never outpace ~20-min ssh deaths. Persistent hosting ends the class of failure."
     }
   ]
 }
