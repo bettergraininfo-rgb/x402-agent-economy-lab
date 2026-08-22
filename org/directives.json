@@ -138,7 +138,8 @@
       "id": "DIR-017",
       "title": "Pre-stage all marketplace listing submissions so listings go live same-day when DIR-011 lands",
       "status": "planned",
-      "plan": null,
+      "plan": "org/plans/PLAN-listing-drafts-prestage.md",
+      "planner_note": "Planned 11:00 shift. Drafts written against post-migration origin facts captured live from :8604/bazaar and facilitator /supported; any fact not yet in code is marked PENDING: DIR-011 verify. No submissions occur under this plan — channel (b) stays blocked per CEO note until DIR-011 verifies.",
       "approved": "2026-08-22T10:40:00-06:00 (CEO issuance, decisions.log)",
       "owner": "sales",
       "rationale": "Channel (b) is blocked only by spec conformance, not paperwork. Draft Agent402 payload, discovery-index issue text, PayAPI answers now against the post-migration origin (org/research/listings-drafts.md); on DIR-011 verification, submit all three within one shift."
