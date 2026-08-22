@@ -8,7 +8,10 @@ LOG=/tmp/tunnel-keeper.log
 URLFILE=/tmp/tunnel-current-url
 SSHLOG=/tmp/tunnel-8604.log
 INDEX_URL="https://agent402.tools/api/index/register"
-PUBURL_FILE="$(cd "$(dirname "$0")/.." && pwd)/docs/PUBLIC_URL.txt"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PUBURL_FILE="$ROOT/docs/PUBLIC_URL.txt"
+ORIGIN_STATE="$ROOT/org/state/registered_origin.txt"   # DIR-038: durable confirmed-origin state
+SALES_LOG="$ROOT/org/sales_log.md"                     # DIR-017 rule: verbatim responses here
 
 log() { echo "$(date '+%F %T') $*" >> "$LOG"; }
 
@@ -40,7 +43,13 @@ register() {
          -d "{\"origin\":\"$url\"}")
   log "register $url -> $resp"
   case "$resp" in
-    *'"listed":true'*) echo "$url" > /tmp/registered-origin-ok; return 0 ;;
+    *'"listed":true'*)
+      echo "$url" > /tmp/registered-origin-ok
+      # DIR-038: durable confirmed-origin state must follow EVERY listed:true immediately,
+      # not up to 15 min later via the watcher gate (which also burns quota re-POSTing).
+      printf '%s\n' "$url" > "$ORIGIN_STATE"
+      { echo ""; echo "| $(date -u +%FT%TZ) | tunnel-keeper | POST /api/index/register origin=$url | VERBATIM RESPONSE: $resp |"; } >> "$SALES_LOG"
+      return 0 ;;
     *) log "register NOT confirmed (will retry next cycle): $resp"; return 1 ;;
   esac
 }

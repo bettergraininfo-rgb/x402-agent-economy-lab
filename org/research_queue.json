@@ -79,7 +79,7 @@
     },
     {
       "id": "RQ-012",
-      "question": "Does a Render free-tier cold start (~60s) fail Agent402's hourly crawl health checks or Rail402's provider proxying often enough to hurt routing rank \u2014 and is a 10-min GitHub Actions keep-alive ping sufficient and free within Actions minutes quotas?",
+      "question": "Does a Render free-tier cold start (~60s) fail Agent402's hourly crawl health checks or Rail402's provider proxying often enough to hurt routing rank — and is a 10-min GitHub Actions keep-alive ping sufficient and free within Actions minutes quotas?",
       "added": "2026-08-22",
       "priority": 2,
       "why": "Spawned by RQ-009/RQ-008: Agent402 FAQ says 'one bad hour does not delist' but router excludes sellers whose last few crawls errored; cold starts during crawl windows could suppress our match ranking before we get organic traffic. Need the crawl schedule/cadence vs spin-down window before relying on free tier for production listings."
@@ -100,17 +100,17 @@
     },
     {
       "id": "RQ-013",
-      "question": "Can we get listed in TOLL\u00b7402's editorial catalog (toll402.com) and does its buyer-side per-request budget-cap behavior mean sub-$0.005 listings get materially more agent traffic than $0.01+ listings?",
+      "question": "Can we get listed in TOLL·402's editorial catalog (toll402.com) and does its buyer-side per-request budget-cap behavior mean sub-$0.005 listings get materially more agent traffic than $0.01+ listings?",
       "added": "2026-08-22",
       "priority": 2,
-      "why": "Spawned by RQ-010: TOLL\u00b7402 is an editorial 172-entry catalog that buyers use to shortlist before live 402 quotes; inclusion = a third discovery surface beyond Agent402/Rail402. Its census shows 95/122 priced entries start \u2264$0.01 \u2014 need its submission path (toll402.com was blocked from this box on direct fetch; GitHub/docs mirror may exist) and any evidence that buyer per-request caps hard-filter above $0.005."
+      "why": "Spawned by RQ-010: TOLL·402 is an editorial 172-entry catalog that buyers use to shortlist before live 402 quotes; inclusion = a third discovery surface beyond Agent402/Rail402. Its census shows 95/122 priced entries start ≤$0.01 — need its submission path (toll402.com was blocked from this box on direct fetch; GitHub/docs mirror may exist) and any evidence that buyer per-request caps hard-filter above $0.005."
     },
     {
       "id": "RQ-014",
       "question": "Which task-level bundle SKUs (e.g. 'analyze this text' = extract+sentiment+summarize in one call) should we price at $0.01-$0.02 to match buyer cost-per-completed-task behavior, and does Rail402's inputSchema support multi-step composite endpoints without extra payment code?",
       "added": "2026-08-22",
       "priority": 2,
-      "why": "Spawned by RQ-010: TOLL\u00b7402 evidence shows agents budget per WORKFLOW not per call ($0.016 typical research task), so a bundled SKU can capture 2-4x the per-call price while staying inside the buyer's task budget. Our /v1/batch is close but unpositioned as a task SKU. Need Rail402 schema constraints + which composition buyers actually search for (Rail402 registry tags/Agent402 match keywords)."
+      "why": "Spawned by RQ-010: TOLL·402 evidence shows agents budget per WORKFLOW not per call ($0.016 typical research task), so a bundled SKU can capture 2-4x the per-call price while staying inside the buyer's task budget. Our /v1/batch is close but unpositioned as a task SKU. Need Rail402 schema constraints + which composition buyers actually search for (Rail402 registry tags/Agent402 match keywords)."
     },
     {
       "id": "RQ-015",
@@ -120,21 +120,46 @@
       "why": "Spawned by RQ-011: agent-services-spec says the marketplace \"consumes documents in this format\" but never states auto-crawl behavior. If auto-indexing exists, we skip the human publish step entirely once DIR-018 lands the public origin. Test: serve validated well-known doc on Render origin, poll GET https://www.rail402.app/api/agent/services daily (CORS-open, reachable via search-cache or Actions runner since rail402.app is blocked here) for our slug."
     },
     {
-      "id": "RQ-039",
-      "question": "Does adding extra:{name:\"USDC\",decimals:6} to our x402 v2 accepts entries break any existing challenge consumer - sui-x402-facilitator verify/settle, x402scan payable-indexing probe, Agent402 probePaywall, or our own storefront verify_payment - i.e., is DIR-033 a pure win or does it need consumer-by-consumer regression?",
-      "added": "2026-08-22",
-      "priority": 1,
-      "why": "Spawned by RQ-037: extra is the single missing field that keeps Agent402 from pricing our rows, but x402 v2 facilitators may validate accepts entries strictly (unknown keys rejected) and our own verify_payment parses the same challenge. One-hour fix is only safe if every consumer tolerates the extension; test on :8604 testnet settle path first, then :8610."
-    },
-    {
       "id": "RQ-040",
       "question": "Do the four OpenAPI-derived junk rows in our Agent402 listing (/, /bazaar, /stats, catch-all /{path} named 'Paid') actively hurt routing - can the catch-all match buyer task queries and win route selection (wasting a buyer's payment attempt on a non-product route, tanking our rolling health) - and does serving /openapi.json with ONLY the 5 paid SKUs eliminate them without breaking Agent402 discovery?",
       "added": "2026-08-22",
       "priority": 2,
       "why": "Spawned by RQ-037 live index pull: routeQuery scores on slug/name/description text; a catch-all '/{path}' row named 'Paid' with a generic description can lexically match queries like 'paid text analysis' and outrank nothing but still get selected when competitors are absent - and every route-execute against it is a paid 402 dance against a route that only echoes the challenge. Fix shape is known (restrict openapi.json); unknown is whether Agent402's crawler needs the openapi paths for health checks or falls back to manifest-only."
+    },
+    {
+      "id": "RQ-044",
+      "question": "Once a healthy origin serves extra-decorated challenges, does Agent402's enrichLiveQuotes refresh tool prices on EVERY crawl cycle (making prices appear automatically next successful probe), or are tool rows cached from first discovery such that we must re-register to force re-index?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "Determines the verification step after DIR-035 restores health: passive wait vs forced re-registration. Live evidence ambiguous: fetchedAt timestamps update but price stayed null across cycles - could be failed probes (no fresh 402 to quote) or cache semantics."
+    },
+    {
+      "id": "RQ-045",
+      "question": "Does Agent402 provide any deregister/unlist mechanism for permanently-dead origins (DELETE /api/index/register, unlist flag, or automatic pruning after N consecutive failed crawls), what is the exact window of its '5 submissions per hour per IP' register rate limit, and do many dead lhr.life sellers minted from one IP ever trigger a Sybil cap that shadows ALL origins from that IP?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "Spawned by RQ-043 diagnosis: we accumulate one dead indexed seller per ~15-min tunnel rotation (8+ today), have already hit the register rate limit once, and RQ-036 established a Sybil cap ceil(k/3) keyed by seller - unknown whether k counts our corpses against us. Answerable from agent402.tools source/docs plus one careful probe."
+    },
+    {
+      "id": "RQ-046",
+      "question": "With prices now indexed non-null on a live routable origin, does Agent402's enrichLiveQuotes KEEP prices across subsequent crawl cycles when the tunnel dies mid-cycle (stale-price display vs price reset to null), i.e., can we confirm RQ-044 cache semantics using the current priced row without forced re-registration?",
+      "added": "2026-08-22",
+      "priority": 3,
+      "why": "RQ-044 remains open and now cheaply observable: the d0f3d5eb row carries real prices today; watch it through the next 1-2 rotations to see whether price persists on failure (fetchedAt updates but price retained?) or resets - determines whether every rotation also wipes buyer-visible pricing, strengthening the Render-cutover case quantitatively."
     }
   ],
   "answered": [
+    {
+      "id": "RQ-043",
+      "question": "Why are all three registered origins simultaneously returning 503 or 'probe backed off: /.well-known/x402' with health 0 / routable:false on Agent402's live index - is tunnel-keeper.sh dead, is localhost.run edge-throttling Agent402's repeated crawler probes specifically, and does sustained probe-backoff cause delisting or permanent rank damage?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Found while verifying RQ-039.",
+      "answered": "2026-08-22",
+      "verdict": "answered, premise REFUTED - live diagnosis shows the estate is NOT dead and keeper V3 works: current origin d0f3d5eb0df13e.lhr.life is health:1/routable:true/toolCount:3 with NON-NULL prices ($0.015/$0.03/$0.075) in the index (DIR-033/034 Sui-rail success criterion met; junk rows gone 7->3). The three 503 rows are stale corpses of prior rotations - each localhost.run reconnect mints a new random subdomain, old ones die permanently ('no tunnel here :('), and Agent402 never prunes them (>=8 dead rows today). Real risks found instead: (a) keeper hit Agent402 register rate limit '5 submissions per hour per IP' at 12:17-12:27 MDT - fast rotations (~5-20 min, ssh_pid=none deaths accelerating) can exhaust quota and leave a fresh origin unregistered up to an hour; (b) unbounded same-IP origin minting = unknown Sybil-flag exposure; (c) isRoutable=last-crawl-only means every rotation resets visibility. No evidence lhr.life throttles the crawler itself.",
+      "finding": "org/research/findings.md#2026-08-22--rq-043-why-are-all-three-registered-lhrlife-origins-simultaneously-503probe-backed-off-with-health-0--routablefalse",
+      "directive_proposed": "DIR-038 registration-budget + stale-origin hygiene: throttle re-registers to <=4/hour/IP with GET-before-POST dedup (skip if index already lists current origin listed:true+priced); probe once for a DELETE/deregister API to retire dead origins, document result; keep DIR-034 Render cutover as THE fix. If no deregister exists and dead rows >20, log Sybil risk in operator_asks.md and stop tracking stale origins individually."
+    },
     {
       "id": "RQ-036",
       "question": "What is the exact path to give the :8610 Base-mainnet real-USDC rail (5 SKUs incl. GET /v1/report and /v1/batch) a conformant /.well-known/x402 manifest plus an Agent402/x402scan registration - can it be done autonomously given :8610 currently serves no manifest route - and does dual-listing both rails split or compound discovery health?",
@@ -238,7 +263,7 @@
     {
       "id": "RQ-009",
       "answered": "2026-08-22",
-      "verdict": "feasible in architecture, gated by ONE human step (hosting account creation). Render free tier confirmed fit: Python web service, deploy from GitHub repo, 512MB/0.1CPU, 750 instance-hours/mo, 15-min spin-down (~60s cold start; keep-alive ping via Actions fixes). Rail402 gateway mode CONFIRMED via live GitHub repos + docs: we expose plain JSON, they run 402+on-chain verification+replay guard, USDC settles direct to our wallet \u2014 and their txHash-proof spec matches our existing verify_payment semantics, so DIR-011's facilitator migration may be droppable entirely. Deno Deploy ruled out (JS/TS runtime only). rail402.app itself BLOCKED from this box (publish flow unreachable). Honest discrepancy: PyPI package 'rail402-x402' advertised in docs does not exist (404).",
+      "verdict": "feasible in architecture, gated by ONE human step (hosting account creation). Render free tier confirmed fit: Python web service, deploy from GitHub repo, 512MB/0.1CPU, 750 instance-hours/mo, 15-min spin-down (~60s cold start; keep-alive ping via Actions fixes). Rail402 gateway mode CONFIRMED via live GitHub repos + docs: we expose plain JSON, they run 402+on-chain verification+replay guard, USDC settles direct to our wallet — and their txHash-proof spec matches our existing verify_payment semantics, so DIR-011's facilitator migration may be droppable entirely. Deno Deploy ruled out (JS/TS runtime only). rail402.app itself BLOCKED from this box (publish flow unreachable). Honest discrepancy: PyPI package 'rail402-x402' advertised in docs does not exist (404).",
       "finding": "org/research/findings.md#2026-08-22--rq-009-can-revenue_serverpy-deploy-to-renderrailwaydeno-deploy-free-tier-directly-from-the-github-repo-and-does-rail402s-gateway-listing-mode-work-with-a-fastapi-endpoint",
       "directive_proposed": "DIR-018: one-time human step - create Render account connected to bettergraininfo-rgb/x402-agent-economy-lab free web service; builder automates render.yaml/Dockerfile, /.well-known/agent-services.json + llms.txt discovery files (@rail402/validate-spec), 10-min Actions keep-alive. Fallback: Railway trial."
     },
@@ -266,7 +291,7 @@
     {
       "id": "RQ-003",
       "answered": "2026-08-22",
-      "verdict": "feasible \u2014 decided: one EVM/Base port unlocks Bazaar + Agent402 (real demand surfaces); PayAPI/true402 backlog; Sui facilitator is not a demand channel and its author already sells the whale feed",
+      "verdict": "feasible — decided: one EVM/Base port unlocks Bazaar + Agent402 (real demand surfaces); PayAPI/true402 backlog; Sui facilitator is not a demand channel and its author already sells the whale feed",
       "finding": "org/research/findings.md#2026-08-22--rq-003",
       "directive_proposed": "DIR-009: single EVM x402 port of strongest differentiated endpoint, dual-listed on CDP Bazaar + Agent402 same cycle"
     },
@@ -298,6 +323,17 @@
       "verdict": "answered - probe pipeline WORKS: live index shows all 3 SKUs learned networks:[sui:testnet] via enrichLiveQuotes. price stays null for ONE reason: our accepts entries omit extra{name,decimals}; quoteFromAccepts prices only when extra.decimals is an integer or extra.name matches /usdc/i (USDC=6 decimals hardcoded, refuses to guess exponents). payToByNetwork:{} is structural for manifest-registered sellers (only bazaarItemToTool populates it; router reads payTo live via payToFromLive402 - not a blocker). Null price does NOT exclude us from /api/find or /api/route (payabilityOf='x402' via networks) but unknown price ranks LAST in tie-break (priceRank maps unknown to Infinity). Bonus defect: 4 OpenAPI-derived junk tools (/, /bazaar, /stats, catch-all /{path}) listed alongside our SKUs.",
       "finding": "org/research/findings.md#2026-08-22--rq-037-why-does-agent402s-crawler-show-our-routable-tools-with-pricenull-paywallnull-and-paytobynetwork-despite-health1--and-does-a-null-price-tool-get-excluded-from-apifind--apiroute",
       "directive_proposed": "DIR-033: add extra:{name:\"USDC\",decimals:6} to every accepts entry on both rails (:8604+:8610); convert manifest to rich priced objects per DIR-031; restrict /openapi.json to the 5 paid SKUs; verify /api/index shows real prices within one crawl cycle."
+    },
+    {
+      "id": "RQ-039",
+      "question": "Does adding extra:{name:\"USDC\",decimals:6} to our x402 v2 accepts entries break any existing challenge consumer - sui-x402-facilitator verify/settle, x402scan payable-indexing probe, Agent402 probePaywall, or our own storefront verify_payment - i.e., is DIR-033 a pure win or does it need consumer-by-consumer regression?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Spawned by RQ-037: extra is the single missing field that keeps Agent402 from pricing our rows, but x402 v2 facilitators may validate accepts entries strictly (unknown keys rejected) and our own verify_payment parses the same challenge. One-hour fix is only safe if every consumer tolerates the extension; test on :8604 testnet settle path first, then :8610.",
+      "answered": "2026-08-22",
+      "verdict": "pure win, zero consumer regressions - and already LANDED on :8604 (live 402 carries extra:{name:\"USDC\",decimals:6}). Facilitator types extra as optional Record<string,unknown> (x402.ts L14); official v2 spec defines extra as standard Optional field (spec-conformant indexers must tolerate); Agent402 quoteFromAccepts PRICES from extra.decimals (the desired effect); our verify_payment/storefront never parse the challenge; mcp_bazaar_server ignores unknown keys. Premise correction: :8610 emits a custom-dialect 402 (no v2 accepts array), so DIR-033 there folds into DIR-034's v2 rewrite.",
+      "finding": "org/research/findings.md#2026-08-22--rq-039-does-adding-extranameusdcdecimals6-to-our-x402-v2-accepts-entries-break-any-existing-challenge-consumer-sui-x402-facilitator-verifysettle-x402scan-probe-agent402-probepaywall-or-our-own-storefront-verify_payment--is-dir-033-a-pure-win-or-does-it-need-consumer-by-consumer-regression",
+      "directive_proposed": "DIR-035 listing-health triage: live index pull during verification found ALL THREE origins 503/probe-backed-off, health 0, routable:false - diagnose tunnel-keeper/lhr.life edge throttling, restore one healthy origin, then confirm /api/index rows show non-null prices within one crawl cycle (DIR-033 success criterion). If lhr.life rate-limits crawler probes, escalate Render hosting (RQ-009/DIR-032) to THE unblock."
     }
   ]
 }

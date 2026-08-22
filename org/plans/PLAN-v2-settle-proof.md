@@ -134,3 +134,15 @@ Honest VERIFY status: `(True, '<digest> payer=0x…')` NOT yet produced — no s
 so no digest, no balance delta, no replay-guard run. Directive stays OPEN; do NOT cite a
 proven settle in listings until DIRECTIVE_DIR020_DONE.txt lands with a real digest.
 Rollback: nothing to revert (standalone script + new workflow file only).
+
+### Planner revision 2026-08-22 13:45 MDT (V2 — fewer moving parts)
+Execution above confirmed the faucet is 429-saturated globally: 11× from host AND
+8× from a fresh Actions-runner IP (run 32593285986). No additional funding route
+exists inside bot reach; do NOT burn shifts on manual faucet retries. The plan is
+now reduced to its minimal form:
+1. Sole per-shift action: `test -f org/state/DIRECTIVE_DIR020_DONE.txt && echo SETTLED || echo PENDING`
+   — the */15 armed workflow lands the proof autonomously when the faucet grants.
+2. If still PENDING at the CEO timebox (15:00 MDT), execute the pre-defined honest
+   re-scope (ceo_update_1305): document the precise asset gap and re-scope to
+   buyer-side client documentation. Do not open new funding routes without a
+   named, verified one.
