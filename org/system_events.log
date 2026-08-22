@@ -1,3 +1,5 @@
 2026-08-22T16:28:47Z | AUDITOR | clean — books match chain (1 note(s))
 2026-08-22T16:30:31Z | MEDIC | dirty repo contains NON-org changes — not auto-committing, needs review
 2026-08-22T16:32:58Z | MEDIC | dirty repo contains NON-org changes — not auto-committing, needs review
+2026-08-22T16:33:33Z | MEDIC | restarting dashboard on :8605
+2026-08-22T16:33:40Z | MEDIC | dashboard RECOVERED on :8605 (pid 141254)
