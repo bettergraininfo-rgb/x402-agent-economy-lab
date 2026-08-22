@@ -50,7 +50,11 @@ def gas_ref(addr: str) -> dict:
 
 
 def seller_address() -> str:
-    """Public pay-to address only — never reads key material."""
+    """Public pay-to address only — never reads key material.
+    Honors SELLER_ADDRESS env for keyless hosts (runners)."""
+    env = os.environ.get("SELLER_ADDRESS", "").strip()
+    if env:
+        return env
     with open(os.path.join(ROOT, "sui_seller_wallet.json")) as f:
         return json.load(f)["address"]
 
