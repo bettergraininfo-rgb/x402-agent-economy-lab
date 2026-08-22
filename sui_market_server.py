@@ -75,6 +75,62 @@ _seen_digests: set[str] = set()
 ledger: list[dict] = []
 
 
+def _bazaar_extension(endpoint: str) -> dict:
+    """x402 Bazaar discovery extension (spec-conformant shape emitted by the
+    official SDK's declare_discovery_extension for GET + queryParams routes).
+    Required for x402scan / Agentic.Market indexing."""
+    examples = {
+        "/v1/sentiment": (
+            {"text": "I love this product, great win for the team"},
+            {"label": "positive", "score": 0.8},
+        ),
+        "/v1/entity-extract": (
+            {"text": "Coinbase launched Base and Sui partnered with Mysten"},
+            {"organizations": ["Base", "Coinbase", "Mysten", "Sui"],
+             "proper_nouns": []},
+        ),
+        "/v1/summarize": (
+            {"text": "First sentence of a longer document. Second sentence "
+                     "adds detail. Third sentence concludes."},
+            {"summary": "<top-ranked sentences>", "sentences_in": 3,
+             "sentences_out": 1},
+        ),
+    }
+    example_in, example_out = examples.get(endpoint, ({"text": "..."}, {}))
+    input_schema = {"properties": {"text": {"type": "string"}},
+                    "required": ["text"]}
+    info = {
+        "input": {"type": "http", "method": "GET",
+                  "queryParams": example_in},
+        "output": {"type": "json", "example": example_out},
+    }
+    schema_properties: dict = {
+        "input": {
+            "type": "object",
+            "properties": {
+                "type": {"type": "string", "const": "http"},
+                "method": {"type": "string", "enum": ["GET", "HEAD", "DELETE"]},
+                "queryParams": {"type": "object", **input_schema},
+            },
+            "required": ["type", "method"],
+            "additionalProperties": False,
+        },
+        "output": {
+            "type": "object",
+            "properties": {"type": {"type": "string"},
+                           "example": {"type": "object"}},
+            "required": ["type"],
+        },
+    }
+    schema = {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": schema_properties,
+        "required": ["input"],
+    }
+    return {"bazaar": {"info": info, "schema": schema}}
+
+
 def gql(query: str) -> dict:
     return httpx.post(GRAPHQL, json={"query": query}, timeout=30).json()
 
@@ -177,8 +233,6 @@ def paid(request: Request, path: str, text: str = ""):
     cfg = SERVICES.get(endpoint)
     if not cfg:
         return JSONResponse({"error": "unknown service"}, status_code=404)
-    if not text:
-        return JSONResponse({"error": "missing ?text="}, status_code=400)
 
     digest = request.headers.get("X-SUI-TX-DIGEST")
     sig = request.headers.get("PAYMENT-SIGNATURE")
@@ -199,10 +253,14 @@ def paid(request: Request, path: str, text: str = ""):
         return JSONResponse(content={**cfg["fn"](text), "_receipt": receipt})
 
     if not digest:
+        # 402 challenge MUST precede input validation — directory crawlers
+        # (x402scan, Agentic.Market) probe bare GETs and expect 402, not 400.
         reqs = v2.requirements(endpoint)
+        extensions = _bazaar_extension(endpoint)
         challenge = {
             "x402Version": 2,
             "accepts": [reqs],
+            "extensions": extensions,
             "error": "Payment Required",
             "scheme": "sui-transfer",
             "pay_to": PAY_TO,
@@ -213,9 +271,12 @@ def paid(request: Request, path: str, text: str = ""):
                             "(or use x402 v2 exact via PAYMENT-SIGNATURE)",
         }
         header_body = {"x402Version": 2, "error": "payment_required",
-                       "accepts": [reqs]}
+                       "accepts": [reqs], "extensions": extensions}
         return JSONResponse(status_code=402, content=challenge,
                             headers={"PAYMENT-REQUIRED": v2.b64e(header_body)})
+
+    if not text:
+        return JSONResponse({"error": "missing ?text="}, status_code=400)
 
     ok, reason = verify_onchain(digest.strip(), cfg["price"])
     if not ok:
