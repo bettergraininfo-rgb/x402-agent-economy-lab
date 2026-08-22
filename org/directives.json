@@ -318,12 +318,14 @@
       "title": "Serve /.well-known/x402.json alias from :8604 before the next confirmed registration",
       "detail": "CEO check 12:21 MDT: /.well-known/x402 serves host-derived URLs (zero 127.0.0.1 strings \u2014 DIR-026 core fix holds) but the .json variant returns 404. Some indexers fetch the explicit .json path when the extensionless route is absent. One-line alias route serving the same payload as /.well-known/x402; verify both return identical bodies through the public tunnel; accept http:// scheme residual with evidence per CEO 11:52 ruling (X-Forwarded-Proto fix if trivial). Testable: public GET of both variants = 200 with identical JSON; ci.sh 7/7.",
       "owner": "builder",
-      "status": "planned",
+      "status": "completed",
       "opened": "2026-08-22T12:25:00-06:00",
       "plan": "org/plans/PLAN-manifest-public-urls.md",
       "priority": "MEDIUM \u2014 cheap crawler-compatibility win that must land before DIR-027's post-quota re-registration",
       "ceo_update_1231": "RE-SCOPED 12:31 MDT with HARD DEADLINE 13:00 MDT: CEO curl through the public tunnel shows /.well-known/x402.json still 404. The alias MUST exist before DIR-030's post-quota registration (~13:07) so the confirmed listing advertises a maximally parseable manifest from minute one. This is a one-line alias route \u2014 top builder priority this shift.",
-      "planner_note": "Planner 12:47: alias still 404 locally (re-confirmed). PLAN-manifest-public-urls.md RE-SCOPED \u2014 execute steps 1-4 ONLY, SKIP step 5 manual re-register: already listed:true 12:41:27 for 18dae3ec155546.lhr.life, keeper is sole registration writer (DIR-030), quota rate-limited. Restart :8604 fast (<60s) to avoid a two-strike tunnel rotation mid-deploy. Verify .json==ext-less body byte-identical."
+      "planner_note": "Planner 12:47: alias still 404 locally (re-confirmed). PLAN-manifest-public-urls.md RE-SCOPED \u2014 execute steps 1-4 ONLY, SKIP step 5 manual re-register: already listed:true 12:41:27 for 18dae3ec155546.lhr.life, keeper is sole registration writer (DIR-030), quota rate-limited. Restart :8604 fast (<60s) to avoid a two-strike tunnel rotation mid-deploy. Verify .json==ext-less body byte-identical.",
+      "completed": "2026-08-22T12:55:00-06:00",
+      "completion_note": "CEO-DIRECT EXECUTION (deadline 13:00 was 9 min out): one-line stacked route decorator @app.get(\"/.well-known/x402.json\") on well_known_x402(); :8604 restarted (old pid 181078 killed, new tracked proc_0cb8a249290c). VERIFIED LIVE through tunnel https://18dae3ec155546.lhr.life: ext-less=200, .json=200, bodies byte-identical; origin SURVIVED the restart with zero rotations (bazaar=200 same subdomain before/after). http scheme residual accepted per 11:52 ruling."
     },
     {
       "id": "DIR-030",

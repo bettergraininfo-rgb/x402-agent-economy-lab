@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T12:45:00-06:00",
+  "updated": "2026-08-22T12:55:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -9,12 +9,12 @@
     "external_buyers": 0,
     "treasury_sui": 19.7269,
     "treasury_delta_since_last_check": 0.0,
-    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; earnings_tracker exit 2 at 12:40.",
+    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; earnings_tracker exit 2 at 12:51.",
     "active_experiments": [
       {
         "id": "EXP-014",
         "name": "agent402-listing (first live marketplace index presence)",
-        "status": "CONFIRMED LISTING 12:41:27 MDT \u2014 keeper auto-registered https://18dae3ec155546.lhr.life -> {\"listed\":true,\"routable\":true,\"health\":1,\"toolCount\":7,\"networks\":[\"sui:testnet\"]}; CEO verified origin 200x2 at 12:43 and synced org/state/registered_origin.txt. Crawl window (DIR-024) now formally open. Risk: ssh connections die ~every 20min even with keepalives (12:41 drop was 4th today) \u2014 DIR-032 escalation authorized.",
+        "status": "CONFIRMED LISTING holding: https://18dae3ec155546.lhr.life registered listed:true 12:41:27, still serving 200 at 12:54 (>13 min continuous, zero rotations \u2014 best stability window today). Crawl re-check from ~13:40 MDT. DIR-029 manifest alias landed+verified 12:55.",
         "measure_at": "2026-08-23"
       },
       {
@@ -48,7 +48,7 @@
         "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "hold ONE confirmed indexed Agent402 listing long enough to be crawled: 18dae3ec155546.lhr.life registered listed:true at 12:41:27 and CEO-verified live, but ssh tunnels die ~every 20min despite keepalives (4th drop today at 12:41). DIR-032 pre-authorizes Render persistent-hosting escalation on the next unplanned rotation. Zero external buyers remain the root cause of $0/day.",
+    "binding_constraint": "crawl pickup of confirmed listing 18dae3ec155546.lhr.life within its 24h window (re-check from 13:40 MDT); ssh connections historically die ~every 20min despite keepalives \u2014 DIR-032-style Render escalation remains pre-authorized on next unplanned rotation. Zero external buyers remain root cause of $0/day.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",
