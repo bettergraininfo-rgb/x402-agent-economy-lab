@@ -1,0 +1,43 @@
+name: agent-mine
+# The agent EARNS its own funds: mines Sepolia ETH via the PoWFaucet
+# (real proof-of-work), then claims payout to the agent wallet.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */4 * * *"  # every 4h
+
+jobs:
+  mine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install miner deps + argon2 wasm from faucet repo
+        run: |
+          cd $GITHUB_WORKSPACE
+          npm init -y >/dev/null 2>&1
+          npm install ws --no-fund --no-audit
+          git clone -q --depth 1 https://github.com/pk910/PoWFaucet.git /tmp/PoWFaucet
+          ls -la /tmp/PoWFaucet/libs/argon2_wasm.cjs
+
+      - name: Mine PoW shares (20 min)
+        run: |
+          set +e
+          node pow_miner.mjs \
+            "0xdC0750D5fB649bab3B8b02d31CDab12Dcae0cC51" \
+            1150 2>&1 | tee mine.log
+          code=${PIPESTATUS[0]}
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0   # never fail the workflow; results are in the log
+
+      - name: Upload mining log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mine-log
+          path: mine.log
