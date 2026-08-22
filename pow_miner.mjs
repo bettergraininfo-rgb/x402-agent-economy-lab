@@ -120,6 +120,17 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   console.log("[miner] session started:", start.session,
               "balance:", start.balance, "wei");
 
+  // preimage comes with the startSession response (processSessionInfo):
+  // modules.pow = { lastNonce, preImage, shareCount }
+  const preimageB64 = start.modules?.pow?.preImage;
+  if (!preimageB64) {
+    console.error("[miner] no preimage in session info:",
+                  JSON.stringify(start).slice(0, 300));
+    process.exit(2);
+  }
+  const preimageHex = Buffer.from(preimageB64, "base64").toString("hex");
+  console.log("[miner] preimage acquired:", preimageB64);
+
   // connect mining websocket (endpoint: /ws/pow per PoWModule.ts)
   const wsUrl = BASE.replace("https://", "wss://") +
     "/ws/pow?session=" + start.session + "&cliver=" + CLIVER;
@@ -180,23 +191,6 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const dmask = difficultyMask(difficulty);
   const pstr = powParamsStr(powParams, difficulty);
   while (Date.now() < deadline) {
-    // refresh preimage via session status
-    const status = await api("getSessionStatus?session=" + start.session + "&details=1");
-    let preimageB64 = status.modules?.pow?.preImage || null;
-    if (!preimageB64 && status.data) {
-      preimageB64 = status.data["pow.preimage"] || null;
-    }
-    if (status.status === "failed" || status.failedCode) {
-      console.log("[miner] session failed:", JSON.stringify(status).slice(0, 300));
-      break;
-    }
-    if (!preimageB64) {
-      console.log("[miner] no preimage yet:", JSON.stringify(status).slice(0, 200));
-      await sleep(1000);
-      continue;
-    }
-    const preimageHex = Buffer.from(preimageB64, "base64").toString("hex");
-
     // hash nonces for ~4s between status polls
     const burstEnd = Date.now() + 4000;
     while (Date.now() < burstEnd) {
@@ -217,7 +211,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     }
     const rate = Math.round(minedHashes / ((Date.now() - statTime) / 1000));
     console.log(`[miner] hashes=${minedHashes} shares=${sharesFound} ` +
-                `~${rate} H/s balance=${status.balance} wei`);
+                `~${rate} H/s`);
   }
 
   // claim
