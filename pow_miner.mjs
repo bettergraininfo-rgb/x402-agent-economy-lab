@@ -120,9 +120,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   console.log("[miner] session started:", start.session,
               "balance:", start.balance, "wei");
 
-  // connect mining websocket
+  // connect mining websocket (endpoint: /ws/pow per PoWModule.ts)
   const wsUrl = BASE.replace("https://", "wss://") +
-    "/ws/?session=" + start.session + "&cliver=" + CLIVER;
+    "/ws/pow?session=" + start.session + "&cliver=" + CLIVER;
   const ws = new WebSocket(wsUrl, {
     headers: { "Origin": BASE },
   });
