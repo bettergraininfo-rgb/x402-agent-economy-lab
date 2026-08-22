@@ -52,7 +52,7 @@
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
       "status": "idle",
-      "last_action": "DIR-027 closed PASS: keeper churn fix (2-consecutive-failure restart policy), quota-gated register_gate.sh + listing_sync.sh watcher on @15min cron 1478fa97e830; verbatim listed:true for https://18dae3ec155546.lhr.life; PUBLIC_URL==registered_origin IN-SYNC"
+      "last_action": "DIR-020 executed (settle blocked: faucet 429 host+runner; */15 self-heal workflow armed) + DIR-032 Step 0 Render artifacts staged (DIR-034 gate closed); ci.sh green; pushed a44efe7"
     },
     {
       "name": "Researcher",
