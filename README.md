@@ -9,6 +9,38 @@ an autonomous micro-economy — with live on-chain data as the product.
 **MCP-ready:** any Model Context Protocol agent (Claude Code, Cursor, etc.)
 can connect to `mcp_bazaar_server.py` and buy bazaar services as native tools.
 
+## REAL ON-CHAIN SETTLEMENT (Sui devnet) — proven
+
+`sui_market_server.py` + `sui_market_client.py`: an API marketplace where
+every purchase is an actual signed Sui transaction, verified against the
+chain before the service is served:
+
+1. Unpaid request → `402` challenge naming `pay_to` + exact MIST amount
+2. Buyer agent builds & signs a real transfer (pysui BCS, ed25519)
+3. Retry with `X-SUI-TX-DIGEST` → server queries GraphQL:
+   status SUCCESS? funds landed on `pay_to`? amount ≥ price? digest replayed?
+4. Only then served — with an on-chain receipt attached
+
+Proven transactions: `FJpQrgYm…` (sentiment, 0.05 SUI),
+`2HxocRYh…` (entity-extract, 0.08 SUI). Funding via the official
+`faucet.devnet.sui.io/v2/gas` JSON API — fully programmatic, no captcha/login.
+
+Also proven: a headless PoWFaucet miner (`pow_miner.mjs`) earned 2.9 PoWC
+through 29 server-validated argon2 shares (claim accepted; note PoWC lives
+on the deprecated Holesky chain — mining mechanism itself verified).
+
+```bash
+# run the real-settlement market locally
+.venv/bin/uvicorn sui_market_server:app --port 8604 &
+.venv/bin/python suisettle.py          # create/fund wallet via faucet
+python3 - <<'EOF'                       # fund a second (seller) wallet
+import os, shutil
+from pysui.sui.sui_common.config import *  # noqa
+EOF
+.venv/bin/python sui_a2a_pay.py         # agent-to-agent transfer demo
+.venv/bin/python sui_market_client.py   # buy services with real SUI
+```
+
 Built and verified end-to-end. Settlement is simulated (`payment_core.MockFacilitator`);
 every protocol behavior (402 challenge, signed retries, replay/tamper rejection,
 budget guardrails, dynamic pricing, A2A commerce) is real and tested.

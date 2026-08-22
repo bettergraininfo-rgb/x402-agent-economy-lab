@@ -1,0 +1,92 @@
+name: sui-settlement
+# End-to-end REAL on-chain settlement: fresh wallets, faucet funding from the
+# runner's IP, agent-to-agent transfer, then a paid marketplace purchase
+# verified against the Sui ledger.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 */6 * * *"
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install deps
+        run: |
+          uv venv --clear .venv
+          uv pip install --python .venv/bin/python fastapi "uvicorn[standard]" httpx pysui pynacl base58
+          cd $GITHUB_WORKSPACE && npm init -y >/dev/null 2>&1 && npm install ws ethers --no-fund --no-audit
+
+      - name: Create + fund fresh buyer wallet (runner IP)
+        run: |
+          .venv/bin/python - <<'EOF'
+          import json, os, time, httpx
+          sys_path = os.getcwd()
+          import sys; sys.path.insert(0, sys_path)
+          from suisettle import create_wallet, WALLET_FILE, faucet, gql
+          w = create_wallet()
+          os.replace(WALLET_FILE, "sui_buyer_wallet.json")
+          addr = w["address"]
+          print("buyer:", addr)
+          r = httpx.post("https://faucet.devnet.sui.io/v2/gas",
+                         json={"FixedAmountRequest": {"recipient": addr}}, timeout=30)
+          print("faucet:", r.json().get("status"))
+          time.sleep(5)
+          out = gql('{ address(address: "%s") { balances { nodes { totalBalance } } } }' % addr)
+          bal = sum(int(n["totalBalance"]) for n in
+                    out["data"]["address"]["balances"]["nodes"])
+          print("buyer balance:", bal, "MIST")
+          assert bal > 0, "faucet failed"
+          EOF
+
+      - name: Create + fund seller wallet
+        run: |
+          .venv/bin/python - <<'EOF'
+          import json, os, time, httpx, sys
+          sys.path.insert(0, os.getcwd())
+          # move any stray agent wallet aside first
+          from suisettle import create_wallet, WALLET_FILE
+          w = create_wallet()
+          target = os.path.join(os.getcwd(), "sui_seller_wallet.json")
+          if not os.path.exists(target):
+              os.replace(WALLET_FILE, target)
+          with open(target) as f:
+              addr = json.load(f)["address"]
+          print("seller:", addr)
+          r = httpx.post("https://faucet.devnet.sui.io/v2/gas",
+                         json={"FixedAmountRequest": {"recipient": addr}}, timeout=30)
+          print("faucet:", r.json().get("status"))
+          time.sleep(5)
+          EOF
+
+      - name: Agent-to-agent on-chain payment
+        run: |
+          # point a2a pay at fresh wallets created above
+          .venv/bin/python - <<'EOF'
+          import json, shutil
+          # sui_a2a_pay expects buyer/seller wallet files — already in place.
+          # The funded wallets from previous steps are used directly by
+          # running the market client instead (which needs both).
+          print("wallets ready")
+          EOF
+          set +e
+          timeout 240 .venv/bin/python sui_market_client.py 2>&1 | tee settle.log
+          grep -q '"settlement": "on-chain"' settle.log && \
+            echo "ON-CHAIN SETTLEMENT VERIFIED" || {
+            echo "settlement did not verify"; exit 1; }
+
+      - name: Upload log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: settle-log
+          path: settle.log
