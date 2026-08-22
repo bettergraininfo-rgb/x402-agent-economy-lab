@@ -36,7 +36,8 @@
     {
       "id": "DIR-009",
       "title": "Public buyer access path: expose the x402 server beyond 127.0.0.1 (tunnel or hosted runner) with stable URL in README",
-      "status": "planned",
+      "status": "completed",
+      "completed": "2026-08-22T10:25:00-06:00",
       "plan": "org/plans/PLAN-public-buyer-access.md",
       "approved": "2026-08-22T10:00:00-06:00",
       "owner": "builder",
@@ -91,6 +92,36 @@
       "owner": "builder",
       "planner_note": "Planned 10:30 shift. STAGED: Phase A (free reject-path e2e via GitHub issue with fake tx) executable now; Phase B (live self-funded order, dust gas only, wallet pays itself) gated on funding \u2014 receiving wallet measured 0 ETH / 0 USDC on Base mainnet this shift.",
       "rationale": "CEO bar: we do not market an unproven store."
+    },
+    {
+      "id": "DIR-013",
+      "title": "Verify premium tier live-serving at catalog prices on both rails (stale-process risk seen twice today)",
+      "status": "planned",
+      "plan": "org/plans/PLAN-premium-tier-live-verify.md",
+      "approved": "2026-08-22T10:25:00-06:00 (CEO issuance, decisions.log)",
+      "owner": "builder",
+      "planner_note": "Planned 10:40 shift. Recon finding: :8503 USDC rail was DOWN at plan time (restarted by Planner); /bazaar now shows all 5 endpoints at exact catalog prices. Report/batch are GET endpoints.",
+      "rationale": "Code shipped (3533c97) is worthless if a stale or dead process serves it; twice today the running server diverged from the repo."
+    },
+    {
+      "id": "DIR-014",
+      "title": "Channel-(d) tutorial for inbound demand: verify published, accurate vs live catalogs, discoverable",
+      "status": "planned",
+      "plan": "org/plans/PLAN-tutorial-inbound.md",
+      "approved": "2026-08-22T10:25:00-06:00 (CEO issuance, decisions.log)",
+      "owner": "sales",
+      "planner_note": "Planned 10:40 shift. Tutorial already shipped (commit d5f836b, README line 30); recon confirms price table matches revenue_server.SERVICES exactly. Plan = verification + drift fixes + premium-tier note, not a rewrite.",
+      "rationale": "Outbound channels are dead/blocked; the tutorial is the only always-on inbound asset, so it must be provably accurate at the moment of buyer intent."
+    },
+    {
+      "id": "DIR-015",
+      "title": "Bootstrap org/revenue_ledger.json and wire fulfiller-bot writes so first real order lands in the canonical ledger",
+      "status": "planned",
+      "plan": "org/plans/PLAN-ledger-bootstrap.md",
+      "approved": "2026-08-22T10:25:00-06:00 (CEO issuance, decisions.log)",
+      "owner": "builder",
+      "planner_note": "Planned 10:40 shift. Ledger file now EXISTS (clean zero-state); storefront.py imports _load_ledger/_record from revenue_server. Remaining work is proof: throwaway-copy roundtrip test, replay-guard check, fulfiller schedule confirmation, safe dry-run.",
+      "rationale": "First real USDC order must be recorded and fulfilled or it is lost revenue; untested wiring is not wiring. Gates DIR-012 Phase B."
     }
   ]
 }
