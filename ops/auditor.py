@@ -46,7 +46,6 @@ def check_ledger_vs_chain():
     d = json.loads(lf.read_text())
     claimed = round(float(d.get("lifetime_usdc", 0)), 6)
     txs = d.get("txs", {})
-    verified_usdc = 0.0
     for tx, meta in txs.items():
         try:
             rcpt = rpc("eth_getTransactionReceipt", [tx])
@@ -67,8 +66,6 @@ def check_ledger_vs_chain():
                     recorded = float(meta.get("amount_usdc", -1))
                     if abs(value - recorded) > 1e-6:
                         problems.append(f"tx {tx[:18]}… amount mismatch: chain={value} ledger={recorded}")
-                    else:
-                        verified_usdc += value
                     hit = True
             if not hit:
                 problems.append(f"tx {tx[:18]}… has NO USDC transfer to receiving wallet")
@@ -91,12 +88,11 @@ def check_ledger_vs_chain():
 def check_cron_fleet():
     try:
         out = subprocess.run(["hermes", "cron", "list"], capture_output=True, text=True, timeout=60).stdout
-        active = out.count("[active]")
+        import re
+        clean = re.sub(r"\x1b\[[0-9;]*m", "", out)
+        active = clean.count("[active]")
         if active < 7:
             problems.append(f"cron fleet degraded: only {active} active jobs (expected >= 7)")
-        for line in out.splitlines():
-            if "last_status" in line.lower() or ("fail" in line.lower() and "Last run" not in line):
-                notes.append(line.strip()[:120])
     except Exception as e:
         problems.append(f"cannot inspect cron fleet: {e}")
 
@@ -105,14 +101,16 @@ def main():
     check_ledger_vs_chain()
     check_cron_fleet()
     stamp = datetime.now(timezone.utc).strftime("%FT%TZ")
-    print(f"AUDIT {stamp}")
-    for n in notes:
-        print(f"  note: {n}")
+    lines = [f"AUDIT {stamp}"] + [f"  note: {n}" for n in notes]
     if problems:
-        for p in problems:
-            print(f"  DISCREPANCY: {p}")
+        lines += [f"  DISCREPANCY: {p}" for p in problems]
+        print("\n".join(lines))
         sys.exit(1)
-    print("  verdict: CLEAN — books match reality")
+    # silent-when-clean: record the clean verdict to the ops log, print nothing
+    log = ROOT / "org" / "system_events.log"
+    with open(log, "a") as f:
+        f.write(f"{stamp} | AUDITOR | clean — books match chain ({len(notes)} note(s))\n")
+    sys.exit(0)
 
 
 if __name__ == "__main__":

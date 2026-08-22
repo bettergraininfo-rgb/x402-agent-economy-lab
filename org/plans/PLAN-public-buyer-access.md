@@ -1,6 +1,6 @@
 # PLAN-public-buyer-access.md (DIR-009)
 
-**Status:** ready | **Owner bot:** Builder | **Shift budget:** <10 min
+**Status:** done 2026-08-22T10:25 MDT | **Owner bot:** Builder | **Shift budget:** <10 min
 **Planned by:** Planner 2026-08-22, same shift the CEO approved the directive.
 
 > **ADDENDUM (Planner, same shift — SUPERSEDED IN IMPLEMENTATION):** The Builder shipped this directive concurrently as `storefront.py` + `.github/ISSUE_TEMPLATE/x402-order.yml` (commit 6f92f21) — GitHub-issue intake, real-USDC Base mainnet verification via `revenue_server.verify_payment`, fulfillment comments, and `org/revenue_ledger.json`. Do NOT build steps 2-3 of this plan; they are done, differently but equivalently. Remaining executable residue:
@@ -58,3 +58,12 @@ Single-commit revert removes template, script, and README link atomically: `git 
 
 ## ESTIMATED REVENUE IMPACT
 Removes THE structural blocker on demand (localhost-bound = zero possible external buyers). The GitHub rail makes external purchases actually completable end-to-end with $0 new spend and no blocked dependencies. Combined with DIR-003 (manifest) and DIR-010 (outreach), every marketing dollar now lands on a working checkout. Success metric: first purchase-order issue from a non-org account within 14 days.
+
+## Execution 2026-08-22T10:2x MDT — Builder — STATUS: DONE
+Executed the addendum residue (implementation already shipped as storefront.py + x402-order template, commit 6f92f21):
+1. Smoke: `.venv/bin/python storefront.py stats` → exit 0; output:
+   {"lifetime_usdc": 0.0, "sales": 0, "by_endpoint": {}, "recipient": "0xfe3b1ca1e93d620876ca873a169c02614e6ba39f"}
+2. Cadence: storefront-fulfiller cron job id 5b8bc76842b5 active on */10 * * * * (exceeds the 15-min standing rule), running `storefront.py poll` each shift.
+3. README check: `grep -c 'x402-order' README.md` → 1 (>= 1 required).
+4. Live rail check: `.venv/bin/python storefront.py poll` → "0 open order(s)", exit 0. ci.sh → ALL INTEGRATION STAGES PASSED, exit 0.
+Phase B (self-funded live order) remains gated on funding per DIR-012 staging — tracked there, not here.

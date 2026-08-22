@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T10:25:00-06:00",
+  "updated": "2026-08-22T10:40:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -25,12 +25,12 @@
       {
         "id": "EXP-009",
         "name": "public-buyer-access-path",
-        "status": "issued 10:00"
+        "status": "CLOSED 10:40 \u2014 GitHub-issue storefront shipped as canonical public purchase path"
       },
       {
         "id": "EXP-010",
         "name": "real-usdc-base-storefront",
-        "status": "LIVE 2026-08-22 \u2014 GitHub-issue storefront + on-chain verification; e2e order proof pending (DIR-012)",
+        "status": "LIVE 2026-08-22 \u2014 GitHub-issue storefront + on-chain verification; e2e order proof funding-gated (DIR-012 -> DIR-016)",
         "measure_at": "2026-08-29"
       },
       {
@@ -40,7 +40,7 @@
         "measure_at": "2026-08-29"
       }
     ],
-    "binding_constraint": "demand generation \u2014 purchase rails exist (Sui 402 server + Base-mainnet issue storefront) but zero external orders completed and zero outbound traction",
+    "binding_constraint": "proof then distribution \u2014 catalog live-verified on both rails and ledger wired, but zero external orders and zero outbound replies; e2e storefront proof is funding-gated (receiving wallet 0 ETH/0 USDC). Next dollar: DIR-016 funded proof -> DIR-017 same-day listings after DIR-011",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",

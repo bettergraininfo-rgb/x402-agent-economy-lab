@@ -33,9 +33,9 @@ fi
 if ! git rev-parse HEAD >/dev/null 2>&1; then
   issues+="REPO BROKEN: git rev-parse failed"$'\n'
 fi
-ahead="$(git rev-list --count origin/master..master 2>/dev/null || echo '?')"
+ahead="$(git rev-list --count origin/master..master 2>/dev/null)"
 case "$ahead" in
-  ''|'?') issues+="GIT REMOTE: cannot compare with origin/master (push broken?)"$'\n';;
+  '') issues+="GIT REMOTE: cannot compare with origin/master (push broken?)"$'\n';;
   0) : ;;
   *) issues+="UNPUSHED: $ahead local commit(s) ahead of origin/master"$'\n';;
 esac
@@ -47,18 +47,16 @@ for f in org/kpis.json org/directives.json org/board.md org/revenue_ledger.json 
 done
 
 # 5. Revenue ledger sanity (parseable JSON)
-python3 - <<'EOF' >> /tmp/wd_ledger.out 2>&1 || true
-import json, sys
+ledger_err="$(python3 - <<'EOF'
+import json
 try:
     d = json.load(open("org/revenue_ledger.json"))
     assert isinstance(d.get("lifetime_usdc"), (int, float))
 except Exception as e:
     print(f"LEDGER CORRUPT: {e}")
 EOF
-if grep -q "LEDGER CORRUPT" /tmp/wd_ledger.out 2>/dev/null; then
-  issues+="$(cat /tmp/wd_ledger.out)"
-fi
-rm -f /tmp/wd_ledger.out
+)"
+[ -n "$ledger_err" ] && issues+="$ledger_err"$'\n'
 
 # 6. Cron fleet visible via hermes CLI (bots can still be listed = scheduler alive)
 if ! hermes cron list >/tmp/wd_cron.out 2>&1; then
@@ -72,7 +70,7 @@ else
     issues+="CRON FLEET: only $active active jobs (expected >= 7)"$'\n'
   fi
   if [ "${paused:-0}" -gt 0 ]; then
-    issues+="CRON FLEET: $paused job(s) show paused/disabled:"$'\n'"$(grep -i 'paused\|disabled' /tmp/wd_cron.out | head -3)"$'\n'
+    issues+="CRON FLEET: $paused job(s) show paused/disabled:"$'\n'"$(grep -iE '\[(paused|disabled)\]' /tmp/wd_cron.out | head -3)"$'\n'
   fi
   if [ -n "$err" ]; then issues+="CRON ERRORS: $err"$'\n'; fi
 fi
