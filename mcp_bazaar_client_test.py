@@ -7,6 +7,7 @@ AI agent would: initialize -> list_tools -> call tools.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import time
@@ -15,7 +16,7 @@ import httpx
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-ROOT = "/home/jackie/x402-agent-service"
+ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 def wait_port(url: str, timeout: float = 15) -> bool:

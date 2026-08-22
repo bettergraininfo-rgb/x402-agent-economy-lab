@@ -1,8 +1,8 @@
 """Agent buying LIVE Base mainnet data through the x402 payment loop."""
 from __future__ import annotations
-import base64, json, sys
+import base64, json, os, sys
 import httpx
-sys.path.insert(0, "/home/jackie/x402-agent-service")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from payment_core import PaymentPayload
 
 BASE = "http://127.0.0.1:8504"

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 import sys
 import threading
 import time
@@ -17,7 +18,7 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-sys.path.insert(0, "/home/jackie/x402-agent-service")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from payment_core import MockFacilitator, PaymentPayload, PaymentRequirements
 
 
