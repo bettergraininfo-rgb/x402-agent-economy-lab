@@ -111,6 +111,36 @@ def verify_onchain(digest: str, min_amount: int, attempts: int = 5) -> tuple[boo
     return True, f"verified {paid} MIST received"
 
 
+@app.get("/")
+def root():
+    """Origin manifest for x402 index crawlers (Agent402 probes origin root)."""
+    return {
+        "service": "x402-agent-economy-lab NLP micro-services",
+        "description": ("Machine-payable NLP APIs: sentiment, entity-extract, "
+                        "summarize. Pay per call in USDC via x402 (v2 exact scheme, "
+                        "sui:testnet) — unauthenticated request returns the 402 "
+                        "challenge with accepts[] payment requirements."),
+        "catalog": "/bazaar",
+        "health": "/health",
+        "stats": "/stats",
+        "repo": "https://github.com/bettergraininfo-rgb/x402-agent-economy-lab",
+        "endpoints": [ep for ep in SERVICES],
+    }
+
+
+@app.get("/.well-known/x402")
+def well_known_x402(request: Request):
+    """Agent402 service manifest (spec: agent402-service-manifest/1)."""
+    base = str(request.base_url).rstrip("/")
+    return {
+        "spec": "agent402-service-manifest/1",
+        "version": 1,
+        "resources": [f"{base}{ep}" for ep in SERVICES],
+        "payment": "x402 v2 exact scheme (sui:testnet USDC) - unauthenticated "
+                   "request returns HTTP 402 with accepts[] requirements",
+    }
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "pay_to": PAY_TO, "settlement": "sui-devnet"}
