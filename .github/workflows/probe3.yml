@@ -1,0 +1,29 @@
+name: funding-probe3
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe PoWFaucet instances for captcha-free mining
+        run: |
+          for host in sepolia-faucet.pk910.de hoodi-faucet.pk910.de ephemery-faucet.pk910.de; do
+            echo "=== $host ==="
+            curl -s --max-time 15 "https://$host/api/getFaucetConfig?cliver=2.5.0" \
+              -o /tmp/cfg.json
+            python3 - <<EOF
+          import json
+          try:
+              cfg = json.load(open("/tmp/cfg.json"))
+          except Exception as e:
+              print("parse fail:", e); raise SystemExit
+          mods = cfg.get("modules", {})
+          powm = mods.get("pow", {})
+          print("captcha:", json.dumps(mods.get("captcha")))
+          print("pow keys:", sorted(powm.keys())[:20])
+          print("pow.params:", powm.get("params"))
+          print("pow.difficulty:", powm.get("difficulty"))
+          print("pow.reward:", powm.get("reward"))
+          print("faucetEnabled:", cfg.get("faucetEnabled"))
+          EOF
+          done
