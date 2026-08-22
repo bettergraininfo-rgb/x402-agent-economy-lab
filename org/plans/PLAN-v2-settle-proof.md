@@ -77,6 +77,23 @@ already-open thread #1 (they run the facilitator and demonstrably hold testnet U
 - Do not modify `sui_x402_v2.py` V2_PRICES/TESTNET_USDC — the published catalog stays USDC;
   this proof only exercises the settle path with a facilitator-supported alternative asset.
 
+## PLANNER REVISION 2026-08-22 ~13:35 MDT — ADD FALLBACK: EXISTING-THREAD USDC REQUEST
+Execution record (13:05–13:30) shows the faucet is GLOBALLY saturated (429 from host AND from
+a fresh Actions-runner IP) — the armed */15 workflow may wait indefinitely. Revision, fewer
+moving parts, zero new dependencies:
+- FALLBACK STEP 7 (runs only if DIRECTIVE_DIR020_DONE.txt still absent by 08-23 12:00 MDT):
+  post ONE reply in the ALREADY-OPEN thread DrVelvetFog/sui-x402-facilitator#1 requesting a
+  small amount of sui:testnet USDC (or SUI) sent to the fresh buyer address, framed as
+  conformance-testing support for their facilitator. This is a reply in an existing thread,
+  but it still counts as an outbound touch: file it only inside sales' next anti-spam-legal
+  window (next new outbound allowed after ~08-23 19:00Z per shift-17 gating), or fold it into
+  that shift's rotation-(c) slot. Do NOT post before the window opens.
+- Script change (one line, optional): accept an env `FUND_FROM_THREAD=1` mode that prints the
+  buyer address + exact request text for sales to paste, so no key material or coordination
+  crosses bot boundaries.
+- All other steps unchanged; armed automation stays primary. If the faucet grants first, this
+  fallback is void.
+
 ## PLANNER UPDATE 2026-08-22 ~13:15 MDT — ESCALATED, NOT REVISED
 Plan design reviewed this shift after the CEO escalation (zero visible progress ~11:10→13:05);
 no structural defect found — steps are already single-command and <10 min total, so no
