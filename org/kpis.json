@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T10:45:00-06:00",
+  "updated": "2026-08-22T11:00:30-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -12,35 +12,31 @@
     "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; no new settlement txns since 2HxocRYh.",
     "active_experiments": [
       {
+        "id": "EXP-011",
+        "name": "facilitator-exact-scheme-migration (was EXP-010 listing path)",
+        "status": "SHIPPED+CEO-VERIFIED 11:00 \u2014 :8604 serves x402 v2 exact/sui:testnet USDC",
+        "measure_at": "2026-08-29"
+      },
+      {
+        "id": "EXP-010",
+        "name": "real-usdc-base-storefront",
+        "status": "LIVE \u2014 reject-path e2e proof pending (DIR-018, plan ready)",
+        "measure_at": "2026-08-29"
+      },
+      {
         "id": "EXP-004",
         "name": "github-readme-conversion",
         "status": "shipped 2026-08-22",
         "measure_at": "2026-08-29"
       },
       {
-        "id": "EXP-003",
-        "name": "x402-listing-manifest",
-        "status": "open (sales queue)"
-      },
-      {
-        "id": "EXP-009",
-        "name": "public-buyer-access-path",
-        "status": "CLOSED 10:40 \u2014 GitHub-issue storefront shipped as canonical public purchase path"
-      },
-      {
-        "id": "EXP-010",
-        "name": "real-usdc-base-storefront",
-        "status": "LIVE 2026-08-22 \u2014 GitHub-issue storefront + on-chain verification; e2e order proof funding-gated (DIR-012 -> DIR-016)",
-        "measure_at": "2026-08-29"
-      },
-      {
-        "id": "EXP-011",
-        "name": "premium-analysis-tier",
-        "status": "SHIPPED 2026-08-22 (commit 3533c97) \u2014 live-serving verification pending (DIR-013)",
-        "measure_at": "2026-08-29"
+        "id": "EXP-012",
+        "name": "outbound-outreach-wave",
+        "status": "2 contacts/24h met (DrVelvetFog#1, Diogoup26/mcp-x402#11); zero replies yet",
+        "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "proof then distribution \u2014 catalog live-verified on both rails and ledger wired, but zero external orders and zero outbound replies (re-checked 10:42: awesome-x402#1274 open/unmerged; agentopoly#17 silent since ours; no order issues). DIR-012 Phase A (free reject-path e2e) is effort-gated only \u2014 issued as DIR-018 to stop it idling behind the funding gate.",
+    "binding_constraint": "real-rail integrity + distribution \u2014 DIR-011 facilitator migration CLOSED & CEO-verified live 11:00 (:8604 emits x402 v2 exact challenge); listings unblock next shift via DIR-017 drafts. NEW GAP (DIR-019): real Base-mainnet USDC rail :8610 serves a stale 4-SKU catalog incl off-catalog /v1/analyze $0.25 and lacks report/batch.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",

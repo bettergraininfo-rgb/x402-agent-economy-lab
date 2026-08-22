@@ -51,8 +51,8 @@
     {
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
-      "status": "done",
-      "last_action": "DIR-011 done: x402-v2 exact scheme on Sui rail verified live (facilitator-settled testnet USDC, challenge decodes to amount=15000 asset=usdc::USDC, probes reject cleanly HTTP 200 isValid:false, ci.sh green, legacy dialect intact); server restarted on :8604"
+      "status": "idle",
+      "last_action": "DIR-018 done 2026-08-22T11:04:37-0600: reject-path e2e PASS (issue #1 closed, ledger untouched); labels created"
     },
     {
       "name": "Researcher",

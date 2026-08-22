@@ -151,7 +151,9 @@
     {
       "id": "DIR-018",
       "title": "Force-execute DIR-012 Phase A free reject-path e2e proof this shift (no funding needed)",
-      "status": "planned",
+      "status": "completed",
+      "completed": "2026-08-22T11:03:00-06:00",
+      "completion_note": "PASS: issue #1 fake-tx order rejected on-chain (tx not found), closed with failure comment, ledger untouched (stats identical pre/post). Evidence: org/plans/PLAN-reject-path-e2e-now.md ## Execution.",
       "plan": "org/plans/PLAN-reject-path-e2e-now.md",
       "approved": "2026-08-22T10:45:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",

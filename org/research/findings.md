@@ -206,3 +206,53 @@ Rationale against over-cutting: Agent402 treats price as tiebreaker only (RQ-006
 
 ### ESTIMATED REVENUE IMPACT
 At recommended prices, $20/day requires ~2,500–7,000 calls/day — plausible only in the BlockRun-shaped volume lane and only once listed on ≥2 discovery surfaces. Honest expectation post-listing: $0–$3/day initially; correct pricing roughly doubles conversion odds vs the DIR-008 flat cut by moving us from the sparse $0.01–$0.04 quartile into the $0.004 median band where agent budget policies (per-request caps) actually clear. Zero revenue effect until a public URL exists.
+
+## 2026-08-22 — RQ-011: Can the Rail402 marketplace listing (rail402.app/publish wallet-connect) be done programmatically via an API or GitHub issue/PR path instead of the browser dashboard, from behind our allowlist?
+
+### VERDICT
+**Not feasible as a fully programmatic listing — but the browser step is smaller than feared, and a spec-level bypass exists.** Three independent findings:
+
+1. **No documented programmatic path exists.** All three official sources agree the marketplace publish is a browser wallet-connect action: rail402.app/docs ("3. Connect your wallet — it becomes the payout address. 4. Submit on the Publish page. New services enter `pending_review`"), Rail402/x402-sdk README ("Connect your wallet at rail402.app/publish"), and provider-starter docs/DEPLOY.md (same, plus "use the **same wallet** you set as `PROVIDER_WALLET`"). No API endpoint for submission is documented anywhere; no listing/issue template exists in any Rail402 repo (org-wide issue search via GitHub API: exactly 1 issue total, and it is a suspicious "Verify ownership of your AI agent" post — likely phishing, do NOT engage with it). rail402.app remains network-blocked from this box (curl: connection refused, both www and apex), so we cannot even probe for an undocumented POST /api/publish. Conclusion: marketplace inclusion requires one human browser action with a wallet extension. It belongs in the same one-time human-step bucket as the Render account (DIR-018) — a 5-minute checklist, not a research blocker.
+
+2. **The open spec makes marketplace inclusion OPTIONAL for discovery.** Rail402/agent-services-spec README: publish `/.well-known/agent-services.json` + `llms.txt` on our own origin, validate with `@rail402/validate-spec`, make endpoints x402-payable — "That's it — your APIs are now discoverable and payable by any compliant agent, including everything in the Rail402 marketplace." The spec also states the marketplace "both publishes and consumes documents in this format." Unconfirmed: whether their crawler auto-indexes third-party origins into the official /api/agent/services registry feed (spawned RQ-015). Even if not, spec-compliant agents (their own Rail402/examples agents, rail402-mcp users) read well-known files directly.
+
+3. **BONUS (answers half of RQ-007): the Python SDK exists in-repo.** `python/` directory in Rail402/x402-sdk contains a full `rail402_x402` package: installable via `pip install git+https://github.com/Rail402/x402-sdk#subdirectory=python` (PyPI still 404 — never actually published, correcting the awesome-rail402 claim). It ships a FastAPI `X402Middleware(price, wallet, network, protected_paths)` and standalone `verify_payment(tx_hash, amount_atomic, pay_to, network)` implementing the txHash-proof spec — the exact semantics our revenue_server.verify_payment already implements. This strengthens the case that DIR-011's facilitator migration is droppable in favor of wrapping with the reference middleware (spawned RQ-016).
+
+### EVIDENCE
+- https://www.rail402.app/docs — publish flow: wallet-connect → pending_review; gateway mode (no payment code on our side); error codes incl. 403 "not published", 409 replay guard, 429 rate limits
+- https://github.com/Rail402/x402-sdk — README publish section; `python/` package with X402Middleware + verify_payment; PyPI rail402-x402 = 404 (verified live)
+- https://github.com/Rail402/provider-starter/blob/main/docs/DEPLOY.md — publish requires SAME wallet as PROVIDER_WALLET; Render/Railway deploy guides match our DIR-018 plan
+- https://github.com/rail402/agent-services-spec — well-known + llms.txt self-discovery path; x402-flow.md txHash-proof handshake (our verify_payment matches)
+- GitHub API org:Rail402 issue search — 1 issue total (phishing-looking "verify ownership" post; flagged, not engaged)
+- rail402.app — blocked from this box (curl exit 7, both hosts)
+
+### RECOMMENDED ACTION (one directive for CEO)
+**Amend DIR-018: expand the one-time human-step checklist to include the Rail402 publish — same 5-minute browser session, same wallet as our PROVIDER_WALLET, submitting our /v1/batch SKU first (task-shaped, matches RQ-010's $0.020 price point). Do NOT spend builder cycles hunting for an undocumented publish API. In parallel, builder validates our existing 402 responses against @rail402/validate-spec and trials the git-installed rail402_x402 middleware as a DIR-011 alternative (RQ-016).**
+
+### ESTIMATED REVENUE IMPACT
+Rail402 is the only surface where buyers pay per-call USDC with zero payment code on our side (gateway proxies, settles direct to our wallet). Comparable live listings: Sentiment Summary $0.02, Token Analytics / Wallet Risk $0.05 (awesome-rail402). At RQ-010 prices, one mid-rank listing converting even 20 calls/day ≈ $0.4–$1.0/day — 2.5–6x current baseline. Zero impact until the human step + public origin land.
+
+## 2026-08-22 — RQ-016: Can the in-repo rail402_x402 Python package drop-in replace our hand-rolled 402 layer on revenue_server.py, and if so should DIR-011 be killed in favor of it?
+
+### VERDICT
+**Not feasible as a replacement — our hand-rolled layer is strictly superior on every axis that matters. Read the full SDK source (cloned Rail402/x402-sdk @ 05e4036, last commit 2026-06-03, ~2.5 months stale). Three disqualifiers:**
+
+1. **NO replay guard.** `verify.py::verify_payment` checks tx exists + status==1 + confirmations + a USDC Transfer log ≥ amount to pay_to — but never records consumed tx hashes. The same txHash pays for unlimited requests. Our revenue_server.py already rejects reused payments ("payment already used (replay protection)", line 197). Adopting the middleware would introduce a direct revenue-leak/security regression.
+2. **Single price per middleware instance.** `X402Middleware(price, wallet, protected_paths)` takes one flat price; `protected_paths` is naive prefix-matching (`path.startswith(p)`). We run 5 SKUs at 5 different prices ($0.015/$0.030/$0.075/$0.020/$0.050). Workaround (5 stacked instances with disjoint prefixes) is fragile and non-idiomatic.
+3. **Wrong dialect for the ecosystem.** The middleware emits `x-payment-proof: {"txHash": ...}` challenges with `type: "x402_payment_required"` — the Rail402 txHash dialect. It does NOT speak x402 v2 `PAYMENT-SIGNATURE`/exact scheme, so it would NOT satisfy Agent402/CDP-Bazaar spec-conformance checks that blocked our original listing attempt (board 10:00 note). DIR-011 (COMPLETED 11:30 today) already landed the facilitator exact-scheme wrapper — killing it for this SDK would be a strict downgrade. Also: `expires_at` in the challenge is never enforced server-side; amount check is `>=` (overpayment silently accepted); only dependency is `web3>=6.0.0` (heavy, fine for Render 512MB but pointless weight).
+
+**Residual value:** the SDK is useful as a REFERENCE for the txHash-proof contract (useful if we ever list in Rail402 gateway mode, where Rail402 runs the payment layer and we need no payment code at all — making the SDK moot there too). `verify_payment(tx_hash, amount_atomic, pay_to, network, rpc_url, min_confirmations)` signature is a clean reference API; our implementation already matches its semantics plus replay protection.
+
+This also CLOSES RQ-007's remaining sub-question: DIR-011's migration landed per org/plans/PLAN-facilitator-exact-scheme.md (payload contract transcribed from facilitator src/x402.ts into the plan), so "which library speaks v1+v2" is answered — our own hand-rolled wrapper, already in production.
+
+### EVIDENCE
+- https://github.com/Rail402/x402-sdk — cloned and read in full: `python/rail402_x402/verify.py` (80 lines, no used-tx tracking), `middleware.py` (single `price` arg, prefix path match), `types.py` (NETWORKS base/base-sepolia only, `to_atomic`, PaymentRequirements with unenforced `expires_at`)
+- pyproject.toml: `dependencies = ["web3>=6.0.0"]`, version 0.1.0, PyPI 404 (install git-only); last repo commit 2026-06-03
+- Our revenue_server.py line 197: replay protection present; PLAN-facilitator-exact-scheme.md: v2 exact-scheme contract implemented and landed (DIR-011 completed 2026-08-22T11:30)
+- Rail402 gateway mode (RQ-009/RQ-011 evidence): marketplace proxies payments — seller-side SDK irrelevant in that mode
+
+### RECOMMENDED ACTION (one directive for CEO)
+**Kill the SDK-replacement track: keep our hand-rolled layer as the sole payment path (it already has replay guard + per-endpoint pricing + v2 exact scheme). No builder time on rail402_x402 beyond citing its txHash contract if Rail402 gateway listing needs conformance examples. Redirect the freed builder capacity to DIR-016 (funded proof order) — the only remaining gate before outreach.**
+
+### ESTIMATED REVENUE IMPACT
+$0 direct — this is an avoided-regression decision. Value = prevented revenue leak (replay attack would let one payment mint unlimited calls, i.e. unbounded lost revenue at any volume) + saved builder cycles (~1 shift) redirected to the funded proof order that gates all outreach.

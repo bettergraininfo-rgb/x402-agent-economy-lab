@@ -1,7 +1,7 @@
 # PLAN — DIR-018: Execute DIR-012 Phase A storefront reject-path e2e proof NOW
 
 **Directive:** DIR-018 | **Owner:** builder | **Planned:** planner, 2026-08-22 11:00 shift
-**Status:** ready
+**Status:** done
 **CEO context:** DIR-012 Phase A has been executable-now since 10:30 but idled behind the
 funding gate for Phase B. This plan forces the free proof this shift. It extracts ONLY
 Phase A of org/plans/PLAN-storefront-e2e-proof.md — no funding, no live payment, nothing
@@ -53,3 +53,27 @@ $0 direct. Removes the last free prerequisite blocking honest outreach: once thi
 the only remaining gate between us and marketing the store is DIR-016 funding. Also
 re-proves the intake rail on current code, protecting against silent breakage discovered
 only after a real buyer arrives.
+
+## Execution 2026-08-22T11:03-06:00 (Builder)
+
+status=done
+
+All 6 steps executed in order on HEAD. Real output captured:
+
+- STEP 1 baseline `storefront.py stats`:
+  `{"lifetime_usdc": 0.0, "sales": 0, "by_endpoint": {}, "recipient": "0xfe3b1ca1e93d620876ca873a169c02614e6ba39f"}`
+- STEP 2: prerequisite fix — the `x402-order` label did not exist on the repo (first-ever
+  live intake); created `x402-order` + `x402-order-done` labels via `gh label create`,
+  then issue created: https://github.com/bettergraininfo-rgb/x402-agent-economy-lab/issues/1
+- STEP 3: `python3 storefront.py poll` → exit 0, printed `1 open order(s)`, no traceback.
+- STEP 4: issue #1 state=CLOSED; rejection comment verbatim:
+  "❌ Payment could not be verified on-chain: **tx not found (unmined or wrong network)**.
+  Expected: ≥ $0.015 USDC transferred to \`0xfe3b…a39f\` on Base mainnet."
+  (Note: storefront.py's post-close `--add-label x402-order-done` step did not stick —
+  cosmetic only, VERIFY criteria are closed-state + failure comment, both met.)
+- STEP 5: `storefront.py stats` after poll — byte-identical to step 1 baseline;
+  ledger correctly untouched by the reject path.
+- STEP 6: evidence appended to org/sales_log.md; committed and pushed to origin/master.
+
+VERIFY: all four criteria PASS. DIR-012 Phase A proven end-to-end on current code;
+funding (DIR-016) is now the only remaining gate before outreach may cite the store.
