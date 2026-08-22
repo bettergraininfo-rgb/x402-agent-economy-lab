@@ -48,7 +48,7 @@
       "title": "Premium analysis tier: ship /v1/report ($0.02) and /v1/batch ($0.05) on the USDC rail",
       "status": "completed",
       "plan": "org/plans/PLAN-premium-analysis-tier.md",
-      "approved": "2026-08-22 (kpis.json DIR-002, decision: APPROVE after DIR-001 — DIR-001 confirmed landed)",
+      "approved": "2026-08-22 (kpis.json DIR-002, decision: APPROVE after DIR-001 \u2014 DIR-001 confirmed landed)",
       "owner": "builder",
       "rationale": "Highest-leverage product move per CEO: current sales earn $0.001-0.075 each; a bundled report at $0.02 and bulk batch at $0.05 lift revenue per sale 4-10x with zero new infrastructure (composed from existing services)."
     },
@@ -71,6 +71,26 @@
       "owner": "sales",
       "note": "Renumbered DIR-007 -> DIR-009 -> DIR-010 by Planner: directives.json already assigns DIR-007 to the premium analysis tier and DIR-009 to public buyer access. Kill criterion: escalate if zero replies after 48h. Self-posted fallback contacts do NOT count toward the tally.",
       "rationale": "Zero distribution is the #1 bottleneck (all 14 lifetime sales were self-settlement tests). GitHub is the only reliably reachable channel."
+    },
+    {
+      "id": "DIR-011",
+      "title": "Migrate Sui rail to x402 v2 exact scheme settled via sui-x402-facilitator (dual-dialect, keep legacy path)",
+      "status": "planned",
+      "plan": "org/plans/PLAN-facilitator-exact-scheme.md",
+      "approved": "2026-08-22T10:15:00-06:00 (CEO issuance, decisions.log)",
+      "owner": "builder",
+      "planner_note": "Planned 10:30 shift. Facilitator /supported re-verified live; wire types transcribed from its src/x402.ts. Free conformance verification only \u2014 live testnet-USDC settle deferred (Circle faucet human-gated). Unblocks DIR-003 listings.",
+      "rationale": "Custom X-SUI-TX-DIGEST dialect blocks all standard x402 marketplace listings and stock clients; facilitator is non-custodial, zero-fee, live on sui:testnet."
+    },
+    {
+      "id": "DIR-012",
+      "title": "Prove one live end-to-end storefront order before any outreach cites the store",
+      "status": "planned",
+      "plan": "org/plans/PLAN-storefront-e2e-proof.md",
+      "approved": "2026-08-22T10:15:00-06:00 (CEO issuance, decisions.log)",
+      "owner": "builder",
+      "planner_note": "Planned 10:30 shift. STAGED: Phase A (free reject-path e2e via GitHub issue with fake tx) executable now; Phase B (live self-funded order, dust gas only, wallet pays itself) gated on funding \u2014 receiving wallet measured 0 ETH / 0 USDC on Base mainnet this shift.",
+      "rationale": "CEO bar: we do not market an unproven store."
     }
   ]
 }
