@@ -23,7 +23,7 @@ jobs:
 
       - name: Recreate wallet from secret
         run: |
-          python3 - <<'EOF'
+          .venv/bin/python - <<'EOF'
           import json, os
           sec = os.environ.get("SOL_AGENT_SECRET")
           if sec:
