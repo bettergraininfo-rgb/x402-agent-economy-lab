@@ -123,7 +123,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   // connect mining websocket
   const wsUrl = BASE.replace("https://", "wss://") +
     "/ws/?session=" + start.session + "&cliver=" + CLIVER;
-  const ws = new WebSocket(wsUrl);
+  const ws = new WebSocket(wsUrl, {
+    headers: { "Origin": BASE },
+  });
   let reqId = 1;
   const pending = {};
   const sendReq = (action, data) => new Promise((resolve, reject) => {
