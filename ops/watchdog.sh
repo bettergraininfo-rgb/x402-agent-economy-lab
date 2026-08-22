@@ -25,13 +25,25 @@ if [ "$addr" != "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f" ]; then
   issues+="CONFIG DRIFT: revenue /health recipient is '$addr' (expected 0xFe3B…a39f)"$'\n'
 fi
 
-# 3. Repo integrity
-if [ -n "$(git status --porcelain 2>/dev/null | head -20)" ]; then
-  n="$(git status --porcelain | wc -l)"
-  issues+="REPO DIRTY: $n uncommitted change(s) in $ROOT"$'\n'
-fi
-if ! git rev-parse HEAD >/dev/null 2>&1; then
-  issues+="REPO BROKEN: git rev-parse failed"$'\n'
+# 3. Repo integrity (persistence-aware: bots legitimately leave the repo dirty
+#    mid-build; alert only when the dirty set is unchanged for >25 minutes)
+dirty_list="$(git status --porcelain 2>/dev/null | sort)"
+if [ -n "$dirty_list" ]; then
+  if ! git rev-parse HEAD >/dev/null 2>&1; then
+    issues+="REPO BROKEN: git rev-parse failed"$'\n'
+  fi
+  dirty_hash="$(printf '%s' "$dirty_list" | shasum | cut -d' ' -f1)"
+  dirty_n="$(printf '%s\n' "$dirty_list" | wc -l)"
+  now=$(date +%s)
+  state_file=/tmp/wd_dirty_state
+  read -r p_hash p_n p_ts < "$state_file" 2>/dev/null || p_hash=""
+  if [ "$p_hash" = "$dirty_hash" ]; then
+    age=$(( now - p_ts ))
+    [ $age -gt 1500 ] && issues+="REPO DIRTY: $dirty_n uncommitted change(s) untouched for $((age/60)) min (abandoned build?)"$'\n'
+  else
+    p_ts=$now
+  fi
+  echo "$dirty_hash $dirty_n $p_ts" > "$state_file"
 fi
 ahead="$(git rev-list --count origin/master..master 2>/dev/null)"
 case "$ahead" in

@@ -18,6 +18,8 @@ import httpx
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
+import sui_x402_v2 as v2
+
 GRAPHQL = "https://graphql.devnet.sui.io/graphql"
 PAY_TO = "0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a"
 LAMPORT = 1_000_000_000
@@ -117,7 +119,8 @@ def health():
 @app.get("/bazaar")
 def bazaar():
     return {"services": [
-        {"endpoint": ep, "price_sui": cfg["price"] / LAMPORT}
+        {"endpoint": ep, "price_sui": cfg["price"] / LAMPORT,
+         **({"accepts": [v2.requirements(ep)]} if ep in v2.V2_PRICES else {})}
         for ep, cfg in SERVICES.items()
     ]}
 
@@ -146,17 +149,41 @@ def paid(request: Request, path: str, text: str = ""):
         return JSONResponse({"error": "missing ?text="}, status_code=400)
 
     digest = request.headers.get("X-SUI-TX-DIGEST")
+    sig = request.headers.get("PAYMENT-SIGNATURE")
+
+    # --- x402 v2 exact scheme (standard dialect, facilitator-settled) ---
+    if sig:
+        reqs = v2.requirements(endpoint)
+        ok, reason = v2.settle_via_facilitator(sig.strip(), reqs)
+        if not ok:
+            return JSONResponse(
+                {"error": "payment rejected", "reason": reason,
+                 "scheme": "x402-v2-exact"},
+                status_code=402)
+        receipt = {"tx": reason, "service": endpoint,
+                   "amount": int(reqs["amount"]),
+                   "settlement": "facilitator", "scheme": "x402-v2-exact"}
+        ledger.append(receipt)
+        return JSONResponse(content={**cfg["fn"](text), "_receipt": receipt})
+
     if not digest:
+        reqs = v2.requirements(endpoint)
         challenge = {
+            "x402Version": 2,
+            "accepts": [reqs],
             "error": "Payment Required",
             "scheme": "sui-transfer",
             "pay_to": PAY_TO,
             "amount_mist": cfg["price"],
             "network": "sui-devnet",
             "instructions": "Execute a SUI transfer of amount_mist to pay_to, "
-                            "then retry with header X-SUI-TX-DIGEST: <digest>",
+                            "then retry with header X-SUI-TX-DIGEST: <digest> "
+                            "(or use x402 v2 exact via PAYMENT-SIGNATURE)",
         }
-        return JSONResponse(status_code=402, content=challenge)
+        header_body = {"x402Version": 2, "error": "payment_required",
+                       "accepts": [reqs]}
+        return JSONResponse(status_code=402, content=challenge,
+                            headers={"PAYMENT-REQUIRED": v2.b64e(header_body)})
 
     ok, reason = verify_onchain(digest.strip(), cfg["price"])
     if not ok:

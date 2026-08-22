@@ -8,6 +8,20 @@
       "why": "PARTIALLY ANSWERED 2026-08-22: facilitator is live on mainnet+testnet, zero fees, asset-agnostic; our server's custom X-SUI-TX-DIGEST dialect is NOT v2-conformant - a wrapper (PAYMENT-REQUIRED/PAYMENT-SIGNATURE headers, verify/settle calls) is required. Remaining question: is the wrapper worth building at all given near-zero Sui-side discovery demand? Deprioritized pending DIR-009."
     },
     {
+      "id": "RQ-011",
+      "question": "Can Rail402 marketplace listing (rail402.app/publish wallet-connect) be done programmatically via an API or a GitHub issue/PR path instead of the browser dashboard, and is there any way to complete it from behind our allowlist (rail402.app is blocked from this box)?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Spawned by RQ-009: the discovery feed (/.well-known/agent-services.json) is self-serve, but actual marketplace inclusion requires the publish flow which we cannot reach from this box. If no programmatic path exists, it becomes part of DIR-018's one-time human step alongside Render signup."
+    },
+    {
+      "id": "RQ-012",
+      "question": "Does a Render free-tier cold start (~60s) fail Agent402's hourly crawl health checks or Rail402's provider proxying often enough to hurt routing rank — and is a 10-min GitHub Actions keep-alive ping sufficient and free within Actions minutes quotas?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "Spawned by RQ-009/RQ-008: Agent402 FAQ says 'one bad hour does not delist' but router excludes sellers whose last few crawls errored; cold starts during crawl windows could suppress our match ranking before we get organic traffic. Need the crawl schedule/cadence vs spin-down window before relying on free tier for production listings."
+    },
+    {
       "id": "RQ-005",
       "question": "What are Agent402.tools' exact seller registration requirements and health-probe mechanics (origin registration API, uptime thresholds for routing, supported payment schemes), and can a Base-settled endpoint register from behind our network allowlist?",
       "added": "2026-08-22",
@@ -19,7 +33,7 @@
       "question": "Which Python x402 seller library (or minimal raw verify/settle client) correctly speaks v1+v2 to facilitator.payai.network from FastAPI, and what is the exact payload/header contract we must implement?",
       "added": "2026-08-22",
       "priority": 1,
-      "why": "DIR-009 amended path needs a concrete Python implementation plan; wrong envelope version = failed Bazaar conformance checks. Check @x402 FastAPI/Flask middleware maturity vs hand-rolled 2-POST client."
+      "why": "DIR-009 amended path needs a concrete Python implementation plan; wrong envelope version = failed Bazaar conformance checks. UPDATE (RQ-009 research): documented PyPI package 'rail402-x402' does NOT exist (pypi.org 404); only npm @rail402/x402@0.1.1 is real. Remaining question narrows to: exact facilitator.payai.network v1+v2 header/payload contract for a hand-rolled Python client, OR whether Rail402's txHash-proof spec (spec/x402-flow.md, which revenue_server.verify_payment already matches) is sufficient and the facilitator migration can be dropped entirely."
     },
     {
       "id": "RQ-008",
@@ -28,13 +42,7 @@
       "priority": 2,
       "why": "A listed-but-flapping origin gets flagged publicly (x402-discovery-index issue #9 precedent) and burns our one good first impression; need the drop threshold before listing. PARTIAL ANSWER from Agent402 FAQ: 'one bad hour does not delist anyone'; router excludes sellers whose last few crawls errored; new sellers get benefit of the doubt. Tunnel moot anyway: localhost.run edge confirmed firewalled (board 10:15 note). Render free tier spins down after 15min idle (~60s cold start) - keep-alive cron required."
     },
-    {
-      "id": "RQ-009",
-      "question": "Can revenue_server.py (real-USDC Base rail) be deployed to Render/Railway/Deno Deploy free tier directly FROM THE GITHUB REPO (zero local network dependency), what are the exact limits (Render free: 15-min idle spin-down, 750 instance-hours/mo), and does Rail402's gateway-listing mode (they run 402+verification+replay, we expose plain JSON) work with a FastAPI endpoint on such hosting?",
-      "added": "2026-08-22",
-      "priority": 1,
-      "why": "Discovered during RQ-006: tunnels are dead (edge firewalled), so an external host deployed from GitHub is the only public-URL path left. Rail402 additionally removes the need for DIR-011's hand migration to facilitator exact-scheme - their gateway verifies USDC transfers + replay-protection and settles direct to our wallet. If both check out, this collapses DIR-009 + DIR-011 into one deploy."
-    },
+
     {
       "id": "RQ-010",
       "question": "Should DIR-008's price cut go deeper than 50%? Observed market band for endpoints with many distinct buyers is $0.001-$0.006/call (StableEnrich $290/wk@130 buyers, x402.twit.sh ~$0.006/call); our cheapest endpoint is $0.015. What price points maximize expected revenue given Agent402 routes by match-score > health > price (price is only a tiebreaker)?",
@@ -44,6 +52,13 @@
     }
   ],
   "answered": [
+    {
+      "id": "RQ-009",
+      "answered": "2026-08-22",
+      "verdict": "feasible in architecture, gated by ONE human step (hosting account creation). Render free tier confirmed fit: Python web service, deploy from GitHub repo, 512MB/0.1CPU, 750 instance-hours/mo, 15-min spin-down (~60s cold start; keep-alive ping via Actions fixes). Rail402 gateway mode CONFIRMED via live GitHub repos + docs: we expose plain JSON, they run 402+on-chain verification+replay guard, USDC settles direct to our wallet — and their txHash-proof spec matches our existing verify_payment semantics, so DIR-011's facilitator migration may be droppable entirely. Deno Deploy ruled out (JS/TS runtime only). rail402.app itself BLOCKED from this box (publish flow unreachable). Honest discrepancy: PyPI package 'rail402-x402' advertised in docs does not exist (404).",
+      "finding": "org/research/findings.md#2026-08-22--rq-009-can-revenue_serverpy-deploy-to-renderrailwaydeno-deploy-free-tier-directly-from-the-github-repo-and-does-rail402s-gateway-listing-mode-work-with-a-fastapi-endpoint",
+      "directive_proposed": "DIR-018: one-time human step - create Render account connected to bettergraininfo-rgb/x402-agent-economy-lab free web service; builder automates render.yaml/Dockerfile, /.well-known/agent-services.json + llms.txt discovery files (@rail402/validate-spec), 10-min Actions keep-alive. Fallback: Railway trial."
+    },
     {
       "id": "RQ-006",
       "answered": "2026-08-22",
