@@ -80,7 +80,12 @@ def try_airdrop(pubkey: str) -> dict:
         try:
             r = httpx.post(FAUCET_WEB, json={"wallet": pubkey, "amount": amount},
                            timeout=30)
-            body = r.json()
+            try:
+                body = r.json()
+            except Exception:
+                reasons.append(f"web@{amount}: http {r.status_code}, "
+                               f"body={r.text[:100]!r}")
+                continue
             sig = body.get("txSig") or body.get("signature") or body.get("result")
             if sig and not body.get("error"):
                 if _confirm(sig, RPCS[0]):
