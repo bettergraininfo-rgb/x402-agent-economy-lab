@@ -26,6 +26,18 @@ ROOT = Path.home() / "x402-agent-service"
 TXLOG = ROOT / ".txlog.jsonl"
 BOTSTATE = ROOT / ".botstate.json"
 BOTLOG = ROOT / ".botlog.jsonl"
+ORG = ROOT / "org"
+EVENTS_LOG = ORG / "system_events.log"
+
+# --------------------------------------------------------------- ops layer
+
+OPS_SERVICES = [
+    {"name": "market-server", "port": 8604},
+    {"name": "dashboard",     "port": 8605},
+    {"name": "revenue-server","port": 8610},
+]
+OPS_RECIPIENT = "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f"
+OPS_NETWORK = "base-mainnet"
 
 # --------------------------------------------------------------- agents
 
@@ -259,6 +271,103 @@ def escrow_claim_info():
 def logs():
     rows = _read_jsonl(BOTLOG, limit=120)
     return {"logs": rows}
+
+
+# --------------------------------------------------------------- ops layer
+
+def _probe_service(name: str, port: int) -> dict:
+    """GET http://127.0.0.1:<port>/health with wall-time latency.
+
+    Any HTTP response counts as up (even non-200); refused/timed-out -> down.
+    """
+    entry = {"name": name, "port": port, "up": False, "latency_ms": None}
+    try:
+        req = urllib.request.Request(
+            f"http://127.0.0.1:{port}/health", method="GET")
+        t0 = time.perf_counter()
+        with urllib.request.urlopen(req, timeout=3):
+            pass
+        entry["up"] = True
+        entry["latency_ms"] = round((time.perf_counter() - t0) * 1000)
+    except urllib.error.HTTPError:
+        # service answered with an HTTP error status — still up
+        entry["up"] = True
+        entry["latency_ms"] = round((time.perf_counter() - t0) * 1000)
+    except Exception:
+        pass  # connection refused / timeout / anything else -> down
+    return entry
+
+
+def _tail_text_lines(path: Path, limit: int = 12) -> list[str]:
+    """Last `limit` non-blank lines of a plain-text file ([] if unreadable)."""
+    if not path.exists():
+        return []
+    try:
+        with open(path) as f:
+            lines = [ln.rstrip("\n") for ln in f]
+    except OSError:
+        return []
+    return [ln for ln in lines if ln.strip()][-limit:]
+
+
+def _parse_event_line(ln: str) -> dict:
+    """'ISO-ts | BOT | event' -> {ts,bots,event}; falls back to raw event."""
+    parts = [p.strip() for p in ln.split("|", 2)]
+    if len(parts) == 3:
+        return {"ts": parts[0], "bots": parts[1], "event": parts[2]}
+    return {"ts": None, "bots": None, "event": ln}
+
+
+@app.get("/api/ops")
+def ops():
+    services: list[dict] = []
+    for svc in OPS_SERVICES:
+        try:
+            services.append(_probe_service(svc["name"], svc["port"]))
+        except Exception:
+            services.append({"name": svc["name"], "port": svc["port"],
+                             "up": False, "latency_ms": None})
+
+    real_money: dict = {
+        "recipient": OPS_RECIPIENT,
+        "network": OPS_NETWORK,
+        "lifetime_usdc": None,
+        "sales": None,
+    }
+    try:
+        led = json.loads((ORG / "revenue_ledger.json").read_text())
+        if isinstance(led, dict):
+            real_money["lifetime_usdc"] = led.get("lifetime_usdc")
+            real_money["sales"] = led.get("sales")
+    except Exception:
+        pass
+
+    last_audit = None
+    ops_events: list[dict] = []
+    try:
+        recent = _tail_text_lines(EVENTS_LOG, limit=400)
+        for ln in recent:
+            if "AUDITOR" in ln:
+                last_audit = ln
+        ops_events = [_parse_event_line(ln)
+                      for ln in _tail_text_lines(EVENTS_LOG, limit=12)]
+    except Exception:
+        pass
+
+    briefing_ts = None
+    try:
+        mt = (ORG / "briefing.md").stat().st_mtime
+        briefing_ts = datetime.fromtimestamp(mt, tz=timezone.utc).isoformat()
+    except Exception:
+        pass
+
+    return {
+        "services": services,
+        "real_money": real_money,
+        "last_audit": last_audit,
+        "ops_events": ops_events,
+        "briefing_ts": briefing_ts,
+    }
 
 
 if __name__ == "__main__":

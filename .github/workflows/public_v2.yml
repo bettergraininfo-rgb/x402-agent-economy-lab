@@ -1,0 +1,84 @@
+# public_v2.yml — DIR-023 spike: serve the x402 v2 rail (:8604) on a public
+# HTTPS quick-tunnel from an Actions runner, record the URL in-repo so
+# listings/outreach can cite an indirection that survives ephemeral runners.
+# Self-healing cadence */45; each run refreshes the URL record.
+name: public-v2-endpoint
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/45 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  serve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install deps (mirror ci.sh)
+        run: pip install --quiet fastapi uvicorn httpx
+
+      - name: Start sui_market_server :8604 + sanity check
+        run: |
+          nohup python3 -m uvicorn sui_market_server:app --host 127.0.0.1 --port 8604 > server.log 2>&1 &
+          sleep 5
+          curl -sS -m 10 http://127.0.0.1:8604/bazaar | head -c 300; echo
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8604/bazaar)
+          echo "local bazaar http=$code"
+          [ "$code" = "200" ] || { echo "server failed to boot"; tail -50 server.log; exit 1; }
+
+      - name: Install cloudflared
+        run: |
+          wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cf
+          chmod +x cf
+          ./cf --version
+
+      - name: Launch quick tunnel + parse URL
+        id: tunnel
+        run: |
+          nohup ./cf tunnel --url http://localhost:8604 > tunnel.log 2>&1 &
+          url=""
+          for i in $(seq 1 30); do
+            sleep 2
+            url=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' tunnel.log | head -1)
+            [ -n "$url" ] && break
+          done
+          if [ -z "$url" ]; then echo "no trycloudflare URL; falling back to localhost.run"
+            nohup ssh -o StrictHostKeyChecking=no -R 80:localhost:8604 nokey@localhost.run > tunnel2.log 2>&1 &
+            for i in $(seq 1 15); do
+              sleep 2
+              url=$(grep -oE 'https://[a-z0-9-]+\.lhr\.life' tunnel2.log | head -1)
+              [ -n "$url" ] && break
+            done
+          fi
+          if [ -z "$url" ]; then echo "SPIKE NEGATIVE: both tunnels failed"; tail -30 tunnel.log; exit 1; fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "TUNNEL_URL=$url"
+          curl -sS -m 20 -o /dev/null -w 'tunnel bazaar http=%{http_code}\n' "$url/bazaar"
+
+      - name: Record URL in repo
+        run: |
+          URL="${{ steps.tunnel.outputs.url }}"
+          STAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          # APPEND-only: line 1 of docs/PUBLIC_URL.txt is owned by ops/tunnel-keeper.sh
+          # (the host localhost.run origin cited by live listings) — never overwrite it here.
+          printf '%s runner-spike %s\n' "$URL" "$STAMP" >> docs/PUBLIC_URL.txt
+          git config user.name "bettergraininfo-rgb"
+          git config user.email "bettergraininfo-rgb@users.noreply.github.com"
+          git add docs/PUBLIC_URL.txt
+          git commit -q -m "public-url refresh [skip ci] $URL $STAMP" || exit 0
+          git pull --rebase -q origin master || true
+          git push -q origin master || { sleep 10; git pull --rebase -q origin master || true; git push -q origin master; }
+
+      - name: Keep tunnel alive while serving
+        run: |
+          URL="${{ steps.tunnel.outputs.url }}"
+          echo "serving $URL for ~240s"
+          sleep 240
+          curl -sS -m 20 "$URL/health"; echo
+          curl -sS -m 20 -o /dev/null -w 'final bazaar http=%{http_code}\n' "$URL/bazaar"

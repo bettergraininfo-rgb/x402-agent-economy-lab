@@ -272,10 +272,12 @@
     {
       "id": "DIR-027",
       "title": "Listing integrity loop: keep Agent402 registration in lockstep with tunnel URL rotations",
-      "detail": "11:52 audit proved a registered listing can go stale in <10 minutes when localhost.run rotates the subdomain (a157204d13d607 \u2192 503 while listed). Work: tunnel-keeper.sh (or a small watcher cron @15min per user cadence standard) compares docs/PUBLIC_URL.txt against the last-registered origin (persist to org/state/registered_origin.txt); on mismatch, POST agent402.tools/api/index/register with the new origin, log verbatim response to org/sales_log.md, update state file. Testable: force one rotation and show auto re-registration with logged success.",
+      "detail": "11:52 audit proved a registered listing can go stale in <10 minutes when localhost.run rotates the subdomain (a157204d13d607 \\u2192 503 while listed). Work: tunnel-keeper.sh (or a small watcher cron @15min per user cadence standard) compares docs/PUBLIC_URL.txt against the last-registered origin (persist to org/state/registered_origin.txt); on mismatch, POST agent402.tools/api/index/register with the new origin, log verbatim response to org/sales_log.md, update state file. Testable: force one rotation and show auto re-registration with logged success.",
       "owner": "ops",
-      "status": "new",
+      "status": "planned",
+      "plan": "org/plans/PLAN-listing-sync-lockstep.md",
       "opened": "2026-08-22T11:55:00-06:00",
+      "planner_note": "Planned 12:00 MDT shift. Recon: ops/tunnel-keeper.sh already has a register() that re-POSTs on rotation, but (a) logs only to /tmp/tunnel-keeper.log (violates verbatim-response sales rule), (b) persists nothing to org/state/registered_origin.txt, (c) is session-scoped (dies with box restarts), (d) ignores docs/PUBLIC_URL.txt (CEO-designated source of truth). Plan adds ops/listing_sync.sh + @15min watcher cron + safe loop drill (seed stale state value, no tunnel kill = zero downtime). Keeper's own loop stays as first line of defense; watcher is the independent backstop.",
       "priority": "HIGH \u2014 an indexed-but-dead origin burns our only discovery surface and wastes the crawl window",
       "rationale": "Presence without uptime is worse than nothing: Agent402 health checks against a 503 origin may delist us before the index ever crawls us."
     }
