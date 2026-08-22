@@ -221,7 +221,10 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   // claim — session must be CLOSED first (running -> claimable transition)
   console.log("[miner] closing mining session…");
   try {
-    await sendReq("closeSession");
+    await Promise.race([
+      sendReq("closeSession"),
+      new Promise((r) => setTimeout(r, 5000)),  // don't hang if no ack
+    ]);
   } catch (e) { /* already closed */ }
   await new Promise((r) => setTimeout(r, 2000));
 
