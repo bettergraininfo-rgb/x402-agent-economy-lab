@@ -1,41 +1,32 @@
 {
+  "source": "org/decisions.log (2026-08-22 CEO approvals)",
   "directives": [
     {
       "id": "DIR-001",
-      "title": "Reprice API for revenue density",
-      "status": "approved",
-      "priority": 1,
-      "rationale": "$20/day at $0.001-0.005/call needs thousands of calls/day. Reprice to $0.01/$0.02/$0.05 tiers and add a $0.25 premium tier so fewer sales are needed.",
-      "assigned": "planner",
-      "created": "2026-08-22"
+      "title": "Reprice all services upward (~15x) so $20/day needs ~1.3k calls/day instead of 20k",
+      "status": "planned",
+      "plan": "org/plans/PLAN-reprice-services.md",
+      "approved": "2026-08-22",
+      "owner": "builder",
+      "rationale": "At current prices ($0.001-$0.005/call) reaching $20/day requires ~20k paid calls/day. Repricing cuts required volume ~15x."
     },
     {
       "id": "DIR-002",
-      "title": "Launch premium endpoints (analysis/report generation)",
-      "status": "approved",
-      "priority": 2,
-      "rationale": "High-ticket items: full-text analysis report, structured data extraction, batch processing. Each sale should earn $0.10+.",
-      "assigned": "planner",
-      "created": "2026-08-22"
+      "title": "Premium endpoint parity: ship /v1/summarize on the Sui-settlement server (highest price point)",
+      "status": "planned",
+      "plan": "org/plans/PLAN-premium-endpoint-parity.md",
+      "approved": "2026-08-22",
+      "owner": "builder",
+      "rationale": "/v1/summarize is our highest-margin product on the USDC rail but missing from sui_market_server.py; each current sale earns half a cent."
     },
     {
       "id": "DIR-003",
-      "title": "Get listed where x402 buyers look",
-      "status": "approved",
-      "priority": 3,
-      "rationale": "No external buyer has ever called our API. Distribution is the binding constraint.",
-      "assigned": "sales",
-      "created": "2026-08-22"
-    },
-    {
-      "id": "DIR-004",
-      "title": "Convert GitHub README into a landing page that sells",
-      "status": "open",
-      "priority": 4,
-      "rationale": "Repo is public; organic traffic should convert. Needs pricing table, live demo curl examples, revenue proof.",
-      "assigned": "sales",
-      "created": "2026-08-22"
+      "title": "x402 ecosystem listing: publish machine-readable bazaar manifest via GitHub for discoverability",
+      "status": "planned",
+      "plan": "org/plans/PLAN-x402-listing-manifest.md",
+      "approved": "2026-08-22",
+      "owner": "sales",
+      "rationale": "Zero external buyers known; distribution is the binding constraint. Repo-first listing avoids blocked external dependencies."
     }
-  ],
-  "_note": "CEO updates statuses each cycle: open -> approved -> planned -> completed / killed. Planner plans approved items; Builder executes planned items; Sales owns DIR-003/004 directly."
+  ]
 }

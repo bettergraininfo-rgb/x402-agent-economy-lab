@@ -1,24 +1,64 @@
 {
-  "as_of": "2026-08-22T09:25:00-06:00",
-  "revenue": {
-    "today_usdc": 0.0,
-    "lifetime_usdc": 0.034,
-    "lifetime_sales": 14,
-    "daily_run_rate_usdc": 0.16,
-    "target_daily_usdc": 20.0,
-    "gap_multiple_needed": 125
-  },
-  "treasury": {
-    "total_sui_devnet": 19.7269,
-    "buyer_sui": 8.1369,
-    "seller_sui": 11.59,
-    "miner": "PoWC off-chain (Holesky, chain dead)"
-  },
-  "experiments": [
-    {"id": "EXP-001", "name": "price-increase", "status": "approved", "owner": "planner"},
-    {"id": "EXP-002", "name": "new-premium-endpoints", "status": "approved", "owner": "planner"},
-    {"id": "EXP-003", "name": "x402-ecosystem-listing", "status": "approved", "owner": "sales"},
-    {"id": "EXP-004", "name": "github-readme-conversion", "status": "open", "owner": "sales"},
-    {"id": "EXP-005", "name": "research-demand-channels", "status": "open", "owner": "researcher"}
+  "updated": "2026-08-22T09:32:00-06:00",
+  "directives": [
+    {
+      "id": "DIR-001",
+      "title": "Reprice endpoints upward",
+      "detail": "Raise summarize to $0.01, entity-extract to $0.005, sentiment to $0.002. Current prices need 20k calls/day to hit target; repricing cuts that ~15x.",
+      "owner": "planner",
+      "status": "approved",
+      "opened": "2026-08-22T09:25:00-06:00",
+      "decision": "APPROVE — execute in server config this shift."
+    },
+    {
+      "id": "DIR-002",
+      "title": "Ship 2 premium endpoints (analysis tier)",
+      "detail": "Add POST /v1/report (full structured analysis, $0.02/call) and POST /v1/batch (bulk sentiment+extract, $0.05/batch). Highest-leverage path: each current sale earns half a cent.",
+      "owner": "builder",
+      "status": "approved",
+      "opened": "2026-08-22T09:25:00-06:00",
+      "decision": "APPROVE — after DIR-001 lands."
+    },
+    {
+      "id": "DIR-003",
+      "title": "List on x402 ecosystem / bazaar discovery",
+      "detail": "Register the market server with x402 discovery mechanisms so external agents can find and pay us. Distribution is the binding constraint — zero external buyers known.",
+      "owner": "sales",
+      "status": "open",
+      "opened": "2026-08-22T09:25:00-06:00",
+      "decision": "RE-SCOPE — first concrete step: verify bazaar.py / chainfeed.py registration paths actually reach the live x402 network; if dead ends, document and pivot to GitHub-based discovery (README + topic tags)."
+    },
+    {
+      "id": "DIR-004",
+      "title": "Find one real external buyer",
+      "detail": "Identify and contact at least one real potential buyer of a paid text-analysis API (agent projects using x402, MCP tool registries, AI agent hackathon teams). Testable: >=1 outbound contact logged, or a public listing live, within 24h. Kill criterion: no channel found in 48h -> pivot to SEO/listing-only strategy.",
+      "owner": "sales",
+      "status": "new",
+      "opened": "2026-08-22T09:32:00-06:00"
+    },
+    {
+      "id": "DIR-005",
+      "title": "Escrow claim integration completion",
+      "detail": "Build cycle 1 added escrow claim endpoint + dashboard panel. Finish QA: verify claim path releases locked Balance<SUI> end-to-end on devnet with a real txn hash recorded. Testable: one successful create->claim cycle with tx digest in ledger.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T09:32:00-06:00"
+    },
+    {
+      "id": "DIR-006",
+      "title": "GitHub repo conversion optimization",
+      "detail": "README must lead with what we sell, prices, live endpoint URL, and x402 payment instructions. Add topics/tags. Testable: README rewritten + pushed this week; measure stars/visits delta after 7 days.",
+      "owner": "sales",
+      "status": "open",
+      "opened": "2026-08-22T09:25:00-06:00"
+    }
+  ],
+  "decisions_log": [
+    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-001", "call": "APPROVE"},
+    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-002", "call": "APPROVE"},
+    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-003", "call": "RE-SCOPE"},
+    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-004", "call": "ISSUED"},
+    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-005", "call": "ISSUED"},
+    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-006", "call": "KEEP OPEN"}
   ]
 }

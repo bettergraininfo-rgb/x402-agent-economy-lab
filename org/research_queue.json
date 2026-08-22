@@ -1,9 +1,19 @@
 {
   "queue": [
-    "Where do x402 / AI-agentic-payment services get listed so real buyers find them? Is there an official x402 discovery directory?",
-    "What do comparable pay-per-call AI APIs charge per request, and what volume do they do?",
-    "Can we earn revenue by running useful public compute (inference proxying, data labeling APIs) for agents on Base via x402?",
-    "Which GitHub repos/projects integrate x402 payments and might buy NLP microservices?",
-    "Is there a bazaar/aggregator registry where agent-callable paid tools are indexed?"
-  ]
+    {
+      "id": "RQ-001",
+      "question": "Which asset we already own (Sui GraphQL watcher, chainfeed pipeline, PoW miner telemetry) can be turned into a proprietary recurring data feed that agents would pay $0.005-0.01/call for? What do comparable paid feeds charge and earn?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "agentatwork.xyz category data shows only proprietary-data feeds clear meaningful revenue; generic NLP is a dead zone"
+    },
+    {
+      "id": "RQ-002",
+      "question": "What is the exact technical path and cost to serve an EVM/Base x402 endpoint from this box (public HTTPS, CDP or x402.org facilitator registration, Sepolia vs mainnet gas/faucet constraints)?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "prerequisite engineering question before any Bazaar listing; network allowlist may block some steps - identify workarounds (GitHub Actions)"
+    }
+  ],
+  "answered": []
 }
