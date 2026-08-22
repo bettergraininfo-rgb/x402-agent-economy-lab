@@ -27,6 +27,8 @@ No signup. Pay in USDC, get your result as a GitHub comment, verified on-chain:
 
 Every payment is verified on-chain before fulfillment; replayed tx hashes are rejected.
 
+> 📖 **New here?** Read the [first machine-payment walkthrough](docs/tutorial-first-machine-payment.md) — a complete, honest tour of both purchase paths with real captured requests and responses.
+
 ## The catalog
 
 | Endpoint | Price / call | Input | Output |
