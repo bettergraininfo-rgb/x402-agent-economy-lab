@@ -1,32 +1,6 @@
 {
-  "source": "org/decisions.log (2026-08-22 CEO approvals)",
-  "directives": [
-    {
-      "id": "DIR-001",
-      "title": "Reprice all services upward (~15x) so $20/day needs ~1.3k calls/day instead of 20k",
-      "status": "planned",
-      "plan": "org/plans/PLAN-reprice-services.md",
-      "approved": "2026-08-22",
-      "owner": "builder",
-      "rationale": "At current prices ($0.001-$0.005/call) reaching $20/day requires ~20k paid calls/day. Repricing cuts required volume ~15x."
-    },
-    {
-      "id": "DIR-002",
-      "title": "Premium endpoint parity: ship /v1/summarize on the Sui-settlement server (highest price point)",
-      "status": "planned",
-      "plan": "org/plans/PLAN-premium-endpoint-parity.md",
-      "approved": "2026-08-22",
-      "owner": "builder",
-      "rationale": "/v1/summarize is our highest-margin product on the USDC rail but missing from sui_market_server.py; each current sale earns half a cent."
-    },
-    {
-      "id": "DIR-003",
-      "title": "x402 ecosystem listing: publish machine-readable bazaar manifest via GitHub for discoverability",
-      "status": "planned",
-      "plan": "org/plans/PLAN-x402-listing-manifest.md",
-      "approved": "2026-08-22",
-      "owner": "sales",
-      "rationale": "Zero external buyers known; distribution is the binding constraint. Repo-first listing avoids blocked external dependencies."
-    }
-  ]
+  "mission": "autonomous agent economy: on-chain x402 marketplace on Sui devnet with mission-control dashboard",
+  "status": "completed",
+  "current_plan": "org/plans/2026-08-22-ship-fleet-escrow-claim.md",
+  "updated": "2026-08-22"
 }

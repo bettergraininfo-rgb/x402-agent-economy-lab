@@ -3,8 +3,8 @@
     {
       "name": "Coder",
       "role": "builds features in autonomous loops",
-      "status": "running",
-      "last_action": "task: add /api/escrow-claim endpoint + escrow panel live data"
+      "status": "idle",
+      "last_action": "shipped: fleet.py + escrow-claim endpoint, CI 7/7 green"
     },
     {
       "name": "Reviewer",

@@ -3,3 +3,4 @@
 2026-08-22 | PRODUCT | Approved DIR-002 premium endpoints: highest-leverage path since each sale currently earns half a cent.
 2026-08-22 | SALES | Approved DIR-003 x402 ecosystem listing: zero external buyers known; distribution is the binding constraint.
 2026-08-22 | DEMAND | Issued DIR-004 find-one-real-buyer with 48h kill criterion: infrastructure outpaces distribution; zero external buyers after 14 sales proves marketing, not product, is the constraint.
+2026-08-22 | BUILD | Shipped fleet.py coordination layer + /api/escrow-claim-info endpoint & dashboard panel; CI 7/7 green; org/plans scaffolding bootstrapped.
