@@ -56,8 +56,8 @@
     {
       "id": "DIR-008",
       "title": "Pricing A/B checkpoint: if zero external sales by 2026-08-29, cut all prices 50% once",
-      "status": "scheduled",
-      "plan": null,
+      "status": "planned",
+      "plan": "org/plans/PLAN-pricing-checkpoint.md",
       "due": "2026-08-29",
       "owner": "planner",
       "source": "org/decisions.log CEO entry 2026-08-22T09:45; numbered DIR-008 per that log (the 'DIR-007 outreach' item in the same entry was renumbered to avoid collision with the analysis-tier directive).",
