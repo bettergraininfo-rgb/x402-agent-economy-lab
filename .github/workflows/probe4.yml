@@ -1,0 +1,19 @@
+name: funding-probe4
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe demo4 (PoW-only instance)
+        run: |
+          curl -s --max-time 15 "https://demo4.faucets.pk910.de/api/getFaucetConfig?cliver=2.5.0" -o /tmp/cfg.json
+          python3 - <<'EOF'
+          import json
+          cfg = json.load(open("/tmp/cfg.json"))
+          mods = cfg.get("modules", {})
+          print("modules:", sorted(mods.keys()))
+          powm = mods.get("pow", {})
+          print("pow:", json.dumps(powm)[:400])
+          print("coin:", cfg.get("faucetCoinSymbol"), "decimals:", cfg.get("faucetCoinDecimals"))
+          EOF
