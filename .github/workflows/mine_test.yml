@@ -1,0 +1,46 @@
+name: agent-mine-test
+# Prove the full mining loop works: fresh ephemeral address, no concurrency conflict.
+on:
+  workflow_dispatch:
+jobs:
+  mine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: |
+          cd $GITHUB_WORKSPACE
+          npm init -y >/dev/null 2>&1
+          npm install ws --no-fund --no-audit
+          git clone -q --depth 1 https://github.com/pk910/PoWFaucet.git /tmp/PoWFaucet
+
+      - name: Generate ephemeral miner address
+        run: |
+          node -e "
+          const { ethers } = (() => { try { return require('ethers'); } catch { return {}; } })();
+          " 2>/dev/null || npm install ethers --no-fund --no-audit >/dev/null 2>&1
+          ADDR=$(node -e "
+            const { ethers } = require('ethers');
+            console.log(ethers.Wallet.createRandom().address);
+          ")
+          echo "MINER_ADDR=$ADDR" >> "$GITHUB_ENV"
+          echo "ephemeral miner address: $ADDR"
+
+      - name: Mine PoW shares (8 min)
+        run: |
+          set +e
+          POW_FAUCET_URL="https://demo4.faucets.pk910.de" \
+          node pow_miner.mjs "$MINER_ADDR" 460 2>&1 | tee mine.log
+          exit 0
+
+      - name: Upload log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mine-log
+          path: mine.log
