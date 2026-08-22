@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T12:55:00-06:00",
+  "updated": "2026-08-22T13:07:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -7,14 +7,14 @@
     "revenue_lifetime_usdc": 0.034,
     "lifetime_sales_count": 14,
     "external_buyers": 0,
-    "treasury_sui": 19.7269,
+    "treasury_sui": 19.8569,
     "treasury_delta_since_last_check": 0.0,
-    "treasury_note": "buyer 0x3a16\u202691a3: 8.1369 | seller 0x8b35\u2026c24a: 11.5900. Flat; earnings_tracker exit 2 at 12:51.",
+    "treasury_note": "buyer 8.1369 | seller 11.7200 = 19.8569 SUI at 13:01 MDT (exit 2). AUDITOR FLAG: +0.13 SUI vs the 12:00 figure (19.7269) with no ledger entry - likely faucet/PoW credit, NOT revenue; explain.",
     "active_experiments": [
       {
         "id": "EXP-014",
         "name": "agent402-listing (first live marketplace index presence)",
-        "status": "CONFIRMED LISTING holding: https://18dae3ec155546.lhr.life registered listed:true 12:41:27, still serving 200 at 12:54 (>13 min continuous, zero rotations \u2014 best stability window today). Crawl re-check from ~13:40 MDT. DIR-029 manifest alias landed+verified 12:55.",
+        "status": "UNPLANNED ROTATION 13:01:13 (ssh death #5 today) killed the 12:41 confirmed listing after ~20 min; keeper lockstep auto-re-registered https://da6d5c66044ea4.lhr.life listed:true 13:01:29 (health:1, sui:testnet). DIR-032 trigger FIRED. Crawl clock reset - re-check GET agent402.tools/api/index from ~14:00 MDT.",
         "measure_at": "2026-08-23"
       },
       {
@@ -48,7 +48,7 @@
         "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "crawl pickup of confirmed listing 18dae3ec155546.lhr.life within its 24h window (re-check from 13:40 MDT); ssh connections historically die ~every 20min despite keepalives \u2014 DIR-032-style Render escalation remains pre-authorized on next unplanned rotation. Zero external buyers remain root cause of $0/day.",
+    "binding_constraint": "origin churn: ssh tunnels die ~every 20min, so no listing survives its own crawl window - DIR-032 ACTIVATED (persistent hosting); its Render route is gated on ONE human step (account creation), escalated to operator 13:05 MDT. Zero external buyers remain root cause of $0/day.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",

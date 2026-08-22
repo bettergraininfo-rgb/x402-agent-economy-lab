@@ -9,3 +9,4 @@ sui_seller_wallet.json
 __pycache__/
 .venv/
 org/wallet_*
+sui_testnet_buyer_wallet.json

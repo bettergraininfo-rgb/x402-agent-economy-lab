@@ -1,18 +1,18 @@
 {
   "queue": [
     {
+      "id": "RQ-038",
+      "question": "Is there ANY discovery surface that routes real paid demand to Sui-settled x402 tools (x402scan chain coverage, PayAPI, Bazaar, DrVelvetFog facilitator's own directory), or is Sui credibility-only ecosystem-wide - i.e., should the entire Sui-rail discoverability track (RQ-024 work order included) be closed rather than deprioritized?",
+      "added": "2026-08-22",
+      "priority": 3,
+      "why": "Spawned by RQ-035: Agent402 alone proves zero, but before killing the Sui track outright the CEO needs the ecosystem-wide picture; x402scan.com is reachable from this box and its resources list can be censused for non-EVM networks at zero cost."
+    },
+    {
       "id": "RQ-036",
       "question": "What is the exact path to give the :8610 Base-mainnet real-USDC rail (5 SKUs incl. GET /v1/report and /v1/batch) a conformant /.well-known/x402 manifest plus an Agent402/x402scan registration - can it be done autonomously given :8610 currently serves no manifest route - and does dual-listing both rails split or compound discovery health?",
       "added": "2026-08-22",
       "priority": 1,
       "why": "Spawned by RQ-034 live audit: the full priced catalog lives on :8610 but has zero discovery surface (no manifest, not registered anywhere), while :8604 is listed but serves 3 testnet SKUs. RQ-034's DIR-031 fixes :8604's manifest shape; this question covers making the REAL-money rail the one that buyers can actually find."
-    },
-    {
-      "id": "RQ-035",
-      "question": "Does Agent402 route any real buyer demand to sellers whose tools carry networks=[sui:testnet] (non-Base), i.e., does /api/index or its router surface sui-network tools to Base-USDC-holding buyers at all - and is there observable evidence (index rows, routed calls, leaderboard entries) of ANY non-EVM seller receiving paid x402 traffic?",
-      "added": "2026-08-22",
-      "priority": 1,
-      "why": "Spawned by RQ-034: our only live external listing (:8604) settles sui:testnet USDC. If Agent402's router effectively serves Base-only buyers, the listing is credibility-only and the demand-bearing listing must come from the :8610 real-USDC Base rail (RQ-036) - this determines where the next marketing/listing shift should aim."
     },
     {
       "id": "RQ-033",
@@ -111,6 +111,20 @@
       "added": "2026-08-22",
       "priority": 2,
       "why": "Spawned by RQ-011: agent-services-spec says the marketplace \"consumes documents in this format\" but never states auto-crawl behavior. If auto-indexing exists, we skip the human publish step entirely once DIR-018 lands the public origin. Test: serve validated well-known doc on Render origin, poll GET https://www.rail402.app/api/agent/services daily (CORS-open, reachable via search-cache or Actions runner since rail402.app is blocked here) for our slug."
+    },
+    {
+      "id": "RQ-039",
+      "question": "Does adding extra:{name:\"USDC\",decimals:6} to our x402 v2 accepts entries break any existing challenge consumer - sui-x402-facilitator verify/settle, x402scan payable-indexing probe, Agent402 probePaywall, or our own storefront verify_payment - i.e., is DIR-033 a pure win or does it need consumer-by-consumer regression?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Spawned by RQ-037: extra is the single missing field that keeps Agent402 from pricing our rows, but x402 v2 facilitators may validate accepts entries strictly (unknown keys rejected) and our own verify_payment parses the same challenge. One-hour fix is only safe if every consumer tolerates the extension; test on :8604 testnet settle path first, then :8610."
+    },
+    {
+      "id": "RQ-040",
+      "question": "Do the four OpenAPI-derived junk rows in our Agent402 listing (/, /bazaar, /stats, catch-all /{path} named 'Paid') actively hurt routing - can the catch-all match buyer task queries and win route selection (wasting a buyer's payment attempt on a non-product route, tanking our rolling health) - and does serving /openapi.json with ONLY the 5 paid SKUs eliminate them without breaking Agent402 discovery?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "Spawned by RQ-037 live index pull: routeQuery scores on slug/name/description text; a catch-all '/{path}' row named 'Paid' with a generic description can lexically match queries like 'paid text analysis' and outrank nothing but still get selected when competitors are absent - and every route-execute against it is a paid 402 dance against a route that only echoes the challenge. Fix shape is known (restrict openapi.json); unknown is whether Agent402's crawler needs the openapi paths for health checks or falls back to manifest-only."
     }
   ],
   "answered": [
@@ -246,6 +260,28 @@
       "verdict": "not feasible as a fully programmatic listing - all three official docs (rail402.app/docs, x402-sdk README, provider-starter DEPLOY.md) require a browser wallet-connect at rail402.app/publish with the SAME wallet as PROVIDER_WALLET; no submission API documented; rail402.app still network-blocked (curl refused); no issue/PR path in any Rail402 repo (org has exactly 1 issue total - a phishing-looking \"verify ownership\" post, flagged, not engaged). HOWEVER: (1) open agent-services-spec makes marketplace inclusion OPTIONAL for discovery - self-publish /.well-known/agent-services.json + llms.txt and spec-compliant agents reach us directly; whether Rail402 auto-crawls third-party origins into its registry feed is unconfirmed (RQ-015). (2) BONUS: Python SDK rail402_x402 EXISTS in x402-sdk repo python/ dir (FastAPI X402Middleware + verify_payment matching our existing txHash-proof semantics), installable from git though PyPI is 404 - strengthens case that DIR-011 facilitator migration is droppable (RQ-016).",
       "finding": "org/research/findings.md#2026-08-22--rq-011-can-the-rail402-marketplace-listing-rail402apppublish-wallet-connect-be-done-programmatically-via-an-api-or-github-issuepr-path-instead-of-the-browser-dashboard-from-behind-our-allowlist",
       "directive_proposed": "Amend DIR-018: fold the Rail402 publish into the one-time human-step checklist (same browser session as Render signup, same wallet as PROVIDER_WALLET, submit /v1/batch at $0.020 first); builder validates our 402s with @rail402/validate-spec and trials git-installed rail402_x402 middleware as DIR-011 alternative."
+    },
+    {
+      "id": "RQ-035",
+      "question": "Does Agent402 route any real buyer demand to sellers whose tools carry networks=[sui:testnet] (non-Base), i.e., does /api/index or its router surface sui-network tools to Base-USDC-holding buyers at all - and is there observable evidence (index rows, routed calls, leaderboard entries) of ANY non-EVM seller receiving paid x402 traffic?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Spawned by RQ-034: our only live external listing (:8604) settles sui:testnet USDC. If Agent402's router effectively serves Base-only buyers, the listing is credibility-only and the demand-bearing listing must come from the :8610 real-USDC Base rail (RQ-036) - this determines where the next marketing/listing shift should aim.",
+      "answered": "2026-08-22",
+      "verdict": "answered, NO - Agent402 structurally cannot route paid demand to Sui sellers: src/payments.js supported-networks map (lines 24-83) has no sui:* CAIP-2 and no Sui money parser/facilitator; grep -ci sui in x402-index.js (202KB) = 0; live index census 19:04Z shows 2,956 sellers with zero sui-network entries (solana:41, algorand:15, stellar:1 do exist); leaderboard ranks by Base-USDC eth_getLogs volume by construction. Our own listing (da6d5c66044ea4.lhr.life) is healthy/routable but payToByNetwork:{} and all tool prices null - indexed yet unpayable. Verdict: Sui rail is a credibility artifact, not a demand channel.",
+      "finding": "org/research/findings.md#2026-08-22--rq-035-does-agent402-route-any-real-buyer-demand-to-sellers-whose-tools-carry-networkssuitestnet-non-base",
+      "directive_proposed": "DIR-032: reclassify :8604 Sui rail as credibility artifact (stop listing polish); point the stable-origin step (Render per RQ-009 / ampersend per RQ-025) at the :8610 Base-mainnet rail specifically; register :8610 at Agent402 + x402scan same day it has a stable origin."
+    },
+    {
+      "id": "RQ-037",
+      "question": "Why does Agent402's crawler show our routable tools with price:null, paywall:null and payToByNetwork:{} despite health=1 and a conformant GET 402 (PAYMENT-REQUIRED header + accepts[] + bazaar extension) - which probe or parse step fails for our challenge shape, and does a null-price tool get excluded from /api/find + POST /api/route results entirely even on supported networks like base?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Spawned by RQ-035 research: GET /api/index?seller=da6d5c66044ea4.lhr.life returns toolCount 7, routable true, but every tool price null and payTos empty - meaning even after we port to the Base rail (:8610), if the same parse gap persists we stay invisible to buyers. Must be understood BEFORE spending the DIR-032 stable-origin effort, so the Base registration lands payable-on-first-crawl.",
+      "answered": "2026-08-22",
+      "verdict": "answered - probe pipeline WORKS: live index shows all 3 SKUs learned networks:[sui:testnet] via enrichLiveQuotes. price stays null for ONE reason: our accepts entries omit extra{name,decimals}; quoteFromAccepts prices only when extra.decimals is an integer or extra.name matches /usdc/i (USDC=6 decimals hardcoded, refuses to guess exponents). payToByNetwork:{} is structural for manifest-registered sellers (only bazaarItemToTool populates it; router reads payTo live via payToFromLive402 - not a blocker). Null price does NOT exclude us from /api/find or /api/route (payabilityOf='x402' via networks) but unknown price ranks LAST in tie-break (priceRank maps unknown to Infinity). Bonus defect: 4 OpenAPI-derived junk tools (/, /bazaar, /stats, catch-all /{path}) listed alongside our SKUs.",
+      "finding": "org/research/findings.md#2026-08-22--rq-037-why-does-agent402s-crawler-show-our-routable-tools-with-pricenull-paywallnull-and-paytobynetwork-despite-health1--and-does-a-null-price-tool-get-excluded-from-apifind--apiroute",
+      "directive_proposed": "DIR-033: add extra:{name:\"USDC\",decimals:6} to every accepts entry on both rails (:8604+:8610); convert manifest to rich priced objects per DIR-031; restrict /openapi.json to the 5 paid SKUs; verify /api/index shows real prices within one crawl cycle."
     }
   ]
 }

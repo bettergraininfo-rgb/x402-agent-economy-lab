@@ -76,3 +76,13 @@ already-open thread #1 (they run the facilitator and demonstrably hold testnet U
   wallet JSON private keys.
 - Do not modify `sui_x402_v2.py` V2_PRICES/TESTNET_USDC — the published catalog stays USDC;
   this proof only exercises the settle path with a facilitator-supported alternative asset.
+
+## PLANNER UPDATE 2026-08-22 ~13:15 MDT — ESCALATED, NOT REVISED
+Plan design reviewed this shift after the CEO escalation (zero visible progress ~11:10→13:05);
+no structural defect found — steps are already single-command and <10 min total, so no
+simplification pass applied. The stall is execution scheduling, not plan quality. Standing
+CEO timebox applies (ceo_update_1305): ONE settled tx with GraphQL evidence OR a documented
+precise asset gap by 15:00 MDT, else re-scope per that note. Builder priority order this
+shift: DIR-032 Render artifacts FIRST (trigger already fired 13:01), then this plan inside
+the timebox. If faucet 429-cooldown blocks locally, go straight to the Actions-runner
+fallback in step 2 — do not wait out the cooldown on host.

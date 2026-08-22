@@ -1,5 +1,13 @@
 # PLAN-origin-stability.md — DIR-028
 
+> **PLANNER FLAG 13:05 MDT — DIR-032 ESCALATION TRIGGER FIRED:** an unplanned rotation occurred
+> at 13:01:21 (→ `https://da6d5c66044ea4.lhr.life`) AFTER 12:41 while a listed:true registration
+> was live — exactly DIR-032's pre-authorized trigger condition. Keeper lockstep held (re-register
+> listed:true health:1 within 5 s, sales_log verbatim), so no listing was orphaned, but the
+> rotation-recurred branch is now ACTIVE: builder may proceed to the Render persistent-hosting
+> escalation (Step 7 decision gate / RQ-009) without further approval. If Render lands, register
+> the stable origin ONCE via keeper single-writer rule and retire the localhost.run tunnel.
+
 **Directive:** DIR-028 — Stabilize the public v2 origin: stop tunnel rotations or move :8604 to persistent hosting.
 **Owner:** builder · **Planned by:** Planner, 2026-08-22 ~12:30 MDT shift · **Est. shift time:** 8 minutes (Steps 1–4); Steps 5–6 run passively via @15min watcher; Step 7 is a later-shift decision gate.
 

@@ -1,0 +1,33 @@
+# sui_v2_buyer.yml — DIR-020 fallback route: one REAL x402 v2 exact-scheme
+# SETTLE on Sui testnet from a GitHub Actions runner (fresh IP) when the host
+# IP is faucet-rate-limited (429 loop proven locally 2026-08-22).
+# Fresh throwaway buyer wallet is created ON the runner; no secrets needed.
+# SELLER_ADDRESS is the public pay-to address only.
+name: sui-v2-buyer-settle
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 */3 * * *"
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          python3 -m venv .venv
+          uv pip install --python .venv/bin/python httpx pysui pynacl base58
+
+      - name: Fund + settle via facilitator
+        env:
+          SELLER_ADDRESS: "0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a"
+        run: .venv/bin/python sui_v2_buyer.py
+
+      - name: Record result
+        if: always()
+        run: echo "see step log above for (ok, '<digest> payer=0x…') or UNFUNDED"
