@@ -52,7 +52,7 @@
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
       "status": "done",
-      "last_action": "DIR-002 done: svc_summarize shipped + registered on Sui rail (:8604, 0.12 SUI); 402 challenge verified live; ci.sh 7/7 green"
+      "last_action": "DIR-007 done: /v1/report ($0.02) + /v1/batch ($0.05) live on :8503; settle path verified ($0.07); ci.sh 7/7 green"
     },
     {
       "name": "Researcher",

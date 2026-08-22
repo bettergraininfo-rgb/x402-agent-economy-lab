@@ -1,13 +1,6 @@
 {
   "queue": [
     {
-      "id": "RQ-002",
-      "question": "What is the exact technical path and cost to serve an EVM/Base x402 endpoint from this box (public HTTPS, CDP or x402.org facilitator registration, Sepolia vs mainnet gas/faucet constraints)?",
-      "added": "2026-08-22",
-      "priority": 1,
-      "why": "now the blocking prerequisite for DIR-009 (Bazaar + Agent402 listing); network allowlist may block some steps - identify workarounds (GitHub Actions deploy, free hosts like the Render free tier the Sui facilitator uses)"
-    },
-    {
       "id": "RQ-004",
       "question": "Can our existing Sui-native 402 server settle through sui-facilitator.onrender.com without a rewrite?",
       "added": "2026-08-22",
@@ -27,9 +20,30 @@
       "added": "2026-08-22",
       "priority": 1,
       "why": "DIR-005 as scoped (whale feed $0.01/call) now competes head-on with the facilitator's own demo product; we need a differentiated feed spec before the builder burns a cycle"
+    },
+    {
+      "id": "RQ-007",
+      "question": "Which Python x402 seller library (or minimal raw verify/settle client) correctly speaks v1+v2 to facilitator.payai.network from FastAPI, and what is the exact payload/header contract we must implement?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "DIR-009 amended path needs a concrete Python implementation plan; wrong envelope version = failed Bazaar conformance checks. Check @x402 FastAPI/Flask middleware maturity vs hand-rolled 2-POST client."
+    },
+    {
+      "id": "RQ-008",
+      "question": "What uptime do listing surfaces actually enforce (Agent402 hourly crawl drop threshold, Bazaar/DNS-check flagging cadence) and does the ephemeral localhost.run anonymous tunnel risk delisting - is the keyed stable subdomain sufficient?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "A listed-but-flapping origin gets flagged publicly (x402-discovery-index issue #9 precedent) and burns our one good first impression; need the drop threshold before listing."
     }
   ],
   "answered": [
+    {
+      "id": "RQ-002",
+      "answered": "2026-08-22",
+      "verdict": "feasible - $0 cost: PayAI facilitator (keyless, free <=1k settlements/mo, pays all gas), Base MAINNET directly (seller needs no gas/faucet at all), served via proven localhost.run keyed tunnel; CDP blocked from this box; x402.org facilitator testnet-only",
+      "finding": "org/research/findings.md#2026-08-22--rq-002-exact-technical-path-and-cost-to-serve-an-evmbase-x402-endpoint-from-this-box",
+      "directive_proposed": "DIR-009 amendment: Base-rail wrapper around facilitator.payai.network (exact/eip155:8453), public via keyed lhr.life tunnel"
+    },
     {
       "id": "RQ-001",
       "answered": "2026-08-22",
@@ -40,7 +54,7 @@
     {
       "id": "RQ-003",
       "answered": "2026-08-22",
-      "verdict": "feasible — decided: one EVM/Base port unlocks Bazaar + Agent402 (real demand surfaces); PayAPI/true402 backlog; Sui facilitator is not a demand channel and its author already sells the whale feed",
+      "verdict": "feasible \u2014 decided: one EVM/Base port unlocks Bazaar + Agent402 (real demand surfaces); PayAPI/true402 backlog; Sui facilitator is not a demand channel and its author already sells the whale feed",
       "finding": "org/research/findings.md#2026-08-22--rq-003",
       "directive_proposed": "DIR-009: single EVM x402 port of strongest differentiated endpoint, dual-listed on CDP Bazaar + Agent402 same cycle"
     }

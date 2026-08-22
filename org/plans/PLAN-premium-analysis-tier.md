@@ -75,3 +75,26 @@ Baseline $0.16/day. New tier lifts max revenue per sale from $0.075 to $0.075 (r
 
 ## EXECUTION LOG
 (Builder appends here: timestamp, steps done, verify outputs, deviations.)
+
+## Execution 2026-08-22 — status=done
+Builder shift. Steps 1-11 executed in order. Deviations:
+- Plan VERIFY said "six services listed" — actual catalog is 5 (3 original + 2 new); plan text miscounted. All substantive checks passed.
+- Step 8 restart done via tracked background process (uvicorn on :8503).
+- CI breakage found & fixed: `bash ci.sh` initially failed in stage 4 (`market_sim.py` KeyError '/v1/batch' — buyer sim lacked text samples for new endpoints; price-history print hardcoded 3 endpoints). Added texts + generalized print; full ci.sh re-run then PASSED all 7 stages ("ALL INTEGRATION STAGES PASSED"; MCP stage lists all 5 endpoints).
+- Live server restarted after CI (ci.sh kills port-8503 servers); /health ok.
+
+### VERIFY (real output)
+`curl -s http://localhost:8503/bazaar | .venv/bin/python -m json.tool` →
+```
+{"/v1/sentiment": 0.015, "/v1/summarize": 0.075, "/v1/entity-extract": 0.03,
+ "/v1/report": 0.02, "/v1/batch": 0.05}   (price_usdc fields; report+batch present at base price)
+```
+402 challenge: `GET /v1/batch?text=good+great+%7C%7C%7C+bad+awful` → HTTP 402,
+`{"error":"Payment Required","accepts":{"scheme":"exact","resource":"/v1/batch","amount_usdc":0.05,...}}`
+Full settle path (agent_client.paid_get, mock facilitator):
+- `/v1/report` HTTP 200 → {"sentiment":{"label":"neutral","score":0.0},"summary":{"summary":"Coinbase wins","original_sentences":2},"entities":{"organizations":["Base","Coinbase"]}}
+- `/v1/batch` HTTP 200 → {"count":2,"results":[...positive 0.8, negative -0.8],"distribution":{"negative":1,"positive":1}}
+- `/stats` → {"total_settled_usdc":0.07,"payments_settled":2,"revenue_by_service":{"/v1/report":0.02,"/v1/batch":0.05}}
+`curl -s http://localhost:8503/health` → `{"status":"ok","payments":0}` (post-CI restart)
+Step-7 unit smoke: `SMOKE OK`. py_compile bazaar/market_server/dashboard_api/market_sim: COMPILE_OK.
+bash ci.sh: ALL INTEGRATION STAGES PASSED.

@@ -55,6 +55,8 @@ DEMO_MARKET = {
         "/v1/sentiment": {"sales": 6, "revenue_usdc": 0.006, "price_usdc": 0.015},
         "/v1/entity-extract": {"sales": 4, "revenue_usdc": 0.008, "price_usdc": 0.030},
         "/v1/summarize": {"sales": 4, "revenue_usdc": 0.020, "price_usdc": 0.075},
+        "/v1/report": {"sales": 0, "revenue_usdc": 0.0, "price_usdc": 0.020},
+        "/v1/batch": {"sales": 0, "revenue_usdc": 0.0, "price_usdc": 0.050},
     },
 }
 

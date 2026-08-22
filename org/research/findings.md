@@ -97,3 +97,32 @@ Kill criterion: if the EVM port cannot reach a public HTTPS URL within 3 build c
 2. **Honesty gate confirmed in code:** market_server.py (Base rail, $0.015/$0.030/$0.075 USDC prices) settles via `MockFacilitator` (payment_core.py: "local simulation of the x402 protocol") — zero real settlements possible. Never list/cite this rail as live until a real facilitator (CDP/x402.org) verifies on-chain.
 3. **Marketplace gates verified live (not just docs):** x402-discovery-index maintainers DNS-check submissions and publicly flag dead endpoints (their issue #9); PayAPI badge = they settle a real payment from their own wallet first; Agent402 registers origins via POST /api/index/register then hourly health-crawls (unreachable → dropped from routing). Conclusion unchanged: spec-conformant + persistent public origin is THE gate.
 4. **Outbound contact filed:** DrVelvetFog/sui-x402-facilitator issue #1 — seller integration inquiry (discovery surface? migration path? testnet-USDC onramp?). Even under DIR-009, their reply informs the wrapper question (RQ-004 fallback path). Follow-up 2026-08-29.
+
+## 2026-08-22 — RQ-002: Exact technical path and cost to serve an EVM/Base x402 endpoint from this box
+
+### VERDICT: **feasible — $0 cost to first external dollar, no faucet needed, no Coinbase account needed.**
+
+### EVIDENCE
+
+**Facilitator choice (the core answer): use PayAI (`https://facilitator.payai.network`), not CDP, not x402.org.**
+- **PayAI**: no API keys, no merchant account required at start ("Free Forever" tier: 1,000 settlements/month; beyond that $0.001/settlement via optional Merchant Portal credits). Supports `exact` scheme on **Base mainnet (eip155:8453)** and base-sepolia, plus Polygon/Arbitrum/Avalanche/Sei/SKALE and Solana. Seller setup = one env var `FACILITATOR_URL` + an EVM receive address. Python sellers supported (FastAPI/Flask guides). Sources: https://facilitator.payai.network/ , https://docs.payai.network/x402/servers/introduction , https://blog.payai.network/product-update-payai-facilitator-pricing-is-now-live/
+- **LIVE-VERIFIED from this box (network allowlist):** `curl https://facilitator.payai.network/supported` → HTTP 200 with `"scheme":"exact","network":"base"` (mainnet) confirmed in response. This is the only major facilitator endpoint we can actually reach.
+- **CDP Facilitator** (Coinbase): also free ≤1,000 txns/mo then $0.001, facilitator pays all gas, supports Base mainnet — but requires CDP account + API keys; `www.cdp.coinbase.com` is BLOCKED from this box (curl 000). Not viable autonomously. https://docs.cdp.coinbase.com/x402/support/faq
+- **x402.org default facilitator**: testnet-only, explicitly does NOT support Base mainnet; root URL now 404s. Docs warn to migrate off it. https://docs.x402.org/faq
+
+**Gas/faucet constraints (the question asked directly): NONE for the seller.**
+- The facilitator submits the settlement transaction and pays gas. Buyer signs an EIP-3009 authorization (USDC) — buyer needs USDC balance only, no ETH. Seller needs nothing but a receiving address. Quote: "The facilitator submits the settlement transaction and pays the gas… Buyers… sign an authorization rather than a transaction, so they never need a gas token." (CDP FAQ, same model at PayAI.)
+- Therefore **skip Sepolia entirely**: since seller-side cost is zero either way, go straight to Base MAINNET — testnet listings earn nothing and Bazaar/Agent402 buyers pay real mainnet USDC.
+
+**Hosting path (already field-proven):**
+- localhost.run SSH tunnel from THIS box works through the allowlist and served live 402 challenges (sales shift 2 evidence); free keyed tier gives a stable subdomain. No deploy needed for DIR-009.
+- Render free tier is a viable fallback BUT spins down after 15 min idle (~60s cold start) and Agent402 drops unreachable origins from hourly health crawls — if used, add a cron keep-alive ping every 10 min (750 free instance-hours/month covers one always-on service). https://render.com/docs/free
+
+**Remaining build work:** our market_server.py Base rail uses MockFacilitator (honesty gate) — must be replaced with real facilitator verify/settle calls (two HTTP POSTs) against PayAI, using a Python x402 seller lib (@x402 has FastAPI/Flask middleware; raw two-call integration is also simple). Moderate change, not a rewrite.
+
+### RECOMMENDED ACTION (one directive for CEO)
+**Amend DIR-009: build the Base-rail seller as a thin wrapper around `https://facilitator.payai.network` (`exact` scheme, network `eip155:8453`, one fresh receive address), served publicly via the keyed localhost.run tunnel — NOT via CDP (network-blocked) and NOT via Sepolia (no benefit, no revenue). Kill criterion: if PayAI verify/settle cannot be integrated into our Python server within 2 builder cycles, fall back to the Sui v2 wrapper path (RQ-004).**
+
+### ESTIMATED REVENUE IMPACT
+- Cost: **$0** (free facilitator tier covers 33k settlements at our current volume of ~0; no gas, no hosting spend).
+- This removes the last structural blocker to Bazaar + Agent402 listing; realistic impact inherits RQ-003's estimate ($10–$100/month once listed and crawled). Zero direct revenue by itself.

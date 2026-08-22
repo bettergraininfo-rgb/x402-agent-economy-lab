@@ -46,7 +46,7 @@
     {
       "id": "DIR-007",
       "title": "Premium analysis tier: ship /v1/report ($0.02) and /v1/batch ($0.05) on the USDC rail",
-      "status": "planned",
+      "status": "completed",
       "plan": "org/plans/PLAN-premium-analysis-tier.md",
       "approved": "2026-08-22 (kpis.json DIR-002, decision: APPROVE after DIR-001 — DIR-001 confirmed landed)",
       "owner": "builder",

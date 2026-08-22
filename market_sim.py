@@ -38,6 +38,8 @@ class Buyer:
             "/v1/sentiment": "agents are great, love the gains",
             "/v1/summarize": "Sentence one about crypto. Sentence two about agents paying agents. Sentence three is filler. Sentence four concludes.",
             "/v1/entity-extract": "Coinbase built Base while Virtuals shipped agents",
+            "/v1/report": "Coinbase built Base. Virtuals shipped agents. Solana is fast.",
+            "/v1/batch": "agents are great ||| rug pull scam ||| love the gains",
         }
         url, params = BASE + pick_eps, {"text": texts[pick_eps]}
         with httpx.Client(timeout=10) as c:
@@ -94,10 +96,10 @@ if __name__ == "__main__":
 
     print("\n=== Price adaptation timeline ===")
     for h in hist:
-        print(f" after {h['after_payments']:2d} payments: "
-              f"sentiment=${h['prices']['/v1/sentiment']:.6f}  "
-              f"summarize=${h['prices']['/v1/summarize']:.6f}  "
-              f"entity=${h['prices']['/v1/entity-extract']:.6f}")
+        prices = "  ".join(
+            f"{ep.replace('/v1/', '')}=${p:.6f}" for ep, p in sorted(h["prices"].items())
+        )
+        print(f" after {h['after_payments']:2d} payments: {prices}")
 
     print("\n=== Final marketplace stats ===")
     print(json.dumps(stats, indent=2))
