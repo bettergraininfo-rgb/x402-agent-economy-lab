@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>x402 Agent Economy — Mission Control</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#070b14; --bg2:#0a1020;
+    --glass:rgba(255,255,255,.045); --glass-brd:rgba(255,255,255,.09);
+    --txt:#e6edf7; --dim:#8b98ad; --faint:#5a6778;
+    --acc:#38e1ff; --acc2:#7c5cff; --good:#2fe6a0; --bad:#ff5d73; --warn:#ffc857;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1100px 600px at 85% -10%, rgba(124,92,255,.16), transparent 60%),
+      radial-gradient(900px 550px at -10% 15%, rgba(56,225,255,.12), transparent 55%),
+      radial-gradient(700px 500px at 50% 110%, rgba(47,230,160,.08), transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg2));
+    color:var(--txt);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    min-height:100vh; padding:22px clamp(14px,3vw,36px) 40px;
+  }
+  .mono{font-family:'SF Mono','JetBrains Mono',Consolas,monospace}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:center;gap:18px;margin-bottom:20px;flex-wrap:wrap}
+  .logo{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:22px;
+        background:linear-gradient(135deg,rgba(56,225,255,.25),rgba(124,92,255,.25));
+        border:1px solid var(--glass-brd); box-shadow:0 0 24px rgba(56,225,255,.25)}
+  h1{font-size:21px;font-weight:700;letter-spacing:.4px}
+  h1 small{display:block;font-size:11.5px;color:var(--dim);font-weight:500;letter-spacing:1.4px;text-transform:uppercase}
+  .hdr-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .pulse{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 10px var(--good);animation:pulse 1.8s infinite}
+  .dot.off{background:var(--bad);box-shadow:0 0 10px var(--bad)}
+  @keyframes pulse{50%{opacity:.35}}
+
+  #offlineBanner{
+    display:none;align-items:center;gap:10px;margin-bottom:16px;padding:11px 16px;border-radius:12px;
+    background:rgba(255,93,115,.1);border:1px solid rgba(255,93,115,.35);color:#ffb3be;font-size:13px;
+    animation:slideDown .35s ease}
+  @keyframes slideDown{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+
+  /* ---------- layout ---------- */
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+  .card{
+    background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border:1px solid var(--glass-brd);border-radius:18px;padding:20px;
+    transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+    animation:rise .5s ease both}
+  .card:hover{transform:translateY(-3px);border-color:rgba(56,225,255,.28);
+              box-shadow:0 14px 42px rgba(0,0,0,.45),0 0 0 1px rgba(56,225,255,.06)}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .c-3{grid-column:span 3}.c-4{grid-column:span 4}.c-6{grid-column:span 6}.c-8{grid-column:span 8}.c-12{grid-column:span 12}
+  @media(max-width:1100px){.c-3{grid-column:span 6}.c-4,.c-6,.c-8{grid-column:span 12}}
+  @media(max-width:640px){.c-3{grid-column:span 12}}
+
+  .kicker{font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;justify-content:space-between}
+  .bignum{font-size:34px;font-weight:750;letter-spacing:-.5px;line-height:1;
+          background:linear-gradient(90deg,#fff,#9fb4d8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .bignum .unit{font-size:15px;font-weight:600;color:var(--acc);-webkit-text-fill-color:var(--acc);margin-left:6px}
+  .sub{margin-top:8px;font-size:12px;color:var(--dim)}
+  .sub b{color:var(--good)}
+  .flash{animation:flashUp .8s ease}
+  @keyframes flashUp{0%{color:var(--acc)}100%{}}
+
+  /* ---------- chart ---------- */
+  .chart-wrap{position:relative;height:250px}
+
+  /* ---------- agents ---------- */
+  .agent-card{display:flex;flex-direction:column;gap:10px}
+  .agent-top{display:flex;align-items:center;gap:12px}
+  .avatar{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:19px;flex-shrink:0}
+  .av-buyer{background:rgba(56,225,255,.16)}.av-seller{background:rgba(124,92,255,.2)}.av-miner{background:rgba(255,200,87,.16)}
+  .agent-name{font-weight:650;font-size:15px}
+  .agent-addr{font-size:11px;color:var(--dim)}
+  .status-chip{margin-left:auto;font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:99px;font-weight:700;text-transform:uppercase}
+  .st-online{background:rgba(47,230,160,.14);color:var(--good);border:1px solid rgba(47,230,160,.35)}
+  .st-offline{background:rgba(255,93,115,.12);color:var(--bad);border:1px solid rgba(255,93,115,.3)}
+  .agent-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.08)}
+  .astat{text-align:center}
+  .astat .v{font-size:16px;font-weight:700}
+  .astat .l{font-size:9.5px;color:var(--dim);letter-spacing:1.2px;text-transform:uppercase;margin-top:3px}
+
+  /* ---------- tx feed ---------- */
+  .tx-feed{max-height:330px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}
+  .tx-feed::-webkit-scrollbar{width:5px}.tx-feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:3px}
+  .tx-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;background:rgba(255,255,255,.03);
+          border:1px solid rgba(255,255,255,.05);transition:background .2s;animation:rise .4s ease both}
+  .tx-row:hover{background:rgba(56,225,255,.05)}
+  .tx-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:13px;flex-shrink:0;background:rgba(255,255,255,.07)}
+  .tx-main{min-width:0;flex:1}
+  .tx-kind{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tx-digest{font-size:10.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tx-amt{font-size:13.5px;font-weight:700;white-space:nowrap}
+  .badge{font-size:9px;font-weight:800;letter-spacing:1px;padding:3px 8px;border-radius:6px;text-transform:uppercase}
+  .b-success{background:rgba(47,230,160,.15);color:var(--good);border:1px solid rgba(47,230,160,.35)}
+  .b-fail{background:rgba(255,93,115,.14);color:var(--bad);border:1px solid rgba(255,93,115,.35)}
+  .empty-note{color:var(--dim);font-size:12.5px;text-align:center;padding:26px 0}
+
+  /* ---------- market table ---------- */
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th{text-align:left;color:var(--dim);font-size:10px;letter-spacing:1.4px;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.09)}
+  td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,.04)}
+  tr:last-child td{border-bottom:none}
+  tr{transition:background .15s}tbody tr:hover{background:rgba(255,255,255,.03)}
+  .bar-bg{height:5px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:5px;width:120px}
+  .bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+
+  /* ---------- bots ---------- */
+  .bot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+  .bot{padding:14px;border-radius:13px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);transition:border-color .25s, transform .25s}
+  .bot:hover{transform:translateY(-2px);border-color:rgba(124,92,255,.35)}
+  .bot-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .bot-emoji{font-size:17px}
+  .bot-name{font-size:13px;font-weight:650}
+  .bot-status{margin-left:auto;width:8px;height:8px;border-radius:50%}
+  .bs-running{background:var(--good);box-shadow:0 0 8px var(--good);animation:pulse 1.6s infinite}
+  .bs-idle{background:#4a5568}
+  .bot-role{font-size:10.5px;color:var(--dim);margin-bottom:8px}
+  .bot-action{font-size:10.5px;color:#aab8cf;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px}
+  .spark{display:block;width:100%;height:26px}
+
+  /* ---------- escrow ---------- */
+  .escrow-pkg{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(255,200,87,.06);border:1px dashed rgba(255,200,87,.3);
+               font-size:10.5px;color:#ffd98a;word-break:break-all;cursor:pointer;position:relative}
+  .escrow-pkg::after{content:'copy';position:absolute;top:8px;right:10px;font-size:9px;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+  .escrow-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+  .lock-ring{display:flex;align-items:center;gap:14px}
+
+  /* ---------- console log ---------- */
+  .console{background:rgba(2,6,14,.65);border:1px solid rgba(255,255,255,.07);border-radius:12px;
+           font-family:'SF Mono','JetBrains Mono',Consolas,monospace;font-size:11.5px;line-height:1.75;
+           max-height:240px;overflow-y:auto;padding:14px 16px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent}
+  .console::-webkit-scrollbar{width:5px}.console::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+  .log-line{white-space:pre-wrap;word-break:break-word;animation:fadeIn .3s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .lg-ts{color:#4f6285}.lg-bot{color:var(--acc)}.lg-warn{color:var(--warn)}.lg-err{color:var(--bad)}.lg-msg{color:#c3d2ea}
+
+  footer{margin-top:22px;text-align:center;font-size:11px;color:var(--faint,#55627a);letter-spacing:.6px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⚡</div>
+  <h1>x402 Agent Economy<small>mission control · sui devnet</small></h1>
+  <div class="hdr-right">
+    <div class="pulse"><span class="dot" id="pulseDot"></span><span id="pulseTxt">connecting…</span></div>
+    <div class="pulse mono" id="lastSync">—</div>
+  </div>
+</header>
+
+<div id="offlineBanner">⚠ <b>API offline</b> — showing last known data. Retrying every 10&thinsp;s…</div>
+
+<div class="grid">
+
+  <!-- ============ treasury cards ============ -->
+  <div class="card c-3" style="animation-delay:.02s">
+    <div class="kicker"><span>Total Treasury</span><span>SUI</span></div>
+    <div class="bignum"><span id="totalSui">—</span><span class="unit">SUI</span></div>
+    <div class="sub">across <b id="walletCount">—</b> agent wallets</div>
+  </div>
+  <div class="card c-3" style="animation-delay:.08s">
+    <div class="kicker"><span>Market Sales</span><span>Lifetime</span></div>
+    <div class="bignum" id="marketSales">—</div>
+    <div class="sub">services settled via x402</div>
+  </div>
+  <div class="card c-3" style="animation-delay:.14s">
+    <div class="kicker"><span>Treasury Δ 24h</span><span>Est.</span></div>
+    <div class="bignum" id="delta24" style="color:var(--good);-webkit-text-fill-color:var(--good)">—</div>
+    <div class="sub">net flow of SUI</div>
+  </div>
+  <div class="card c-3" style="animation-delay:.2s">
+    <div class="kicker"><span>Fleet Status</span><span>Bots</span></div>
+    <div class="bignum" id="fleetActive">—<span class="unit" style="-webkit-text-fill-color:var(--dim)">/&nbsp;</span><span id="fleetTotal" style="font-size:20px">—</span></div>
+    <div class="sub">autonomous workers active</div>
+  </div>
+
+  <!-- ============ balance history chart ============ -->
+  <div class="card c-8" style="animation-delay:.26s">
+    <div class="kicker"><span>Balance History — Total Treasury (SUI)</span><span id="chartRange">live · 10s samples</span></div>
+    <div class="chart-wrap"><canvas id="balChart"></canvas></div>
+  </div>
+
+  <!-- ============ market stats ============ -->
+  <div class="card c-4" style="animation-delay:.32s">
+    <div class="kicker"><span>Market Stats — Revenue by Service</span><span>USDC</span></div>
+    <table>
+      <thead><tr><th>Service</th><th>Sold</th><th>Price</th><th>Revenue</th></tr></thead>
+      <tbody id="marketBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ============ agent roster ============ -->
+  <div class="card c-12 agent-roster" style="animation-delay:.38s">
+    <div class="kicker"><span>Agent Roster — On-chain Wallets</span><span>sui devnet</span></div>
+    <div class="grid" id="agentGrid"></div>
+  </div>
+
+  <!-- ============ tx feed + escrow ============ -->
+  <div class="card c-8" style="animation-delay:.44s">
+    <div class="kicker"><span>Transaction Feed</span><span>recent on-chain activity</span></div>
+    <div class="tx-feed" id="txFeed"><div class="empty-note">No transactions logged yet — awaiting on-chain settlement.</div></div>
+  </div>
+
+  <div class="card c-4" style="animation-delay:.5s">
+    <div class="kicker"><span>Escrow — Locked Funds</span><span>Move package</span></div>
+    <div class="lock-ring">
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="7"/>
+        <circle cx="36" cy="36" r="30" fill="none" stroke="url(#gr)" stroke-width="7"
+                stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="141"
+                transform="rotate(-90 36 36)" style="transition:stroke-dashoffset .8s"/>
+        <defs><linearGradient id="gr"><stop offset="0%" stop-color="#ffc857"/><stop offset="100%" stop-color="#ff5d73"/></linearGradient></defs>
+        <text x="36" y="41" text-anchor="middle" fill="#ffc857" font-size="14" font-weight="700" font-family="Inter,sans-serif" id="escrowCount">—</text>
+      </svg>
+      <div>
+        <div class="bignum" style="font-size:26px"><span id="lockedSui">—</span><span class="unit" style="-webkit-text-fill-color:var(--warn)">SUI</span></div>
+        <div class="sub">held in <b id="escrowCount2">—</b> active escrows</div>
+      </div>
+    </div>
+    <div class="escrow-pkg mono" id="pkgId" title="click to copy">—</div>
+  </div>
+
+  <!-- ============ bot workforce ============ -->
+  <div class="card c-12" style="animation-delay:.56s">
+    <div class="kicker"><span>Bot Workforce — Autonomous Fleet</span><span id="botStamp">—</span></div>
+    <div class="bot-grid" id="botGrid"></div>
+  </div>
+
+  <!-- ============ system log ============ -->
+  <div class="card c-12" style="animation-delay:.62s">
+    <div class="kicker"><span>System Log — All Bots</span><span>tail -f mission control</span></div>
+    <div class="console" id="sysLog"><div class="log-line"><span class="lg-ts">[--:--:--]</span> <span class="lg-msg">awaiting events…</span></div></div>
+  </div>
+
+</div>
+
+<footer>X402 PROTOCOL · AGENT-NATIVE PAYMENTS · DATA POLLS EVERY 10S FROM <span class="mono" id="apiBaseLabel"></span></footer>
+
+<script>
+/* ================= CONFIG ================= */
+const API_BASE = "http://127.0.0.1:8605";
+const POLL_MS = 10000;
+
+document.getElementById('apiBaseLabel').textContent = API_BASE;
+
+/* ================= STATE ================= */
+let balChart = null;
+let lastData = { overview:null, txs:null, agents:null, bots:null, escrow:null, logs:null };
+const botSpark = {};   // name -> history array
+
+const fmt = n => Number(n).toLocaleString('en-US',{maximumFractionDigits:4});
+const shortAddr = a => !a ? '—' : a.slice(0,8)+'…'+a.slice(-6);
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hhmmss = ts => ts ? new Date(ts*1000).toLocaleTimeString([], {hour12:false}) : new Date().toLocaleTimeString([],{hour12:false});
+
+/* ================= CHART ================= */
+function initChart(){
+  const ctx = document.getElementById('balChart').getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,0,250);
+  grad.addColorStop(0,'rgba(56,225,255,.30)');
+  grad.addColorStop(1,'rgba(56,225,255,0)');
+  balChart = new Chart(ctx,{
+    type:'line',
+    data:{labels:[],datasets:[{
+      data:[], borderColor:'#38e1ff', borderWidth:2.2,
+      backgroundColor:grad, fill:true, tension:.38,
+      pointRadius:0, pointHoverRadius:5,
+      pointHoverBackgroundColor:'#fff', pointHoverBorderColor:'#38e1ff'
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      animation:{duration:700,easing:'easeOutQuart'},
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'rgba(10,16,32,.95)',borderColor:'rgba(56,225,255,.3)',borderWidth:1,
+                 titleColor:'#8b98ad',bodyColor:'#e6edf7',padding:11,displayColors:false,
+                 callbacks:{label:c=>' '+fmt(c.parsed.y)+' SUI'}}},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6778',maxTicksLimit:9,font:{size:10}}},
+        y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6778',font:{size:10},callback:v=>fmt(v)},beginAtZero:false}
+      }
+    }
+  });
+}
+
+function updateChart(history){
+  if(!balChart || !history?.length) return;
+  const now = Date.now();
+  balChart.data.labels = history.map((_,i)=>{
+    const t = new Date(now - (history.length-1-i)*POLL_MS);
+    return t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  });
+  balChart.data.datasets[0].data = history;
+  balChart.update();
+}
+
+/* ================= RENDERERS ================= */
+
+function renderOverview(d){
+  if(!d) return;
+  const el = document.getElementById('totalSui');
+  if(el.textContent !== fmt(d.total_sui)){ el.textContent = fmt(d.total_sui); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  document.getElementById('walletCount').textContent = d.wallets.length;
+
+  // delta vs first sample in the window
+  const h = d.balance_history||[];
+  if(h.length>=2){
+    const dv = h[h.length-1]-h[0];
+    const de = document.getElementById('delta24');
+    de.textContent = (dv>=0?'+':'') + fmt(dv);
+    de.style.color = dv>=0 ? 'var(--good)' : 'var(--bad)';
+    de.style.webkitTextFillColor = dv>=0 ? 'var(--good)' : 'var(--bad)';
+  }
+  updateChart(h);
+
+  // market
+  const m = d.market || {};
+  document.getElementById('marketSales').textContent = m.sales ?? '—';
+  const revs = Object.entries(m.revenue_by_service||{});
+  const maxRev = Math.max(...revs.map(([,v])=>v.revenue_usdc||v.revenue||0), 1e-9);
+  document.getElementById('marketBody').innerHTML = revs.map(([svc,v])=>{
+    const rev = v.revenue_usdc ?? v.revenue ?? 0;
+    const pct = Math.max(4,(rev/maxRev)*100);
+    return `<tr>
+      <td class="mono">${esc(svc)}<div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></td>
+      <td>${v.sales ?? '—'}</td>
+      <td>$${fmt(v.price_usdc ?? v.price ?? 0)}</td>
+      <td style="color:var(--good);font-weight:700">$${fmt(rev)}</td></tr>`;
+  }) || '<tr><td colspan=4 class="empty-note">no sales yet</td></tr>';
+}
+
+function renderAgents(list){
+  if(!list) return;
+  const icons = {'buyer':'🛒','seller':'🏪','miner':'⛏️'};
+  const avcls = {'buyer':'av-buyer','seller':'av-seller','miner':'av-miner'};
+  document.getElementById('agentGrid').innerHTML = list.map(a=>{
+    const online = a.status === 'online';
+    const bal = a.balance_sui == null ? 'off-chain' : fmt(a.balance_sui)+' SUI';
+    const last = a.last_activity ? new Date(a.last_activity*1000).toLocaleString() : 'no tx yet';
+    return `<div class="card c-4 agent-card" style="padding:16px">
+      <div class="agent-top">
+        <div class="avatar ${avcls[a.role]||'av-buyer'}">${icons[a.role]||'🤖'}</div>
+        <div><div class="agent-name">${esc(a.name)}</div>
+             <div class="agent-addr mono">${shortAddr(a.address)} · ${esc(a.network||'')}</div></div>
+        <span class="status-chip ${online?'st-online':'st-offline'}">${online?'online':'offline'}</span>
+      </div>
+      <div class="agent-stats">
+        <div class="astat"><div class="v">${bal}</div><div class="l">Balance</div></div>
+        <div class="astat"><div class="v">${a.tx_count ?? 0}</div><div class="l">Txs</div></div>
+        <div class="astat"><div class="v" style="font-size:11px;line-height:2.4;color:var(--dim)" title="${esc(last)}">${esc(last)}</div><div class="l">Last Activity</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTxs(txs){
+  if(!txs) return;
+  const feed = document.getElementById('txFeed');
+  if(!txs.length){ feed.innerHTML = '<div class="empty-note">No transactions logged yet — awaiting on-chain settlement.</div>'; return; }
+  feed.innerHTML = txs.slice(0,40).map((t,i)=>{
+    const ok = t.status==='SUCCESS';
+    const amt = t.amount_sui!=null && t.amount_sui!=='' ? t.amount_sui+' SUI' : '';
+    return `<div class="tx-row" style="animation-delay:${i*0.02}s">
+      <div class="tx-icon">${ok?'↗':'✕'}</div>
+      <div class="tx-main">
+        <div class="tx-kind">${esc(t.kind)}</div>
+        <div class="tx-digest mono">${esc(t.digest)} ${t.ts?'· '+hhmmss(t.ts):''}</div>
+      </div>
+      ${amt?`<div class="tx-amt">${esc(String(amt))}</div>`:''}
+      <span class="badge ${ok?'b-success':'b-fail'}">${ok?'success':'fail'}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderBots(bots){
+  if(!bots) return;
+  document.getElementById('fleetActive').childNodes[0].textContent = bots.filter(b=>b.status==='running').length;
+  document.getElementById('fleetTotal').textContent = '/'+bots.length+' live';
+  document.getElementById('botStamp').textContent = 'synced '+new Date().toLocaleTimeString([],{hour12:false});
+
+  document.getElementById('botGrid').innerHTML = bots.map(b=>{
+    const run = b.status==='running';
+    const hist = (botSpark[b.name] = botSpark[b.name]||[]);
+    hist.push(run?1:0.15+Math.random()*0.2); if(hist.length>24) hist.shift();
+    const w=150,h=26, pts = hist.map((v,i)=>`${(i/(Math.max(hist.length-1,1)))*w},${h-2-(v*(h-6))}`).join(' ');
+    return `<div class="bot">
+      <div class="bot-head"><span class="bot-emoji">${esc(b.emoji||botEmoji(b.role))}</span>
+        <span class="bot-name">${esc(b.name)}</span>
+        <span class="bot-status ${run?'bs-running':'bs-idle'}" title="${run?'running':'idle'}"></span></div>
+      <div class="bot-role">${esc(b.role||'')}</div>
+      <div class="bot-action" title="${esc(b.last_action||'')}">${esc(b.last_action||'—')}</div>
+      <svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+        <polyline points="${pts}" fill="none" stroke="${run?'#2fe6a0':'#4a5568'}" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+    </div>`;
+  }).join('');
+}
+
+function botEmoji(role=''){
+  const r = role.toLowerCase();
+  if(r.includes('code')) return '👩‍💻'; if(r.includes('review')) return '🔍';
+  if(r.includes('debug')) return '🐛'; if(r.includes('design')) return '🎨';
+  if(r.includes('mine')) return '⛏️'; if(r.includes('treasury')) return '🛡️';
+  return '🤖';
+}
+
+function renderEscrow(e){
+  if(!e) return;
+  document.getElementById('lockedSui').textContent = fmt(e.locked_sui);
+  document.getElementById('escrowCount').textContent = e.escrows;
+  document.getElementById('escrowCount2').textContent = e.escrows;
+  const pkg = document.getElementById('pkgId');
+  pkg.textContent = e.package;
+  pkg.onclick = () => navigator.clipboard?.writeText(e.package||'');
+}
+
+function renderLogs(logs){
+  if(logs==null) return;
+  const con = document.getElementById('sysLog');
+  if(!logs.length){ return; }
+  con.innerHTML = logs.map(l=>{
+    const ts = l.ts ? hhmmss(typeof l.ts==='number'?l.ts:Date.parse(l.ts)/1000) : '--:--:--';
+    let lvl='';
+    const msg=(l.msg||l.message||'').toString().toLowerCase();
+    if(msg.includes('error')||msg.includes('fail')) lvl='lg-err';
+    else if(msg.includes('warn')) lvl='lg-warn';
+    return `<div class="log-line"><span class="lg-ts">[${ts}]</span> <span class="lg-bot">${esc(l.bot||l.source||'system')}</span> <span class="${lvl||'lg-msg'}">${esc(l.msg||l.message||JSON.stringify(l))}</span></div>`;
+  }).join('');
+  con.scrollTop = con.scrollHeight;
+}
+
+/* ================= FETCH LAYER ================= */
+async function getJSON(path){
+  const r = await fetch(API_BASE+path,{cache:'no-store'});
+  if(!r.ok) throw new Error(path+' -> HTTP '+r.status);
+  return r.json();
+}
+
+function setOnline(ok){
+  document.getElementById('offlineBanner').style.display = ok?'none':'flex';
+  const dot=document.getElementById('pulseDot'), txt=document.getElementById('pulseTxt');
+  dot.classList.toggle('off',!ok);
+  txt.textContent = ok?'API connected':'API offline';
+  if(ok) document.getElementById('lastSync').textContent =
+    'last sync '+new Date().toLocaleTimeString([],{hour12:false});
+}
+
+async function pollAll(){
+  const jobs = [
+    ['overview','/api/overview'],['txs','/api/txs'],['agents','/api/agents'],
+    ['bots','/api/bots'],['escrow','/api/escrow'],['logs','/api/logs']
+  ];
+  let anyOK=false;
+  await Promise.all(jobs.map(async ([key,path])=>{
+    try{
+      const data = await getJSON(path);
+      lastData[key]=data; anyOK=true;
+    }catch(e){ /* keep lastData[key] as-is */ }
+  }));
+
+  renderOverview(lastData.overview);
+  renderAgents(lastData.agents?.agents);
+  renderTxs(lastData.txs?.txs);
+  renderBots(lastData.bots?.bots);
+  renderEscrow(lastData.escrow);
+  renderLogs(lastData.logs?.logs);
+  setOnline(anyOK);
+}
+
+/* ================= BOOT ================= */
+initChart();
+pollAll();
+setInterval(pollAll, POLL_MS);
+</script>
+</body>
+</html>
