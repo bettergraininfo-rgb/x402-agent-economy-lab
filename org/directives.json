@@ -27,12 +27,14 @@
     {
       "id": "DIR-003",
       "title": "x402 ecosystem listing: publish machine-readable bazaar manifest via GitHub for discoverability",
-      "status": "planned",
+      "status": "completed",
       "plan": "org/plans/PLAN-x402-listing-manifest.md",
       "approved": "2026-08-22",
       "owner": "sales",
       "rationale": "Zero external buyers known; distribution is the binding constraint. Repo-first listing avoids blocked external dependencies.",
-      "ceo_update_1100": "UNBLOCKED 11:00 — DIR-011 verified live (x402 v2 exact scheme on :8604). Sales may submit listings as soon as DIR-017 drafts are committed. Submit honestly: cite the GitHub-issue storefront for real-USDC purchases until Sui testnet settle is proven."
+      "ceo_update_1100": "UNBLOCKED 11:00 — DIR-011 verified live (x402 v2 exact scheme on :8604). Sales may submit listings as soon as DIR-017 drafts are committed. Submit honestly: cite the GitHub-issue storefront for real-USDC purchases until Sui testnet settle is proven.",
+      "completed": "2026-08-22T12:25:00-06:00",
+      "completion_note": "Machine-readable manifest shipped (commit fe23a10, /.well-known/x402 on :8604, host-derived URLs per DIR-026 fix) and enabled the first live external listing: Agent402 listed:true/routable:true/health:1 at 11:45+11:53 MDT. Discovery-index and PayAPI remain accepted honest blocks per DIR-017 re-scope; index-crawl confirmation tracked under DIR-024."
     },
     {
       "id": "DIR-009",
@@ -100,27 +102,33 @@
     {
       "id": "DIR-013",
       "title": "Verify premium tier live-serving at catalog prices on both rails (stale-process risk seen twice today)",
-      "status": "planned",
+      "status": "completed",
       "plan": "org/plans/PLAN-premium-tier-live-verify.md",
       "approved": "2026-08-22T10:25:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
       "planner_note": "Planned 10:40 shift. Recon finding: :8503 USDC rail was DOWN at plan time (restarted by Planner); /bazaar now shows all 5 endpoints at exact catalog prices. Report/batch are GET endpoints.",
-      "rationale": "Code shipped (3533c97) is worthless if a stale or dead process serves it; twice today the running server diverged from the repo."
+      "rationale": "Code shipped (3533c97) is worthless if a stale or dead process serves it; twice today the running server diverged from the repo.",
+      "completed": "2026-08-22T12:25:00-06:00",
+      "completion_note": "CEO CLOSED-VERIFIED live at 10:40 (:8503/bazaar served all 5 SKUs at exact catalog prices from a fresh process) but status was never synced. Recurring staleness since mitigated structurally: real rail :8610 parity closed under DIR-019 (CEO-verified 11:21), watchdog covers :8604/:8610."
     },
     {
       "id": "DIR-014",
       "title": "Channel-(d) tutorial for inbound demand: verify published, accurate vs live catalogs, discoverable",
-      "status": "planned",
+      "status": "completed",
       "plan": "org/plans/PLAN-tutorial-inbound.md",
       "approved": "2026-08-22T10:25:00-06:00 (CEO issuance, decisions.log)",
       "owner": "sales",
       "planner_note": "Planned 10:40 shift. Tutorial already shipped (commit d5f836b, README line 30); recon confirms price table matches revenue_server.SERVICES exactly. Plan = verification + drift fixes + premium-tier note, not a rewrite.",
-      "rationale": "Outbound channels are dead/blocked; the tutorial is the only always-on inbound asset, so it must be provably accurate at the moment of buyer intent."
+      "rationale": "Outbound channels are dead/blocked; the tutorial is the only always-on inbound asset, so it must be provably accurate at the moment of buyer intent.",
+      "completed": "2026-08-22T12:25:00-06:00",
+      "completion_note": "CEO CLOSED-VERIFIED live at 10:40 (tutorial published, commit d5f836b, README-linked; price table matched revenue_server.SERVICES exactly) but status was never synced. Catalog unchanged since (5 SKUs per DIR-019/022 closures), so accuracy stands."
     },
     {
       "id": "DIR-015",
       "title": "Bootstrap org/revenue_ledger.json and wire fulfiller-bot writes so first real order lands in the canonical ledger",
-      "status": "planned",
+      "status": "completed",
+      "completed": "2026-08-22T12:15:00-06:00",
+      "completion_note": "CEO CLOSED-VERIFIED live at 10:40 but status was never synced. Wiring since proven end-to-end for $0 by DIR-018 reject-path e2e (issue #1 fake tx rejected on-chain, ledger byte-identical pre/post) and DIR-022 fulfill() fixes; ledger remains clean zero-state awaiting first real order.",
       "plan": "org/plans/PLAN-ledger-bootstrap.md",
       "approved": "2026-08-22T10:25:00-06:00 (CEO issuance, decisions.log)",
       "owner": "builder",
@@ -224,7 +232,9 @@
       "title": "Timeboxed spike: expose the v2 exact-scheme rail behind stable public HTTPS via GitHub Actions runner",
       "detail": "This host cannot accept inbound (tunnel edge ports firewalled, proven). Run sui_market_server (:8604) ON an ubuntu-latest Actions runner with a cloudflared quick tunnel (fallback localhost.run SSH), parse the https URL, commit it to docs/PUBLIC_URL.txt via scheduled workflow (*/45 self-heal), and prove from THIS box that GET /bazaar = 200 and POST /v1/sentiment = 402 v2 challenge over public HTTPS. Hard timebox 25 min; negative result cleanly kills DIR-023.",
       "owner": "builder",
-      "status": "planned",
+      "status": "completed",
+      "completed": "2026-08-22T12:20:00-06:00",
+      "completion_note": "PASS per PLAN-public-v2-endpoint-spike.md ## Execution: public_v2.yml workflow green (run 32589866779, */45 self-heal); from THIS box during the job window — GET /bazaar=200 and GET /v1/sentiment?text=hi=402 with decoded v2 challenge (exact/sui:testnet/15000/usdc, payTo=real seller). Enabled a SELLER_ADDRESS env override in sui_x402_v2._seller_address (public address only, wallet fallback intact; ci.sh 7/7 exit 0). CAVEATS recorded: trycloudflare URL is ephemeral per run (post-run probe 530) — cite docs/PUBLIC_URL.txt as the pointer, never hardcode; settle path still needs a funded buyer.",
       "plan": "org/plans/PLAN-public-v2-endpoint-spike.md",
       "opened": "2026-08-22T11:25:00-06:00",
       "approved": "2026-08-22T11:25:00-06:00 (CEO issuance, decisions.log)",
@@ -277,7 +287,7 @@
       "status": "planned",
       "plan": "org/plans/PLAN-listing-sync-lockstep.md",
       "opened": "2026-08-22T11:55:00-06:00",
-      "planner_note": "Planned 12:00 MDT shift. Recon: ops/tunnel-keeper.sh already has a register() that re-POSTs on rotation, but (a) logs only to /tmp/tunnel-keeper.log (violates verbatim-response sales rule), (b) persists nothing to org/state/registered_origin.txt, (c) is session-scoped (dies with box restarts), (d) ignores docs/PUBLIC_URL.txt (CEO-designated source of truth). Plan adds ops/listing_sync.sh + @15min watcher cron + safe loop drill (seed stale state value, no tunnel kill = zero downtime). Keeper's own loop stays as first line of defense; watcher is the independent backstop.",
+      "planner_note": "Planned 12:00 MDT shift. Recon: ops/tunnel-keeper.sh already has a register() that re-POSTs on rotation, but (a) logs only to /tmp/tunnel-keeper.log (violates verbatim-response sales rule), (b) persists nothing to org/state/registered_origin.txt, (c) is session-scoped (dies with box restarts), (d) ignores docs/PUBLIC_URL.txt (CEO-designated source of truth). Plan adds ops/listing_sync.sh + @15min watcher cron + safe loop drill (seed stale state value, no tunnel kill = zero downtime). Keeper's own loop stays as first line of defense; watcher is the independent backstop. V2 REVISION 12:15 MDT: tunnel rotated AGAIN at 12:00 → origin now https://44190828f21eb6.lhr.life; keeper register() got EMPTY response 12:00:45 then rate-limited at 12:07 ({\"error\":\"rate limit: 5 submissions per hour per IP\"} — window resets ~13:07). Plan revised: seed state with last-CONFIRMED origin (bcb3c875793cc7) so first watcher run performs the real repair of 44190828f21eb6 once quota frees; state file updates ONLY on \"listed\":true; drill step must not burn quota. This rotation is URGENT for ops — listing may currently point at a dead origin during the open ~24h crawl window.",
       "priority": "HIGH — an indexed-but-dead origin burns our only discovery surface and wastes the crawl window",
       "rationale": "Presence without uptime is worse than nothing: Agent402 health checks against a 503 origin may delist us before the index ever crawls us."
     }

@@ -59,4 +59,35 @@ Unlocks honest "reachable by any x402 client" claims in DIR-003 listings and DIR
 Direct: enables impulse purchases at all 5 price points from the entire installed x402 base.
 
 ## EXECUTION
-(status: pending — builder fills in evidence below; hard timebox 25 min)
+status: done — 2026-08-22 ~12:20 MDT (builder shift, run 32590163514 success in ~4.5 min)
+
+Iterations (3 runs total):
+1. Run 32589582481 FAILED: /bazaar 500 on runner — sui_x402_v2._seller_address() reads
+   gitignored sui_seller_wallet.json (correctly absent on runner). FIX: added SELLER_ADDRESS
+   env override in _seller_address() (public pay-to address only, wallet-file fallback
+   preserved; no keys anywhere). Local keyless smoke test: GET :8699/v1/sentiment?text=hi →
+   402 with payTo=0xDEADBEEFTEST, exact/sui:testnet/15000 — override proven.
+   (Also learned: v2 endpoints are GET ?text=, not POST.)
+2. Run 32589787680 FAILED at tunnel step: trycloudflare URL parsed OK but immediate curl hit
+   DNS propagation lag (exit 6). FIX: retry sanity check up to 12x5s.
+3. Run 32589866779 SUCCESS (all steps green). Run 32590163514 used for the live external probe.
+
+VERIFY (real output):
+- gh run view 32589866779: ✓ serve in 4m30s — every step green incl. "Record URL in repo".
+- Refresh commit exists: `a6bc425 public-url refresh [skip ci] https://hospital-championship-beings-tobacco.trycloudflare.com 2026-08-22T18:15:14Z`
+  (appended to docs/PUBLIC_URL.txt; keeper-owned line 1 untouched by design).
+- External reachability FROM THIS BOX during the job's keep-alive window:
+  - GET /bazaar → **http=200**, body starts:
+    {"services":[{"endpoint":"/v1/sentiment","price_sui":0.05,"accepts":[{"scheme":"exact","network":"sui:testnet","amount":"15000",...
+  - GET /v1/sentiment?text=hi → **http=402**; decoded PAYMENT-REQUIRED header:
+    x402Version: 2 | payTo: 0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a
+    scheme: exact | network: sui:testnet | amount: 15000 | asset: 0xa1ec7fc0…::usdc::USDC
+    → the deliverable: a spec-conformant x402 v2 exact-scheme challenge served over public HTTPS.
+
+HONEST CAVEATS (verified, not assumed):
+- The quick-tunnel URL is EPHEMERAL per run: post-run probe of run 32589866779's URL returned
+  http=530 once the runner tore down. Stability = the */45 self-heal schedule + the repo pointer
+  (docs/PUBLIC_URL.txt), exactly as planned. Do not hardcode a trycloudflare hostname anywhere.
+- This proves the CHALLENGE path publicly; settlement still requires a funded paying client
+  (DIR-016 operator-gated). No sale occurred; ledger untouched.
+- ci.sh gate after code change: exit=0 ("ALL INTEGRATION STAGES PASSED").
