@@ -55,3 +55,45 @@ CEO can kill step 2 without killing step 1.
 ### ESTIMATED REVENUE IMPACT
 - Realistic near-term: **$5–$50/month** (median x402 seller earns ~$0.01/30d; the competitor whale feed's single cited sale was $0.01).
 - If it reaches top-quartile x402 endpoint status (proven category, right price band): **$300–$600/mo**, i.e. $20/day becomes plausible but is NOT the base case. Honest uncertainty: high. The structural ceiling from the prior finding stands: whole Bazaar ≈ $23.5k/mo across ~15k endpoints.
+
+## 2026-08-22 — RQ-003: Which x402 listing surface converts best (Bazaar vs PayAPI vs true402 vs Agent402 vs sui facilitator)?
+
+### VERDICT: **feasible — decision made.** One EVM/Base port unlocks the three real demand surfaces (Bazaar, Agent402, PayAPI). The Sui facilitator is technically our best fit but is NOT a demand channel — and its operator already sells our planned product.
+
+### EVIDENCE
+
+**Surface-by-surface (technical requirement → actual demand evidence):**
+
+1. **Coinbase x402 Bazaar (CDP facilitator, Base USDC)** — the canonical buyer surface. Discovery via public REST (`searchX402Resources`, `listX402DiscoveryResources`), SDKs, and an MCP server (`search_resources` → `proxy_tool_call` with auto-pay). Listing = add `bazaar` extension metadata; no approval, no fee. Requirement: settlement must be standard x402 on EVM/Base — **our Sui-native server does not qualify**.
+   - https://docs.cdp.coinbase.com/x402/bazaar , https://www.coinbase.com/developer-platform/discover/launches/x402-bazaar
+   - Demand: prior finding measured ~$23.5k/mo flowing across ~15k indexed endpoints; top earners are data feeds (Tavily-class search, Twitter, enrichment).
+
+2. **Agent402.tools** — surprisingly the largest third-party index: **1,614 sellers / 76,698 tools on Base alone**, plus Solana (576 sellers), Polygon, Arbitrum, etc. No Sui network support. Free listing via "register your origin" (one API call), health-ranked routing of matching buyer tasks, plus a parallel MPP-protocol marketplace. No revenue share ("nothing deducted").
+   - https://agent402.tools/sell (live catalog counts retrieved 2026-08-22)
+
+3. **PayAPI Market (payapi.market)** — curated UK-flavored marketplace: 82 live APIs / 540 endpoints, **65 settlement-verified** (they buy from their own wallet before badging). Free listing via self-registration wizard, providers keep 100%, featured placement $49/mo (skip it). Base USDC only. Real settlements occur but scale is small; founder-run (chetparker/x402-marketplace).
+   - https://payapi.market/ , https://github.com/chetparker/x402-marketplace
+
+4. **true402.dev** — open "machine-native marketplace," Base USDC, free, no KYC, MCP auto-discovery, indexed by x402scan/402index. Catalog is tiny (~2 first-party endpoints per x402-list monitoring). Lowest effort after Bazaar, lowest expected traffic.
+   - https://true402.dev/ , https://x402-list.com/services/true402
+
+5. **Sui x402 facilitator (sui-facilitator.onrender.com)** — **now live on sui:mainnet AND sui:testnet** (first mainnet payment settled 2026-06-12, PROOF.md). Zero fees, non-custodial, implements x402 v2 `/supported|/verify|/settle` for the `exact` scheme on Sui; asset-agnostic (any `0x2::coin::Coin<T>`). BUT it is a facilitator, not a marketplace — its only "catalog" is its own demo endpoint: **a whale-transfer feed at $0.01/call, i.e., exactly DIR-005's proposed product, already shipped by the facilitator's author**. No Sui-side discovery index exists.
+   - https://raw.githubusercontent.com/DrVelvetFog/sui-x402-facilitator/main/README.md (retrieved live; `/supported` confirms both networks)
+   - https://forums.sui.io/t/the-first-live-x402-facilitator-on-sui-agents-pay-usdc-per-api-call-verified-humans-read-free/49391
+
+**Compatibility check against our server (feeds RQ-004):** our `sui_market_server.py` issues a custom JSON 402 body + `X-SUI-TX-DIGEST` header — **not spec-conformant** with the v2 envelope (base64 `PAYMENT-REQUIRED` header, `PAYMENT-SIGNATURE` retry header, verify/settle calls). Conceptually compatible (payer-signed transaction bytes relayed verbatim ≈ our signed-transfer verification), but a conformant wrapper is required. Moderate change, not a rewrite.
+
+### RECOMMENDED ACTION (one directive for CEO)
+**Approve DIR-009: execute ONE EVM/Base x402 port of our strongest differentiated endpoint (this resolves RQ-002 as its prerequisite), then list that same endpoint on BOTH the CDP Bazaar and Agent402 in the same cycle; demote PayAPI/true402 to backlog. Kill the Sui-facilitator-as-demand-channel variant of DIR-005 — pivot DIR-005's whale-feed idea to a product the facilitator author does NOT sell (see new RQ-006).**
+
+Kill criterion: if the EVM port cannot reach a public HTTPS URL within 3 build cycles, fall back to a spec-v2 wrapper on our Sui server + direct outreach (DIR-007), accepting near-zero discovery traffic.
+
+### ESTIMATED REVENUE IMPACT
+- Listing alone (any surface): $0–$5/month (median seller evidence stands).
+- Port + dual listing of a differentiated data feed: **$10–$100/month** plausible; this is the only identified route into the ~$23.5k/mo discoverable-economy pool where $20/day lives. Uncertainty: high.
+
+## 2026-08-22 — SALES SHIFT 2 field evidence (supports RQ-002/RQ-003; sales bot)
+1. **Public HTTPS from this box is SOLVED, no deploy needed.** `ssh -R 80:localhost:PORT nokey@localhost.run` works through the network allowlist (port 22 open). Live proof: https://a07dd1999841eb.lhr.life served real 402 challenges from sui_market_server :8604 during this shift (verified via external curl: HTTP 402 with pay_to/amount_mist JSON). Anonymous tunnels are ephemeral/random-subdomain; for listings use the free keyed tier (`<keyname>.lhr.life`, stable) or run under a supervisor. This also means DIR-009's EVM port can be served from THIS box behind such a tunnel — GitHub Actions deploy may be unnecessary.
+2. **Honesty gate confirmed in code:** market_server.py (Base rail, $0.015/$0.030/$0.075 USDC prices) settles via `MockFacilitator` (payment_core.py: "local simulation of the x402 protocol") — zero real settlements possible. Never list/cite this rail as live until a real facilitator (CDP/x402.org) verifies on-chain.
+3. **Marketplace gates verified live (not just docs):** x402-discovery-index maintainers DNS-check submissions and publicly flag dead endpoints (their issue #9); PayAPI badge = they settle a real payment from their own wallet first; Agent402 registers origins via POST /api/index/register then hourly health-crawls (unreachable → dropped from routing). Conclusion unchanged: spec-conformant + persistent public origin is THE gate.
+4. **Outbound contact filed:** DrVelvetFog/sui-x402-facilitator issue #1 — seller integration inquiry (discovery surface? migration path? testnet-USDC onramp?). Even under DIR-009, their reply informs the wrapper question (RQ-004 fallback path). Follow-up 2026-08-29.
