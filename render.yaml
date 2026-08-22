@@ -1,0 +1,15 @@
+# DIR-032 / PLAN-render-deploy-cutover Step 0 — Render free-tier service
+# definition for the v2 exact-scheme rail (:8604 catalog on a stable origin).
+# Deploy path A: connect repo in Render dashboard (DIR-034 operator gate).
+# Deploy path B: RENDER_DEPLOY_HOOK secret + render_keepalive.yml workflow.
+services:
+  - type: web
+    name: x402-v2-rail
+    runtime: docker
+    plan: free
+    healthCheckPath: /bazaar
+    envVars:
+      # Public pay-to address ONLY — same constant as sui_market_server usage;
+      # never place private keys or wallet files here.
+      - key: SELLER_ADDRESS
+        sync: false

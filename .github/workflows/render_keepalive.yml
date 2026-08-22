@@ -1,0 +1,23 @@
+# DIR-032 Step 2 — keep-alive + gated deploy for the Render-hosted v2 rail.
+# Deploys are idempotent and inert until the DIR-034 operator gate
+# (RENDER_DEPLOY_HOOK secret) exists; pings stay inert until RENDER_URL is set.
+name: render-keepalive
+on:
+  schedule: [{cron: "*/10 * * * *"}]
+  workflow_dispatch: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy-if-hook (idempotent)
+        if: ${{ env.RENDER_DEPLOY_HOOK != '' }}
+        env: {RENDER_DEPLOY_HOOK: "${{ secrets.RENDER_DEPLOY_HOOK }}"}
+        run: |
+          [ -z "$RENDER_DEPLOY_HOOK" ] && { echo "not gated yet"; exit 0; }
+          curl -sf -X POST "$RENDER_DEPLOY_HOOK" && echo "deploy triggered"
+      - name: keep-alive ping every 10min (fleet cadence)
+        run: |
+          URL="${{ secrets.RENDER_URL }}"
+          [ -z "$URL" ] && { echo "RENDER_URL unset"; exit 0; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 "$URL/bazaar")
+          echo "origin $URL -> $code"; [ "$code" = "200" ] || exit 1
