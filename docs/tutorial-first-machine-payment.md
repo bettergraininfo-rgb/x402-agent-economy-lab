@@ -11,7 +11,8 @@ captured from the live code in this repository, not mocked up.
 | `/v1/sentiment` | Label + score for any text | 0.015 |
 | `/v1/entity-extract` | Organizations & proper nouns | 0.030 |
 | `/v1/summarize` | Extractive summary | 0.075 |
-| `/v1/analyze` | Bundle: summary + sentiment + entities | 0.250 |
+| `/v1/report` | Bundle: sentiment + summary + entities | 0.020 |
+| `/v1/batch` | Bulk sentiment over `|||`-separated docs | 0.050 |
 
 Two purchase paths exist today:
 
@@ -54,9 +55,11 @@ What you'd get back (genuine output from the shipped entity extractor):
 
 **Honest status:** payment verification is live and adversarially tested — fabricated or
 already-used transaction hashes are rejected on-chain before anything is served. Results
-are delivered by a fulfillment bot polling on a roughly 10-minute loop. There is no
-public HTTPS endpoint yet; if you need low-latency programmatic access instead of the
-issue flow, open an issue and say so — that demand signal directly prioritizes hosting.
+are delivered by a fulfillment bot polling on a roughly 10-minute loop. A public HTTPS
+instance of the Sui rail also exists (see Path B) but rides a rotating tunnel kept alive
+by an auto-reconnect keeper, so treat the GitHub issue flow as the stable path. If you
+need low-latency programmatic access on Base instead of the issue flow, open an issue
+and say so — that demand signal directly prioritizes hosting.
 
 Other genuine sample outputs from this exact codebase:
 
@@ -80,44 +83,58 @@ python3 sui_market_server.py          # listens on 127.0.0.1:8604
 ```
 
 Ask for a service without paying, and the server answers with a machine-readable **402
-Payment Required challenge** — this is the core x402 idea. Captured live:
+Payment Required challenge** — this is the core x402 idea. Captured live from the public
+instance (x402 v2 exact scheme, sui:testnet USDC, August 22, 2026):
 
 ```json
 {
-  "error": "Payment Required",
-  "scheme": "sui-transfer",
-  "pay_to": "0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a",
-  "amount_mist": 50000000,
-  "network": "sui-devnet",
-  "instructions": "Execute a SUI transfer of amount_mist to pay_to, then retry with header X-SUI-TX-DIGEST: <digest>"
+  "x402Version": 2,
+  "accepts": [{
+    "scheme": "exact",
+    "network": "sui:testnet",
+    "amount": "15000",
+    "asset": "0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC",
+    "payTo": "0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a",
+    "maxTimeoutSeconds": 600
+  }],
+  "error": "Payment Required"
 }
 ```
 
-A buyer agent executes that transfer, then retries with proof:
+(The challenge also arrives base64-encoded in the spec-standard `payment-required`
+response header; the body above is its decoded content. Legacy-dialect fields are still
+present in the body for older buyers.)
+
+A buyer agent executes the transfer described by `accepts`, then retries with proof in
+the `PAYMENT-SIGNATURE` header (standard x402 client libraries do this automatically):
 
 ```bash
-curl -H "X-SUI-TX-DIGEST: <your-tx-digest>" \
-     "http://127.0.0.1:8604/v1/sentiment?text=hello"
+curl -H "PAYMENT-SIGNATURE: <signed-payment>" \
+     "https://<current-public-host>/v1/sentiment?text=hello"
 ```
 
-The server verifies the digest **on-chain** (real settlement, correct recipient and
+The server verifies the payment **on-chain** (real settlement, correct recipient and
 amount) before serving. Settlements are visible on Sui Explorer — e.g. our own test
-settlements `FJpQrgYm…` and `2HxocRYh…` on devnet.
+settlements `FJpQrgYm…` and `2HxocRYh…`.
+
+The public origin rotates when the tunnel reconnects; the authoritative current URL is
+kept in [`docs/PUBLIC_URL.txt`](PUBLIC_URL.txt), and the service is registered with the
+[Agent402](https://agent402.tools) discovery index, which re-checks health hourly.
 
 Minimal buyer loop in Python:
 
 ```python
 import requests
 
-BASE = "http://127.0.0.1:8604"
+BASE = "http://127.0.0.1:8604"   # or the current public origin (docs/PUBLIC_URL.txt)
 r = requests.get(f"{BASE}/v1/sentiment", params={"text": "agents gonna agent"})
 
 if r.status_code == 402:
-    challenge = r.json()                      # pay_to, amount_mist, network
-    digest = sui_transfer(challenge)          # your wallet signs & broadcasts
+    challenge = r.json()                       # accepts[]: payTo, amount, network
+    sig = sign_and_pay(challenge)              # your wallet signs & broadcasts
     r = requests.get(f"{BASE}/v1/sentiment",
                      params={"text": "agents gonna agent"},
-                     headers={"X-SUI-TX-DIGEST": digest})
+                     headers={"PAYMENT-SIGNATURE": sig})
 
 print(r.json())
 ```

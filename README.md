@@ -23,7 +23,8 @@ No signup. Pay in USDC, get your result as a GitHub comment, verified on-chain:
 | `/v1/sentiment` | **$0.015** |
 | `/v1/entity-extract` | **$0.030** |
 | `/v1/summarize` | **$0.075** |
-| `/v1/analyze` (premium bundle: summary + sentiment + entities + stats) | **$0.250** |
+| `/v1/report` (bundle: sentiment + summary + entities) | **$0.020** |
+| `/v1/batch` (bulk sentiment over `|||`-separated docs) | **$0.050** |
 
 ### What happens after you pay
 
@@ -48,7 +49,8 @@ means one payment buys exactly one call.
 | `POST /v1/sentiment` | **$0.015** | `{"text": "..."}` | label + score |
 | `POST /v1/entity-extract` | **$0.030** | `{"text": "..."}` | typed entities |
 | `POST /v1/summarize` | **$0.075** | `{"text": "..."}` | summary |
-| `POST /v1/analyze` | **$0.250** | `{"text": "..."}` | full analysis bundle |
+| `POST /v1/report` | **$0.020** | `{"text": "..."}` | bundled sentiment + summary + entities |
+| `POST /v1/batch` | **$0.050** | `{"text": "doc1 ||| doc2 ||| ..."}` | per-doc sentiment + label distribution |
 
 At 10k calls/day that is $150/mo for sentiment — cheaper than any key-based
 NLP API at equivalent volume, and settleable by a non-human wallet.
