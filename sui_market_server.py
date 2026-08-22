@@ -1,0 +1,150 @@
+"""Real-settlement x402 market on Sui devnet.
+
+The 402 challenge names a pay_to address + MIST amount. The buyer agent
+executes a REAL signed Sui transfer, then retries with the tx digest. The
+server verifies ON-CHAIN (GraphQL): status SUCCESS, funds landed on pay_to,
+amount >= price, digest never seen before (replay protection). Only then
+is the service served.
+
+This replaces MockFacilitator with the actual Sui ledger.
+"""
+
+from __future__ import annotations
+
+import base64
+import json
+
+import httpx
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+
+GRAPHQL = "https://graphql.devnet.sui.io/graphql"
+PAY_TO = "0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a"
+LAMPORT = 1_000_000_000
+
+app = FastAPI(title="sui-x402-market", version="1.0.0")
+
+SERVICES = {
+    "/v1/sentiment":      {"price": 50_000_000, "fn": None},
+    "/v1/entity-extract": {"price": 80_000_000, "fn": None},
+}
+
+
+def svc_sentiment(text: str) -> dict:
+    pos = {"good", "great", "love", "amazing", "win", "gain", "profit"}
+    neg = {"bad", "terrible", "awful", "hate", "worst", "crash", "scam"}
+    words = [w.strip(".,!?;:").lower() for w in text.split()]
+    p, n = sum(w in pos for w in words), sum(w in neg for w in words)
+    label = "positive" if p > n else "negative" if n > p else "neutral"
+    return {"label": label,
+            "score": round(min(1.0, .4 + .2 * abs(p - n)) * (1 if p > n else -1 if n > p else 0), 2)}
+
+
+def svc_entities(text: str) -> dict:
+    known = {"Coinbase", "Base", "Virtuals", "Solana", "Ethereum", "Sui", "Mysten"}
+    caps = {w.strip(".,!?;:") for w in text.split() if w[:1].isupper()}
+    return {"organizations": sorted(caps & known),
+            "proper_nouns": sorted(caps - known)}
+
+
+SERVICES["/v1/sentiment"]["fn"] = svc_sentiment
+SERVICES["/v1/entity-extract"]["fn"] = svc_entities
+
+_seen_digests: set[str] = set()
+ledger: list[dict] = []
+
+
+def gql(query: str) -> dict:
+    return httpx.post(GRAPHQL, json={"query": query}, timeout=30).json()
+
+
+def verify_onchain(digest: str, min_amount: int, attempts: int = 5) -> tuple[bool, str]:
+    """Check the ledger: tx succeeded and paid pay_to at least min_amount.
+    Retries while indexing catches up."""
+    if digest in _seen_digests:
+        return False, "digest replayed"
+    import time
+    tb = None
+    for _ in range(attempts):
+        out = gql("""
+        { transaction(digest: "%s") {
+            effects { status executionError { message }
+              balanceChanges { nodes { owner { address } amount } } } } }""" % digest)
+        tb = (out.get("data") or {}).get("transaction")
+        if tb:
+            break
+        time.sleep(1.5)  # GraphQL indexer lag behind execution
+    if not tb:
+        return False, "transaction not found on chain"
+    eff = tb["effects"]
+    if eff["status"] != "SUCCESS":
+        return False, f"tx status {eff['status']}"
+    paid = 0
+    for ch in eff["balanceChanges"]["nodes"]:
+        owner = (ch.get("owner") or {}).get("address")
+        if owner and owner.lower() == PAY_TO.lower():
+            paid += abs(int(ch["amount"]))
+    if paid < min_amount:
+        return False, f"paid {paid} MIST, required {min_amount}"
+    _seen_digests.add(digest)
+    return True, f"verified {paid} MIST received"
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "pay_to": PAY_TO, "settlement": "sui-devnet"}
+
+
+@app.get("/bazaar")
+def bazaar():
+    return {"services": [
+        {"endpoint": ep, "price_sui": cfg["price"] / LAMPORT}
+        for ep, cfg in SERVICES.items()
+    ]}
+
+
+@app.get("/stats")
+def stats():
+    return {"revenue_mist": sum(e["amount"] for e in ledger),
+            "sales": len(ledger),
+            "by_service": _by_svc()}
+
+
+def _by_svc():
+    out: dict[str, int] = {}
+    for e in ledger:
+        out[e["service"]] = out.get(e["service"], 0) + e["amount"]
+    return out
+
+
+@app.get("/{path:path}")
+def paid(request: Request, path: str, text: str = ""):
+    endpoint = "/" + path
+    cfg = SERVICES.get(endpoint)
+    if not cfg:
+        return JSONResponse({"error": "unknown service"}, status_code=404)
+    if not text:
+        return JSONResponse({"error": "missing ?text="}, status_code=400)
+
+    digest = request.headers.get("X-SUI-TX-DIGEST")
+    if not digest:
+        challenge = {
+            "error": "Payment Required",
+            "scheme": "sui-transfer",
+            "pay_to": PAY_TO,
+            "amount_mist": cfg["price"],
+            "network": "sui-devnet",
+            "instructions": "Execute a SUI transfer of amount_mist to pay_to, "
+                            "then retry with header X-SUI-TX-DIGEST: <digest>",
+        }
+        return JSONResponse(status_code=402, content=challenge)
+
+    ok, reason = verify_onchain(digest.strip(), cfg["price"])
+    if not ok:
+        return JSONResponse({"error": "payment rejected", "reason": reason},
+                            status_code=402)
+
+    receipt = {"tx": digest, "service": endpoint, "amount": cfg["price"],
+               "settlement": "on-chain"}
+    ledger.append(receipt)
+    return JSONResponse(content={**cfg["fn"](text), "_receipt": receipt})
