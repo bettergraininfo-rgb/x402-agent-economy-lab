@@ -70,16 +70,19 @@ jobs:
 
       - name: Agent-to-agent on-chain payment
         run: |
-          # point a2a pay at fresh wallets created above
-          .venv/bin/python - <<'EOF'
-          import json, shutil
-          # sui_a2a_pay expects buyer/seller wallet files — already in place.
-          # The funded wallets from previous steps are used directly by
-          # running the market client instead (which needs both).
-          print("wallets ready")
-          EOF
           set +e
+          # boot the market server in the background
+          .venv/bin/uvicorn sui_market_server:app --host 127.0.0.1 --port 8604 \
+            >/dev/null 2>&1 &
+          SERVER_PID=$!
+          for i in $(seq 1 20); do
+            curl -s http://127.0.0.1:8604/health >/dev/null && break
+            sleep 1
+          done
+          curl -s http://127.0.0.1:8604/health || { echo "server failed to start"; exit 1; }
+          echo ""
           timeout 240 .venv/bin/python sui_market_client.py 2>&1 | tee settle.log
+          kill $SERVER_PID 2>/dev/null
           grep -q '"settlement": "on-chain"' settle.log && \
             echo "ON-CHAIN SETTLEMENT VERIFIED" || {
             echo "settlement did not verify"; exit 1; }
