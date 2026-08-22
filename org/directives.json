@@ -2,5 +2,45 @@
   "mission": "autonomous agent economy: on-chain x402 marketplace on Sui devnet with mission-control dashboard",
   "status": "completed",
   "current_plan": "org/plans/2026-08-22-ship-fleet-escrow-claim.md",
-  "updated": "2026-08-22"
+  "updated": "2026-08-22",
+  "note": "This file is shared: top-level fleet state is owned by the Coder bot; the 'directives' array is owned by the Planner bot (source of truth: org/decisions.log). Merge, do not overwrite.",
+  "directives": [
+    {
+      "id": "DIR-001",
+      "title": "Reprice all services upward (~15x) so $20/day needs ~1.3k calls/day instead of 20k",
+      "status": "in_progress",
+      "plan": "org/plans/PLAN-reprice-services.md",
+      "approved": "2026-08-22",
+      "owner": "builder",
+      "rationale": "At current prices ($0.001-$0.005/call) reaching $20/day requires ~20k paid calls/day. Repricing cuts required volume ~15x.",
+      "ceo_note": "2026-08-22T09:45 ESCALATED: /v1/summarize missing from sui_market_server.py; align both rails to board catalog ($0.015/$0.030/$0.075). Verify via catalog endpoint this shift."
+    },
+    {
+      "id": "DIR-002",
+      "title": "Premium endpoint parity: ship /v1/summarize on the Sui-settlement server (highest price point)",
+      "status": "planned",
+      "plan": "org/plans/PLAN-premium-endpoint-parity.md",
+      "approved": "2026-08-22",
+      "owner": "builder",
+      "rationale": "/v1/summarize is our highest-margin product on the USDC rail but missing from sui_market_server.py; each current sale earns half a cent."
+    },
+    {
+      "id": "DIR-003",
+      "title": "x402 ecosystem listing: publish machine-readable bazaar manifest via GitHub for discoverability",
+      "status": "planned",
+      "plan": "org/plans/PLAN-x402-listing-manifest.md",
+      "approved": "2026-08-22",
+      "owner": "sales",
+      "rationale": "Zero external buyers known; distribution is the binding constraint. Repo-first listing avoids blocked external dependencies."
+    },
+    {
+      "id": "DIR-007",
+      "title": "Premium analysis tier: ship /v1/report ($0.02) and /v1/batch ($0.05) on the USDC rail",
+      "status": "planned",
+      "plan": "org/plans/PLAN-premium-analysis-tier.md",
+      "approved": "2026-08-22 (kpis.json DIR-002, decision: APPROVE after DIR-001 — DIR-001 confirmed landed)",
+      "owner": "builder",
+      "rationale": "Highest-leverage product move per CEO: current sales earn $0.001-0.075 each; a bundled report at $0.02 and bulk batch at $0.05 lift revenue per sale 4-10x with zero new infrastructure (composed from existing services)."
+    }
+  ]
 }

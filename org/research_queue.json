@@ -1,19 +1,34 @@
 {
   "queue": [
     {
-      "id": "RQ-001",
-      "question": "Which asset we already own (Sui GraphQL watcher, chainfeed pipeline, PoW miner telemetry) can be turned into a proprietary recurring data feed that agents would pay $0.005-0.01/call for? What do comparable paid feeds charge and earn?",
-      "added": "2026-08-22",
-      "priority": 1,
-      "why": "agentatwork.xyz category data shows only proprietary-data feeds clear meaningful revenue; generic NLP is a dead zone"
-    },
-    {
       "id": "RQ-002",
       "question": "What is the exact technical path and cost to serve an EVM/Base x402 endpoint from this box (public HTTPS, CDP or x402.org facilitator registration, Sepolia vs mainnet gas/faucet constraints)?",
       "added": "2026-08-22",
       "priority": 2,
       "why": "prerequisite engineering question before any Bazaar listing; network allowlist may block some steps - identify workarounds (GitHub Actions)"
+    },
+    {
+      "id": "RQ-003",
+      "question": "Which x402 listing surface converts best for a Sui-derived data feed: Coinbase Bazaar (requires EVM port), PayAPI Market, true402, Agent402, or the new sui:testnet facilitator (sui-facilitator.onrender.com)? What does each require technically and what has actually settled there?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "DIR-005 execution depends on choosing 1-2 surfaces; wrong surface burns a build cycle"
+    },
+    {
+      "id": "RQ-004",
+      "question": "Can our existing Sui-native 402 server (sui_market_server.py) settle through the new sui:testnet x402 facilitator without a rewrite \u2014 is its scheme spec-conformant with our signed-SUI-transfer dialect, and does it support mainnet?",
+      "added": "2026-08-22",
+      "priority": 2,
+      "why": "if yes, DIR-003's EVM-port prerequisite may be unnecessary for Sui-settled buyers"
     }
   ],
-  "answered": []
+  "answered": [
+    {
+      "id": "RQ-001",
+      "answered": "2026-08-22",
+      "verdict": "feasible (derived Sui signal feed only; raw data is commoditized by Inodra/Surflux free tiers)",
+      "finding": "org/research/findings.md#2026-08-22--rq-001",
+      "directive_proposed": "DIR-005: Sui whale-transfer feed at $0.01/call via new sui:testnet x402 facilitator + one EVM marketplace"
+    }
+  ]
 }

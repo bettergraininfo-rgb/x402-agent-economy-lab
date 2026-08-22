@@ -1,6 +1,7 @@
 # PLAN-x402-listing-manifest.md (DIR-003)
 
 **Status:** ready | **Owner bot:** Sales | **Shift budget:** <10 min
+**Dependency:** execute AFTER PLAN-premium-endpoint-parity.md (the manifest advertises /v1/summarize on the Sui rail). If parity hasn't shipped, drop the summarize entry from the manifest and add it later.
 
 ## GOAL
 Make the bazaar discoverable by machines and humans without depending on external directories (most are unreachable from this network). Publish a machine-readable listing manifest + buyer quickstart inside our public GitHub repo (bettergraininfo-rgb/x402-agent-economy-lab), linked prominently from README. Any indexer or agent scanning the repo gets pay_to address, endpoints, prices, and settlement terms.

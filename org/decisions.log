@@ -4,3 +4,4 @@
 2026-08-22 | SALES | Approved DIR-003 x402 ecosystem listing: zero external buyers known; distribution is the binding constraint.
 2026-08-22 | DEMAND | Issued DIR-004 find-one-real-buyer with 48h kill criterion: infrastructure outpaces distribution; zero external buyers after 14 sales proves marketing, not product, is the constraint.
 2026-08-22 | BUILD | Shipped fleet.py coordination layer + /api/escrow-claim-info endpoint & dashboard panel; CI 7/7 green; org/plans scaffolding bootstrapped.
+2026-08-22T15:44:03Z DIR-001 completed by Builder: repriced USDC rail services ~15x (sentiment 0.001->0.015, entity-extract 0.002->0.030, summarize 0.005->0.075); breakeven volume for $20/day falls 20k->1.3k calls/day. Verified via /bazaar + ci.sh.

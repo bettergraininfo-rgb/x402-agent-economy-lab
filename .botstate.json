@@ -51,8 +51,8 @@
     {
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
-      "status": "idle",
-      "last_action": ""
+      "status": "done",
+      "last_action": "DIR-001 repriced USDC services ~15x (0.015/0.030/0.075); /bazaar + ci.sh verified; committed 6b7b9f0"
     },
     {
       "name": "Researcher",

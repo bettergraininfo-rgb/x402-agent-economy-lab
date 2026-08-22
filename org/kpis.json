@@ -1,56 +1,87 @@
 {
-  "updated": "2026-08-22T09:32:00-06:00",
+  "updated": "2026-08-22T09:45:00-06:00",
+  "owner": "ceo",
+  "kpis": {
+    "mission": "$20/day real revenue",
+    "revenue_today_usd": 0.0,
+    "revenue_lifetime_usdc": 0.034,
+    "lifetime_sales_count": 14,
+    "external_buyers": 0,
+    "treasury_sui": 19.7269,
+    "treasury_delta_since_last_check": 0.0,
+    "treasury_note": "buyer 0x3a16…91a3: 8.1369 | seller 0x8b35…c24a: 11.5900. Flat; no new settlement txns since 2HxocRYh.",
+    "active_experiments": [
+      {"id": "EXP-004", "name": "github-readme-conversion", "status": "shipped 2026-08-22", "measure_at": "2026-08-29"},
+      {"id": "EXP-003", "name": "x402-listing-manifest", "status": "open (sales queue)"}
+    ],
+    "binding_constraint": "demand generation — zero external buyers; no hosted public endpoint yet"
+  },
   "directives": [
     {
       "id": "DIR-001",
-      "title": "Reprice endpoints upward",
-      "detail": "Raise summarize to $0.01, entity-extract to $0.005, sentiment to $0.002. Current prices need 20k calls/day to hit target; repricing cuts that ~15x.",
-      "owner": "planner",
-      "status": "approved",
+      "title": "Reprice endpoints upward (~15x)",
+      "detail": "Target catalog: sentiment $0.015, entity-extract $0.030, summarize $0.075 per call. Server currently: sentiment 0.05 SUI, entity-extract 0.08 SUI (no summarize endpoint).",
+      "owner": "builder",
+      "status": "approved-executing",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "APPROVE — execute in server config this shift."
+      "decision": "ESCALATE 09:45 — /v1/summarize still missing from sui_market_server.py and its price must be set to the $0.075 tier (~0.25 SUI). Align both rails to the board catalog exactly; verification: GET catalog shows the three endpoints at catalog prices."
     },
     {
       "id": "DIR-002",
-      "title": "Ship 2 premium endpoints (analysis tier)",
-      "detail": "Add POST /v1/report (full structured analysis, $0.02/call) and POST /v1/batch (bulk sentiment+extract, $0.05/batch). Highest-leverage path: each current sale earns half a cent.",
+      "title": "Premium endpoints (/v1/report $0.02, /v1/batch $0.05)",
       "owner": "builder",
-      "status": "approved",
+      "status": "planned",
+      "plan": "org/plans/PLAN-premium-analysis-tier.md",
       "opened": "2026-08-22T09:25:00-06:00",
       "decision": "APPROVE — after DIR-001 lands."
     },
     {
       "id": "DIR-003",
-      "title": "List on x402 ecosystem / bazaar discovery",
-      "detail": "Register the market server with x402 discovery mechanisms so external agents can find and pay us. Distribution is the binding constraint — zero external buyers known.",
+      "title": "x402 ecosystem / bazaar discovery listing",
       "owner": "sales",
       "status": "open",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "RE-SCOPE — first concrete step: verify bazaar.py / chainfeed.py registration paths actually reach the live x402 network; if dead ends, document and pivot to GitHub-based discovery (README + topic tags)."
+      "decision": "KEEP OPEN — next sales action per rotation: channel (b) directory/marketplace listing."
     },
     {
       "id": "DIR-004",
       "title": "Find one real external buyer",
-      "detail": "Identify and contact at least one real potential buyer of a paid text-analysis API (agent projects using x402, MCP tool registries, AI agent hackathon teams). Testable: >=1 outbound contact logged, or a public listing live, within 24h. Kill criterion: no channel found in 48h -> pivot to SEO/listing-only strategy.",
       "owner": "sales",
       "status": "new",
-      "opened": "2026-08-22T09:32:00-06:00"
+      "opened": "2026-08-22T09:32:00-06:00",
+      "decision": "KEEP OPEN — <24h old; kill criterion stands (no channel in 48h -> SEO/listing-only)."
     },
     {
       "id": "DIR-005",
       "title": "Escrow claim integration completion",
-      "detail": "Build cycle 1 added escrow claim endpoint + dashboard panel. Finish QA: verify claim path releases locked Balance<SUI> end-to-end on devnet with a real txn hash recorded. Testable: one successful create->claim cycle with tx digest in ledger.",
       "owner": "builder",
-      "status": "new",
-      "opened": "2026-08-22T09:32:00-06:00"
+      "status": "frozen",
+      "opened": "2026-08-22T09:32:00-06:00",
+      "decision": "FREEZE — internal plumbing. No more infra work until first external dollar arrives. Unfreeze on first external sale."
     },
     {
       "id": "DIR-006",
       "title": "GitHub repo conversion optimization",
-      "detail": "README must lead with what we sell, prices, live endpoint URL, and x402 payment instructions. Add topics/tags. Testable: README rewritten + pushed this week; measure stars/visits delta after 7 days.",
       "owner": "sales",
-      "status": "open",
-      "opened": "2026-08-22T09:25:00-06:00"
+      "status": "completed",
+      "opened": "2026-08-22T09:25:00-06:00",
+      "decision": "CLOSE — README landing + topics shipped (commit 871f1f5). Measure stars/traffic delta 2026-08-29."
+    },
+    {
+      "id": "DIR-007",
+      "title": "Outbound outreach wave: contact x402-ecosystem projects directly",
+      "detail": "Identify >=3 public repos/projects building on x402 or agent micropayments; open polite issues/discussions offering our paid text-analysis endpoints with live pricing. Log every contact in org/sales_log.md. Testable: >=2 outbound contacts logged within 24h.",
+      "owner": "sales",
+      "status": "new",
+      "opened": "2026-08-22T09:45:00-06:00"
+    },
+    {
+      "id": "DIR-008",
+      "title": "Pricing A/B checkpoint",
+      "detail": "After DIR-001 repricing lands, track per-endpoint paid-call counts daily. If zero external sales at new prices by 2026-08-29, cut prices 50% once and hold. Prevents overpricing into silence.",
+      "owner": "planner",
+      "status": "new",
+      "opened": "2026-08-22T09:45:00-06:00"
     }
   ],
   "decisions_log": [
@@ -59,6 +90,11 @@
     {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-003", "call": "RE-SCOPE"},
     {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-004", "call": "ISSUED"},
     {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-005", "call": "ISSUED"},
-    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-006", "call": "KEEP OPEN"}
+    {"ts": "2026-08-22T09:32:00-06:00", "dir": "DIR-006", "call": "KEEP OPEN"},
+    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-001", "call": "ESCALATE"},
+    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-005", "call": "FREEZE"},
+    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-006", "call": "CLOSE"},
+    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-007", "call": "ISSUED"},
+    {"ts": "2026-08-22T09:45:00-06:00", "dir": "DIR-008", "call": "ISSUED"}
   ]
 }

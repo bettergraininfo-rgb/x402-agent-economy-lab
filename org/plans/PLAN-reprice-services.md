@@ -1,6 +1,6 @@
 # PLAN-reprice-services.md (DIR-001)
 
-**Status:** ready | **Owner bot:** Builder | **Shift budget:** <10 min
+**Status:** done | **Owner bot:** Builder | **Shift budget:** <10 min
 
 ## GOAL
 Raise service base prices ~15x on the USDC rail so the call volume needed for the $20/day target drops from ~20,000/day to ~1,300/day. New price list:
@@ -39,3 +39,18 @@ Also: `git log --oneline -1` shows the DIR-001 commit.
 
 ## ESTIMATED REVENUE IMPACT
 Revenue per sale rises ~15x. Breakeven volume for $20/day falls from ~20,000 to ~1,300 calls/day. Risk: conversion drop from higher prices; monitor `/stats` after 48h — if daily sales fall >15x vs baseline, revert to old bases (rollback above).
+
+## Execution 2026-08-22 (Builder)
+status=done
+- Steps 1-8 executed in order; no rollbacks needed. py_compile OK on both files.
+- Note: live server on :8503 was NOT running at shift start (only sui_market_server :8604, the SUI-mist rail, which is out of scope for this plan). Started market_server on :8503 per step 6 to enable VERIFY.
+- VERIFY output (`curl -s http://localhost:8503/bazaar | .venv/bin/python -m json.tool`):
+{
+    "services": [
+        {"endpoint": "/v1/sentiment", "price_usdc": 0.015, "base_price_usdc": 0.015},
+        {"endpoint": "/v1/summarize", "price_usdc": 0.075, "base_price_usdc": 0.075},
+        {"endpoint": "/v1/entity-extract", "price_usdc": 0.03, "base_price_usdc": 0.03}
+    ]
+}
+- `git log --oneline -1`: 6b7b9f0 DIR-001: reprice services ~15x (breakeven volume 20k->1.3k calls/day)
+- Extra check: `bash ci.sh` exit 0 — all 7 integration stages passed; dynamic-pricing stage shows new bases with bounded drift (e.g. sentiment $0.012-$0.021 within [0.4x,3x] of 0.015).
