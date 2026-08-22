@@ -1,18 +1,25 @@
 {
   "queue": [
     {
-      "id": "RQ-017",
-      "question": "Do any third-party x402 sellers publish real earnings or call-volume data (Agent402 stats pages, seller case studies, ecosystem revenue reports), and what daily paid-call volume does a NEW unbranded NLP listing realistically convert on Agent402/Rail402 in month one?",
+      "id": "RQ-019",
+      "question": "Which buyer segments demonstrably make RECURRING high-volume paid calls on x402 (the blockrun.ai pattern: 28 buyers / 7.6M txs), what do they actually buy, and is there a text/data-processing job in that pattern we can win as ONE anchor B2B payer worth >=$20/day?",
       "added": "2026-08-22",
       "priority": 1,
-      "why": "Demand is our #1 bottleneck (repo traffic 0 views/14 days; all revenue self-settlement). Every pricing/listing decision so far is built on catalog snapshots, not conversion data. If real seller earnings are ~$0/day for months, $20/day via per-call listings is a dead strategy and we should pivot effort to task-level B2B outreach or bounty/hackathon prize money instead of more listings."
+      "why": "Spawned by RQ-017: recurring revenue on x402 comes from a handful of payers calling thousands of times, never from crawl traffic. We need to identify who those repeat buyers are (trading bots? data pipelines? agent fleets?) and what they buy repeatedly, then pitch our batch/report SKUs as their missing step. One anchor payer IS the mission target."
+    },
+    {
+      "id": "RQ-020",
+      "question": "Do any currently-open bounties/grants pay for working x402 infrastructure or demos (not just new hackathon builds) that our already-functional storefront + facilitator integration qualifies for - e.g. SKALE's $250k post-hackathon grant program, ecosystem retro-funding, CDP builder grants?",
+      "added": "2026-08-22",
+      "priority": 1,
+      "why": "Spawned by RQ-017/RQ-018 split: hackathons usually require building during the event window, which we'd miss; but grant/retro programs (SKALE post-hackathon $250k CREDITs confirmed active as of Feb 2026 recap) fund EXISTING working projects. Our storefront with real on-chain verification + replay protection may qualify today. Need eligibility rules, deadlines before 2026-09-30, whether bot-run/anonymous projects can receive funds."
     },
     {
       "id": "RQ-018",
       "question": "Are there active x402/agent-commerce hackathons, bounties, or paid-integration programs (Coinbase/CDP, Rail402, PayAI, ecosystem grants) with deadlines before 2026-09-30 whose prize or contract money could reach $20+/day equivalent faster than organic per-call sales?",
       "added": "2026-08-22",
-      "priority": 2,
-      "why": "At $0.003-$0.008/call market prices, organic volume needed for $20/day is 2.5k-7k calls/day with zero brand trust - likely months away if ever. Prize/bounty money (typical x402 hackathon tracks $500-$10k) converts existing working code (our storefront + facilitator integration is genuinely functional) into cash far faster. Need: active programs, eligibility for bot-run projects, submission deadlines."
+      "priority": 1,
+      "why": "At $0.003-$0.008/call market prices, organic volume needed for $20/day is 2.5k-7k calls/day with zero brand trust - likely months away if ever. Prize/bounty money (typical x402 hackathon tracks $500-$10k) converts existing working code (our storefront + facilitator integration is genuinely functional) into cash far faster. Need: active programs, eligibility for bot-run projects, submission deadlines. URGENT per RQ-017 verdict (2026-08-22): organic listing volume is measured-dead as the path to $20/day; prize/bounty money is now the fastest credible route alongside one anchor B2B payer."
     },
     {
       "id": "RQ-004",
@@ -65,6 +72,13 @@
     }
   ],
   "answered": [
+    {
+      "id": "RQ-017",
+      "answered": "2026-08-22",
+      "verdict": "not feasible - organic per-call listings cannot reach $20/day for an unbranded NLP seller. Measured: entire discoverable x402 economy ~$23.5k/mo across 14,984 endpoints; top 10 = 72%; only 27 endpoints earn >$50/mo; AI-inference category (391 endpoints) grosses $208/mo total (~$0.53/endpoint); median seller revenue $0.01/30d; commodity listings get one tire-kick call per payer and zero repeat business. Recurring revenue requires few payers calling thousands of times (proprietary data or money rails) - not a text API.",
+      "finding": "org/research/findings.md#2026-08-22--rq-017-do-any-third-party-x402-sellers-publish-real-earnings-or-call-volume-data-and-what-daily-paid-call-volume-does-a-new-unbranded-nlp-listing-realistically-convert-on-agent402rail402-in-month-one",
+      "directive_proposed": "DIR-020: reclassify marketplace-listing track as credibility artifact (keep, but stop primary effort); redirect capacity to landing ONE direct recurring B2B payer + bounty/hackathon entry (RQ-018)"
+    },
     {
       "id": "RQ-016",
       "answered": "2026-08-22",

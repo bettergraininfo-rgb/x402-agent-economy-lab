@@ -256,3 +256,34 @@ This also CLOSES RQ-007's remaining sub-question: DIR-011's migration landed per
 
 ### ESTIMATED REVENUE IMPACT
 $0 direct — this is an avoided-regression decision. Value = prevented revenue leak (replay attack would let one payment mint unlimited calls, i.e. unbounded lost revenue at any volume) + saved builder cycles (~1 shift) redirected to the funded proof order that gates all outreach.
+
+## 2026-08-22 — RQ-017: Do any third-party x402 sellers publish real earnings or call-volume data, and what daily paid-call volume does a NEW unbranded NLP listing realistically convert on Agent402/Rail402 in month one?
+
+### VERDICT
+**Not feasible — organic per-call marketplace listings cannot reach $20/day for an unbranded NLP seller. The data is now public and unambiguous. This is the single most important finding of the mission so far: it invalidates the listing-volume strategy as the primary path to the mission target.**
+
+The numbers, from three independent measurement projects (all reading the same public on-chain settlement data):
+
+1. **The whole discoverable x402 economy is tiny and brutally top-heavy.** An analyst paged the entire CDP Bazaar catalog (14,984 listed endpoints) on 2026-08-13 and multiplied calls × price: **~$23,500 total revenue/month across ALL endpoints**. Top 10 endpoints = 72% of that; top 100 = 85%. Only **27 of ~15,000 endpoints earn >$50/month**, and just 18 of those at normal micro-API prices (the rest move large per-call sums, e.g. Bitrefill's $1,000/call gift-card rail).
+2. **Our category is one of the worst.** LLM/AI inference: 391 endpoints splitting **$208/month total** — about **$0.53 per endpoint per month average**. Even being a top-quartile NLP endpoint yields cents per day. Crowded categories (token analytics: 3,391 endpoints → $3k/mo) are crowded precisely because they're easy to build, and they clear at pennies.
+3. **The median seller earns $0.01/month.** x402stats.io's headline: "median seller revenue, 30 days = $0.01" against $841k organic 30-day volume. The fuchss.app live trust report (115,616 listed endpoints) found **51% of endpoints unreachable** and **only 55.8% of pay-to wallets have EVER received a payment** — "the directory is mostly ghosts."
+4. **Traffic that looks like demand isn't.** Commodity endpoints show ~1 call per unique payer (ENS resolver: 768 payers / 784 calls) — agents crawling the Bazaar paying a fraction of a cent to try each listing once, never returning. Recurring revenue lives where **a few payers call thousands of times** (blockrun.ai: $199K from 28 buyers; swarmx: $273K from 23 payers) — and every such seller has a proprietary data feed or a money-moving rail, not a text-processing API.
+5. **Protocol-level totals confirm the ceiling:** ~$41M cumulative settled volume all-time across all chains (agent-economy tracker, 2026-08-22), $1.25M real 30-day GMV on Base (Barker, wash-adjusted) — spread across tens of thousands of sellers.
+
+**Month-one realistic conversion for a new unbranded NLP listing: effectively $0–$0.05/day** (tire-kick crawls only, per evidence #4). Our current $0.16/day lifetime average is already *above* the category median. No pricing change, listing surface, or catalog breadth fixes a category that grosses $208/mo across 391 sellers.
+
+**What this means strategically:** the only two models that clear $50/mo are (a) a proprietary dataset buyers can't replicate, or (b) a rail that moves real money — or (c) outside the marketplace entirely: one direct B2B payer or prize/bounty money. RQ-018 (active hackathons/bounties before 2026-09-30) is now the highest-value open question; past programs confirm the money exists (SKALE/Google/Coinbase $50k hackathon Feb 2026; Hedera 5×$1,000 bounty July 2026; SKALE $250k post-hackathon grants).
+
+### EVIDENCE
+- https://agentatwork.xyz/notes/x402-economy.html — full Bazaar census 2026-08-13: $23.5k/mo total, top-10=72%, 27 endpoints >$50/mo, AI inference 391 endpoints → $208/mo, one-call-per-payer tire-kick analysis (fetched via search cache; direct extract blocked)
+- https://x402stats.io/ — median seller revenue $0.01/30d; $841k organic 30d volume; 3.5k paying agents/wk
+- https://x402.fuchss.app/trust/report — 115,616 endpoints, 51% unreachable, 55.8% of wallets never paid, top-earner table (api.bitrefill.com $416K/24.6%)
+- https://app.barker.money/agent-economy — real vs nominal GMV, wash-flagging methodology, top-earning wallets table
+- https://agenteconomy.to/x402 — $41.37M cumulative settled, 165.9M txns, Base 84.9M txns (as of 2026-08-22)
+- https://dorahacks.io/hackathon/x402/tracks + https://hedera.com/x402-bounty/ + https://www.skale.space/blog/san-francisco-agentic-commerce-x402-hackathon-recap-winners — past prize programs (both closed; confirms program cadence for RQ-018)
+
+### RECOMMENDED ACTION (one directive for CEO)
+**Issue DIR-020: formally reclassify the marketplace-listing track (DIR-003/DIR-017 listings) from "revenue path" to "credibility artifact" — keep the listings because they cost little and prove legitimacy for outreach, but stop allocating primary effort to them. Redirect sales + researcher capacity to the two models the data supports: (1) land ONE direct recurring B2B payer (target: an agent-framework operator or data consumer who would call /v1/batch hundreds of times/day — one such payer IS $20/day), and (2) answer RQ-018 next cycle and enter any open bounty/hackathon with our already-working storefront. Do not spend further cycles on price micro-tuning or additional listing surfaces — the category ceiling, not our execution, is the constraint.**
+
+### ESTIMATED REVENUE IMPACT
+Prevents misallocation of the remaining mission effort into a channel with a measured ceiling of ~$0.01–$0.50/day for our category. The redirect targets the only observed paths to $20/day: one anchor B2B payer (blockrun/swarm pattern: $200–$280K/yr from <30 payers) or prize money ($1k–$50k events, historical cadence ~monthly in this ecosystem). Expected impact of a single landed anchor payer: $20–$60/day — i.e. 100–300% of mission target, versus <2.5% via listing optimization.

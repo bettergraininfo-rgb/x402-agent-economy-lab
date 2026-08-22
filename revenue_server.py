@@ -10,7 +10,8 @@ Endpoints:
   POST /v1/sentiment      -> $0.015/call
   POST /v1/entity-extract -> $0.030/call
   POST /v1/summarize      -> $0.075/call
-  POST /v1/analyze        -> $0.250/call  (premium)
+  POST /v1/report         -> $0.020/call (premium)
+  POST /v1/batch          -> $0.050/call (premium)
 
 Payment flow (x402-compatible shape):
   1. Client POSTs without payment -> 402 + X-Payment-Required header:
@@ -32,7 +33,7 @@ import httpx
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from bazaar import svc_sentiment, svc_summarize, svc_entities
+from bazaar import svc_sentiment, svc_summarize, svc_entities, svc_report, svc_batch
 
 app = FastAPI(title="agent-economy-revenue", version="1.0.0-real")
 
@@ -49,7 +50,8 @@ SERVICES = {
     "/v1/sentiment":      {"price": 0.015, "fn": svc_sentiment},
     "/v1/entity-extract": {"price": 0.030, "fn": svc_entities},
     "/v1/summarize":      {"price": 0.075, "fn": svc_summarize},
-    "/v1/analyze":        {"price": 0.250, "fn": "premium_analyze"},
+    "/v1/report":         {"price": 0.020, "fn": svc_report},
+    "/v1/batch":          {"price": 0.050, "fn": svc_batch},
 }
 
 LEDGER = Path(__file__).parent / "org" / "revenue_ledger.json"
@@ -172,13 +174,25 @@ async def serve(endpoint: str, request: Request):
     path = f"/v1/{endpoint}"
     if path not in SERVICES:
         return JSONResponse({"error": "unknown endpoint"}, status_code=404)
-    cfg = SERVICES[path]
-
-    body: dict = {}
     try:
         body = await request.json()
     except Exception:
         return JSONResponse({"error": "JSON body required"}, status_code=400)
+    return await _authorize_and_serve(path, request, body)
+
+
+@app.get("/v1/{endpoint}")
+async def serve_get(endpoint: str, request: Request):
+    path = f"/v1/{endpoint}"
+    if path not in SERVICES:
+        return JSONResponse({"error": "unknown endpoint"}, status_code=404)
+    return await _authorize_and_serve(path, request,
+                                      {"text": request.query_params.get("text", "")})
+
+
+async def _authorize_and_serve(path: str, request: Request, body: dict):
+    """Single payment-verification + replay-guard + ledger path for POST and GET."""
+    cfg = SERVICES[path]
 
     tx_hash = request.headers.get("x-payment", "").strip()
     if not tx_hash:
@@ -198,20 +212,8 @@ async def serve(endpoint: str, request: Request):
     _record(tx_hash, path, amount or cfg["price"])
 
     # ---- serve the actual work ----
-    if path == "/v1/sentiment":
-        result = svc_sentiment(body.get("text", ""))
-    elif path == "/v1/entity-extract":
-        result = svc_entities(body.get("text", ""))
-    elif path == "/v1/summarize":
-        result = svc_summarize(body.get("text", ""))
-    else:  # premium analyze
-        text = body.get("text", "")
-        result = {
-            "summary": svc_summarize(text),
-            "sentiment": svc_sentiment(text),
-            "entities": svc_entities(text),
-            "stats": {"chars": len(text), "words": len(text.split())},
-        }
+    result = (cfg["fn"](body.get("text", ""))
+              if not isinstance(cfg["fn"], str) else {"error": "unimplemented"})
     return JSONResponse({"paid_usdc": amount or cfg["price"], "tx": tx_hash, "result": result})
 
 

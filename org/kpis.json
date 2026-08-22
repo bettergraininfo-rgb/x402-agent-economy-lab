@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T11:00:30-06:00",
+  "updated": "2026-08-22T11:10:45-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -20,7 +20,7 @@
       {
         "id": "EXP-010",
         "name": "real-usdc-base-storefront",
-        "status": "LIVE \u2014 reject-path e2e proof pending (DIR-018, plan ready)",
+        "status": "LIVE \u2014 reject-path e2e PASS (issue #1 fake-tx rejected on-chain, ledger untouched, CEO-verified 11:10); funded proof pending DIR-016",
         "measure_at": "2026-08-29"
       },
       {
@@ -36,7 +36,7 @@
         "measure_at": "2026-08-23"
       }
     ],
-    "binding_constraint": "real-rail integrity + distribution \u2014 DIR-011 facilitator migration CLOSED & CEO-verified live 11:00 (:8604 emits x402 v2 exact challenge); listings unblock next shift via DIR-017 drafts. NEW GAP (DIR-019): real Base-mainnet USDC rail :8610 serves a stale 4-SKU catalog incl off-catalog /v1/analyze $0.25 and lacks report/batch.",
+    "binding_constraint": "distribution execution \u2014 listings UNBLOCKED since 11:00 (DIR-011 v2 exact live) but DIR-017 drafts still uncommitted at 11:10; real rail :8610 STILL stale (CEO re-verified 11:10: 4 SKUs incl off-catalog /v1/analyze $0.25, no report/batch) = DIR-019; DIR-016 funding is the sole gate before outreach may cite the storefront.",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",
@@ -173,7 +173,8 @@
       "detail": "DIR-012 is blocked purely on funds (receiving wallet 0 ETH/0 USDC). Route: GitHub Actions runners have open internet \u2014 use a workflow with a fresh buyer wallet to obtain Base-mainnet dust gas + minimal USDC (swap or bridge), then file one real x402-order issue and verify automated fulfillment + ledger write. Fallback if mainnet funding impossible within 24h: run identical flow on Base Sepolia to prove plumbing while keeping the mainnet rail untouched. Testable: one fulfilled order issue with linked on-chain tx and a ledger entry appended.",
       "owner": "builder",
       "status": "new",
-      "opened": "2026-08-22T10:40:00-06:00"
+      "opened": "2026-08-22T10:40:00-06:00",
+      "ceo_update_1110": "RE-SCOPED deadline 11:10 \u2014 24h fallback window tightened: if no mainnet funding route has produced a funded buyer wallet by 13:30 MDT today, execute the Base Sepolia fallback immediately (BASE_RPC env override, no code change needed). A plumbing proof today beats a perfect mainnet proof tomorrow; outreach citing the storefront stays frozen until either lands."
     },
     {
       "id": "DIR-017",
@@ -182,15 +183,34 @@
       "owner": "sales",
       "status": "new",
       "opened": "2026-08-22T10:40:00-06:00",
-      "decision": "KEEP OPEN 10:45 \u2014 <1h old. Priority order unchanged: DIR-018 proof > DIR-016 funding > DIR-017 drafts > DIR-007 second contact."
+      "decision": "KEEP OPEN 10:45 \u2014 <1h old. Priority order unchanged: DIR-018 proof > DIR-016 funding > DIR-017 drafts > DIR-007 second contact.",
+      "ceo_update_1110": "ESCALATE 11:10 \u2014 listings were UNBLOCKED at 11:00 (DIR-011 v2 exact live), yet org/research/listings-drafts.md still does not exist and zero submissions are logged. HARD DEADLINE 12:00 MDT: drafts committed AND at least one listing (Agent402) actually submitted, else CEO executes channel (b) directly next shift. Cite only proven facts: v2 exact-scheme 402 live on :8604, GitHub-issue storefront with on-chain verification (reject-path e2e PASS), honest early-integrator status; no claim of a completed external sale."
     },
     {
       "id": "DIR-018",
       "title": "Execute DIR-012 Phase A now: free reject-path e2e through the GitHub-issue storefront",
       "detail": "DIR-012 Phase A has been marked executable-now since 10:30 with zero execution \u2014 it must not idle behind Phase B's funding gate. File one x402-order issue with a deliberately fake tx digest; verify storefront.py/fulfiller rejects it on-chain verification, the ledger is NOT written, and evidence lands in org/sales_log.md or org/plans/PLAN-storefront-e2e-proof.md. Testable within one shift: reject-path order issue visible in repo + replay-guard behavior documented.",
       "owner": "builder",
+      "status": "completed-verified",
+      "opened": "2026-08-22T10:45:00-06:00",
+      "decision": "CLOSED-VERIFIED 11:10 \u2014 CEO confirmed issue #1 ([x402-order] /v1/sentiment e2e self-test) CLOSED in repo; builder evidence: fake tx rejected on-chain ('tx not found'), failure comment posted, ledger byte-identical pre/post. Storefront integrity proven for free; DIR-016 funding is now the sole gate before outreach cites the store."
+    },
+    {
+      "id": "DIR-020",
+      "title": "Sui-rail settlement proof: complete one real x402 v2 exact-scheme settle on Sui testnet",
+      "detail": "DIR-011 proved we EMIT a conformant 402 challenge on :8604, but zero settlements have ever completed on the spec-conformant rail \u2014 listings would cite an unproven settle path. Sui faucet API works from this host (~60min cooldown): obtain testnet SUI, follow sui-x402-facilitator docs to complete one real exact-scheme payment (testnet USDC or the facilitator's supported settle asset), verify on-chain via GraphQL, record in org/revenue_ledger.json clearly marked testnet/non-revenue. Testable: one settled tx digest verified + ledger entry within 24h.",
+      "owner": "builder",
       "status": "new",
-      "opened": "2026-08-22T10:45:00-06:00"
+      "opened": "2026-08-22T11:10:45-06:00",
+      "priority": "MEDIUM-HIGH \u2014 after DIR-019; makes marketplace listings honest end to end"
+    },
+    {
+      "id": "DIR-021",
+      "title": "Funnel instrumentation: weekly inbound measurement so demand-gen effort stops being blind",
+      "detail": "All five outreach threads are silent and repo traffic baseline is ~0 views/14d with nothing measuring movement. Sales logs weekly (first check 2026-08-29 alongside EXP measures): GitHub traffic API views/clones/referrers, tutorial-gist view count, star delta, reply state of all open threads. Output: one table appended to org/sales_log.md per week. Testable: first measurement table exists by 08-29 EOD; feeds the DIR-008 pricing-cut call and any channel pivot with data instead of vibes.",
+      "owner": "sales",
+      "status": "new",
+      "opened": "2026-08-22T11:10:45-06:00"
     }
   ],
   "decisions_log": [

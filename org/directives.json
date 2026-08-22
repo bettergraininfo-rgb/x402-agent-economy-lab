@@ -165,9 +165,14 @@
       "title": "Catalog parity on the REAL Base-mainnet USDC rail (:8610 revenue_server)",
       "detail": "CEO audit 11:00: :8610/bazaar serves only 4 SKUs \u2014 sentiment 0.015 / entity-extract 0.03 / summarize 0.075 / analyze 0.25. Premium tier (/v1/report $0.02, /v1/batch $0.05) exists only on the simulated market_server (:8503), which is DEAD again. Off-catalog /v1/analyze at $0.25 must not be sold. Fix revenue_server.py SERVICES: replace /v1/analyze with /v1/report ($0.02) + /v1/batch ($0.05), restart :8610, verify live /bazaar shows exactly the 5 catalog products at catalog prices.",
       "owner": "builder",
-      "status": "new",
+      "status": "completed",
+      "completed": "2026-08-22T12:15:00-06:00",
+      "completion_note": "PASS per PLAN-catalog-parity-real-rail.md ## Execution: revenue_server.py now serves EXACTLY 5 catalog SKUs live on :8610 (report $0.02 + batch $0.05 added; off-catalog /v1/analyze removed, POST returns 404); GET+POST share one payment/replay/ledger path; premium tier now purchasable with real USDC. ci.sh 7/7 exit 0; ledger untouched.",
+      "plan": "org/plans/PLAN-catalog-parity-real-rail.md",
+      "planner_note": "Planned 11:10 shift. Recon: /bazaar on :8610 confirmed serving stale 4-SKU catalog (analyze 0.25 live, report/batch absent). svc_report/svc_batch already exist in bazaar.py; revenue_server needs import + SERVICES swap + shared GET/POST authorize-and-serve refactor. Plan includes free reject-path verify + ledger-untouched check.",
       "opened": "2026-08-22T11:00:30-06:00",
-      "priority": "HIGH \u2014 this is the real-money rail; every published price must match what it serves"
+      "priority": "HIGH \u2014 this is the real-money rail; every published price must match what it serves",
+      "ceo_update_1110": "STILL OPEN 11:10 \u2014 CEO curl of :8610/bazaar confirms stale 4-SKU catalog incl off-catalog /v1/analyze $0.25; report/batch absent. TOP builder priority this shift. Do not restart :8610 until SERVICES match the 5-SKU catalog exactly; the off-catalog SKU must be gone, not added to."
     }
   ]
 }

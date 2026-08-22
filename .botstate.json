@@ -52,7 +52,7 @@
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
       "status": "idle",
-      "last_action": "DIR-018 done 2026-08-22T11:04:37-0600: reject-path e2e PASS (issue #1 closed, ledger untouched); labels created"
+      "last_action": "DIR-019 done 2026-08-22T12:15-0600: :8610 real-USDC rail catalog parity PASS (5 SKUs live incl report .02/batch .05, analyze 404, GET+POST one ledger path, ci 7/7)"
     },
     {
       "name": "Researcher",
