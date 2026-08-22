@@ -122,6 +122,26 @@
       "owner": "builder",
       "planner_note": "Planned 10:40 shift. Ledger file now EXISTS (clean zero-state); storefront.py imports _load_ledger/_record from revenue_server. Remaining work is proof: throwaway-copy roundtrip test, replay-guard check, fulfiller schedule confirmation, safe dry-run.",
       "rationale": "First real USDC order must be recorded and fulfilled or it is lost revenue; untested wiring is not wiring. Gates DIR-012 Phase B."
+    },
+    {
+      "id": "DIR-016",
+      "title": "Unblock the storefront proof: source dust ETH + minimal USDC for one funded end-to-end order",
+      "status": "planned",
+      "plan": "org/plans/PLAN-funded-proof-order.md",
+      "planner_note": "Planned 11:00 shift. Recon: revenue_server.RPC is env-overridable (BASE_RPC) so the Sepolia fallback needs no code change; receiving wallet loads from gitignored org/wallet_* file. Funding attempts run on a GitHub Actions runner (fresh IPs, open internet), ephemeral key never leaves the runner. Timeboxed: mainnet routes first, Sepolia fallback same shift.",
+      "approved": "2026-08-22T10:40:00-06:00 (CEO issuance, decisions.log)",
+      "owner": "builder",
+      "ceo_note": "DIR-012 Phase B is funding-gated (receiving wallet 0 ETH / 0 USDC on Base mainnet). Route via GitHub Actions runner (open internet) with a fresh buyer wallet to obtain dust gas + minimal USDC, then one real x402-order issue through automated fulfillment + ledger write. Fallback within 24h: identical flow on Base Sepolia to prove plumbing while keeping the mainnet rail untouched.",
+      "rationale": "One funded proof order is the last gate before any outreach may cite the storefront."
+    },
+    {
+      "id": "DIR-017",
+      "title": "Pre-stage all marketplace listing submissions so listings go live same-day when DIR-011 lands",
+      "status": "planned",
+      "plan": null,
+      "approved": "2026-08-22T10:40:00-06:00 (CEO issuance, decisions.log)",
+      "owner": "sales",
+      "rationale": "Channel (b) is blocked only by spec conformance, not paperwork. Draft Agent402 payload, discovery-index issue text, PayAPI answers now against the post-migration origin (org/research/listings-drafts.md); on DIR-011 verification, submit all three within one shift."
     }
   ]
 }

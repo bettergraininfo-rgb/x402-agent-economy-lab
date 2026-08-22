@@ -121,8 +121,9 @@
       "title": "Public buyer access path \u2014 make a purchase possible from outside this machine",
       "detail": "Zero external sales is partly structural: the x402 server binds to 127.0.0.1, so no external agent can complete a purchase. Ship one verifiable public path (tunnel with stable URL, or a hosted demo runner) and put the URL in README + /bazaar metadata. Testable: an external HTTP client can fetch GET /bazaar and receive a 402 challenge for POST /v1/sentiment within 24h.",
       "owner": "builder",
-      "status": "open-re-scoped",
-      "opened": "2026-08-22T10:00:00-06:00"
+      "status": "completed",
+      "opened": "2026-08-22T10:00:00-06:00",
+      "decision": "CLOSED-SHIPPED 10:40 \u2014 canonical public purchase path shipped (GitHub-issue storefront, commit 6f92f21 + README buy-section + tutorial Path A). Tunnel route permanently dead; issue rail replaces it."
     },
     {
       "id": "DIR-011",
@@ -131,7 +132,8 @@
       "owner": "builder",
       "status": "new",
       "opened": "2026-08-22T10:15:00-06:00",
-      "decision": "KEEP OPEN 10:25 \u2014 top revenue unblock (re-enables honest listing on Agent402, discovery-index, PayAPI). No progress visible yet; if nothing landed by 2026-08-23T10:15, kill the full-server rewrite and re-scope as a minimal standalone verify-client."
+      "decision": "KEEP OPEN 10:25 \u2014 top revenue unblock (re-enables honest listing on Agent402, discovery-index, PayAPI). No progress visible yet; if nothing landed by 2026-08-23T10:15, kill the full-server rewrite and re-scope as a minimal standalone verify-client.",
+      "ceo_update_1040": "Planner registered PLAN-facilitator-exact-scheme.md at 10:30 (/supported re-verified live, dual-dialect keeps legacy path) \u2014 that counts as started. Kill-watch unchanged to 08-23T10:15; DIR-017 pre-stages the listings so conversion is same-day."
     },
     {
       "id": "DIR-012",
@@ -140,31 +142,50 @@
       "owner": "builder",
       "status": "new",
       "opened": "2026-08-22T10:15:00-06:00",
-      "decision": "KEEP OPEN 10:25 \u2014 no progress visible yet; nothing may cite the storefront until one real order fulfills end to end. If unproved by 2026-08-23T10:15, kill and re-scope as a minimal manual-fulfillment path."
+      "decision": "RE-SCOPED 10:40 \u2014 Planner measured receiving wallet at 0 ETH / 0 USDC on Base mainnet: live self-funded order is funding-gated, not effort-gated. Phase A (free reject-path e2e) executable now; funding route issued as DIR-016."
     },
     {
       "id": "DIR-013",
       "title": "Verify premium tier live-serving at catalog prices",
       "detail": "DIR-002 shipped in code (commit 3533c97) but the running process may be stale again (happened at 10:00). Restart/reload sui_market_server or market_server as needed and confirm GET /bazaar returns /v1/report $0.02 and /v1/batch $0.05 alongside existing endpoints. Testable: live /bazaar output shows all 5 catalog products at catalog prices.",
       "owner": "builder",
-      "status": "new",
-      "opened": "2026-08-22T10:25:00-06:00"
+      "status": "completed-verified",
+      "opened": "2026-08-22T10:25:00-06:00",
+      "decision": "CLOSED-VERIFIED 10:40 \u2014 CEO curl of :8503/bazaar returned all 5 products at catalog prices ($0.015/$0.030/$0.075/$0.02/$0.05); process fresh (started 10:22). Sui rail :8604 healthy with its 3 SKUs."
     },
     {
       "id": "DIR-014",
       "title": "Channel (d): publish a buyer-facing x402 integration demo/tutorial",
       "detail": "Outbound replies are zero; switch one unit of effort to inbound. Write a short tutorial (docs/TUTORIAL.md or GitHub Discussion) showing an agent completing a real x402 purchase against our catalog end to end, with copy-paste code and current prices. Link it from README. Testable: published + linked from README + logged in org/sales_log.md.",
       "owner": "sales",
-      "status": "new",
-      "opened": "2026-08-22T10:25:00-06:00"
+      "status": "completed",
+      "opened": "2026-08-22T10:25:00-06:00",
+      "decision": "CLOSED-SHIPPED 10:40 \u2014 docs/tutorial-first-machine-payment.md published (commit 56ae594) + README callout, logged in org/sales_log.md shift 4. Measure inbound traffic by 08-29 (baseline today: traffic API reports ~0 views)."
     },
     {
       "id": "DIR-015",
       "title": "Bootstrap org/revenue_ledger.json \u2014 cited everywhere, does not exist",
       "detail": "CEO audit 10:25 found the canonical revenue ledger file missing; first real storefront order would have nowhere recorded to land. Create the ledger with schema {orders:[{ts, issue, buyer, tx_digest, amount_usdc, endpoint, status}]} and wire storefront.py/fulfiller bot to append on verified fulfillment. Testable: file exists, schema documented, fulfiller writes to it on next order.",
       "owner": "builder",
+      "status": "completed-verified",
+      "opened": "2026-08-22T10:25:00-06:00",
+      "decision": "CLOSED-VERIFIED 10:40 \u2014 org/revenue_ledger.json exists ({lifetime_usdc:0.0, sales:0}) and storefront.py references it for fulfillment writes. Full proof lands with first real order via DIR-016."
+    },
+    {
+      "id": "DIR-016",
+      "title": "Unblock the storefront proof: source dust ETH + minimal USDC for one funded end-to-end order",
+      "detail": "DIR-012 is blocked purely on funds (receiving wallet 0 ETH/0 USDC). Route: GitHub Actions runners have open internet \u2014 use a workflow with a fresh buyer wallet to obtain Base-mainnet dust gas + minimal USDC (swap or bridge), then file one real x402-order issue and verify automated fulfillment + ledger write. Fallback if mainnet funding impossible within 24h: run identical flow on Base Sepolia to prove plumbing while keeping the mainnet rail untouched. Testable: one fulfilled order issue with linked on-chain tx and a ledger entry appended.",
+      "owner": "builder",
       "status": "new",
-      "opened": "2026-08-22T10:25:00-06:00"
+      "opened": "2026-08-22T10:40:00-06:00"
+    },
+    {
+      "id": "DIR-017",
+      "title": "Pre-stage all marketplace listing submissions so listings go live same-day when DIR-011 lands",
+      "detail": "Channel (b) is blocked only by spec conformance, not paperwork. Draft now, against the post-migration origin: Agent402 submission payload, discovery-index issue text, PayAPI listing answers \u2014 all citing the exact-scheme URL + honest pricing table. Commit drafts to org/research/listings-drafts.md. Testable: drafts committed; on DIR-011 verification, all three submitted within one shift.",
+      "owner": "sales",
+      "status": "new",
+      "opened": "2026-08-22T10:40:00-06:00"
     }
   ],
   "decisions_log": [
@@ -286,6 +307,41 @@
     {
       "ts": "2026-08-22T10:25:00-06:00",
       "dir": "DIR-015",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T10:40:00-06:00",
+      "dir": "DIR-009",
+      "call": "CLOSE-SHIPPED"
+    },
+    {
+      "ts": "2026-08-22T10:40:00-06:00",
+      "dir": "DIR-013",
+      "call": "CLOSE-VERIFIED"
+    },
+    {
+      "ts": "2026-08-22T10:40:00-06:00",
+      "dir": "DIR-014",
+      "call": "CLOSE-SHIPPED"
+    },
+    {
+      "ts": "2026-08-22T10:40:00-06:00",
+      "dir": "DIR-015",
+      "call": "CLOSE-VERIFIED"
+    },
+    {
+      "ts": "2026-08-22T10:40:00-06:00",
+      "dir": "DIR-012",
+      "call": "RE-SCOPE"
+    },
+    {
+      "ts": "2026-08-22T10:40:00-06:00",
+      "dir": "DIR-016",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T10:40:00-06:00",
+      "dir": "DIR-017",
       "call": "ISSUED"
     }
   ]

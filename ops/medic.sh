@@ -36,5 +36,22 @@ out="$(restart "dashboard"    8605 "dashboard_api:app"   "http://127.0.0.1:8605/
 out="$(restart "revenue-server" 8610 "revenue_server:app" "http://127.0.0.1:8610/health")"
 [ -n "$out" ] && { echo "$out"; actions=1; }
 
+# Checkpoint: bots write org/ state without committing; commit bot-authored
+# state so the repo stays clean. NEVER touch wallets/keys/code here.
+if [ -n "$(git status --porcelain)" ]; then
+  if git status --porcelain | grep -qvE '^\?\?\s+(\.bot(state|log).*|org/)|^ M\s+(\.bot(state|log).*|org/)|^M\s+(\.bot(state|log).*|org/)'; then
+    log "dirty repo contains NON-org changes — not auto-committing, needs review"
+    echo "MEDIC: repo has non-org uncommitted changes; left for review."
+    actions=1
+  else
+    git add -- org/ .botstate.json .botlog.jsonl 2>/dev/null
+    git -c user.name="bettergraininfo-rgb" -c user.email="bettergraininfo-rgb@users.noreply.github.com" \
+      commit -q -m "org state checkpoint (medic auto-commit)" 2>/dev/null \
+      && git push -q origin master 2>/dev/null \
+      && log "checkpointed org state ($(git rev-parse --short HEAD))" \
+      || log "checkpoint commit/push FAILED"
+  fi
+fi
+
 [ $actions -eq 0 ] && exit 0
 exit 0

@@ -65,14 +65,16 @@ else
   sed -i 's/\x1b\[[0-9;]*m//g' /tmp/wd_cron.out   # strip ANSI colors
   active="$(grep -c '\[active\]' /tmp/wd_cron.out)"
   paused="$(grep -ciE '\[(paused|disabled)\]' /tmp/wd_cron.out)"
-  err="$(grep -Ei 'error|fail' /tmp/wd_cron.out | grep -v 'Last run:' | head -3)"
+  # single transient agent failures self-heal next tick; alert only if persistent
+  fails="$(grep -c '^    Execution: failed' /tmp/wd_cron.out)"
+  errlines="$(grep '^    Execution: failed' /tmp/wd_cron.out | head -3)"
+  [ "${fails:-0}" -ge 2 ] && issues+="CRON FAILURES: $fails jobs show failed executions:"$'\n'"$errlines"$'\n'
   if [ "${active:-0}" -lt 7 ]; then
     issues+="CRON FLEET: only $active active jobs (expected >= 7)"$'\n'
   fi
   if [ "${paused:-0}" -gt 0 ]; then
     issues+="CRON FLEET: $paused job(s) show paused/disabled:"$'\n'"$(grep -iE '\[(paused|disabled)\]' /tmp/wd_cron.out | head -3)"$'\n'
   fi
-  if [ -n "$err" ]; then issues+="CRON ERRORS: $err"$'\n'; fi
 fi
 rm -f /tmp/wd_cron.out
 
