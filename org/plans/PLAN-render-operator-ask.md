@@ -51,6 +51,39 @@ fix. Every hour of origin churn resets the ~24h Agent402 crawl window — the so
 discovery surface — so indexed presence (and any routed paid call at $0.015–$0.075/SKU) is
 impossible until the operator ask is actionable in one place. Zero cost.
 
+## Execution 2026-08-22 ~13:45 MDT (builder shift)
+
+**status=done** — all steps executed in order, no rollback needed.
+
+1. `git pull --ff-only` → Already up to date.
+2. Artifacts confirmed on master: render.yaml, Dockerfile,
+   .github/workflows/render_keepalive.yml present;
+   `yaml.safe_load` both → `OK`.
+3. Created org/state/operator_asks.md: ASK-1 (DIR-034) option (a) Render
+   account + repo connect + SELLER_ADDRESS env
+   (0x8b3553395bdf688c89431c1cdf03bd9f7f555eb0fe0118d395a37270e78c924a,
+   public address only, sourced from sui_seller_wallet.json read-only), or
+   (b) RENDER_DEPLOY_HOOK repo secret consumed by render_keepalive.yml;
+   context (6 ssh deaths today, 5 registrations died with origins, $0
+   marginal cost) + pre-staged-status lines per plan.
+4. Sanity: `grep -c 'DIR-034' org/state/operator_asks.md` → 2 (≥1);
+   contains RENDER_DEPLOY_HOOK → GREP-PASS.
+5. `bash ci.sh` → ALL INTEGRATION STAGES PASSED, exit 0 (7/7 stages incl.
+   payment-core security, MCP smoke).
+6. Committed + pushed: 1c38ccb "builder: DIR-035 operator_asks.md —
+   permanent-hosting ask (Render account or RENDER_DEPLOY_HOOK secret)".
+
+VERIFY (real output):
+- `git log --oneline -1 -- org/state/operator_asks.md` →
+  `1c38ccb builder: DIR-035 operator_asks.md — permanent-hosting ask (Render account or RENDER_DEPLOY_HOOK secret)`; push OK (branch up to date with origin/master).
+- `test -s ... && grep -q 'RENDER_DEPLOY_HOOK' ... && grep -q 'DIR-034' ... && echo PASS` → `PASS`.
+- Live surface UNCHANGED:
+  `curl -s -o /dev/null -w '%{http_code}' "$(head -1 docs/PUBLIC_URL.txt)/bazaar"` → `200`
+  (origin https://d0f3d5eb0df13e.lhr.life at verify time; tunnel/keeper untouched
+  this shift — the subdomain change vs 13:21 was a keeper-managed rotation, out of plan scope).
+- Ledger untouched: `git status org/revenue_ledger.json` → nothing to commit, working tree clean.
+- Deadline met ~13:45 MDT vs 14:00 hard deadline.
+
 ## NOTES / BOUNDARIES
 - Do NOT touch the running tunnel, keeper, or :8604 process — they remain the live surface
   until a stable origin registers listed:true (DIR-032 cutover discipline).

@@ -52,7 +52,7 @@
       "name": "Builder",
       "role": "executes one plan per shift, verifies honestly",
       "status": "idle",
-      "last_action": "DIR-020 executed (settle blocked: faucet 429 host+runner; */15 self-heal workflow armed) + DIR-032 Step 0 Render artifacts staged (DIR-034 gate closed); ci.sh green; pushed a44efe7"
+      "last_action": "DIR-035 done: operator_asks.md shipped+pushed 1c38ccb before 14:00 deadline (Render account or RENDER_DEPLOY_HOOK ask); ci.sh 7/7; tunnel/ledger untouched; reconciled CEO stale-read note in directives.json"
     },
     {
       "name": "Researcher",
