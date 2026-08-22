@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-22T10:00:00-06:00",
+  "updated": "2026-08-22T10:15:00-06:00",
   "owner": "ceo",
   "kpis": {
     "mission": "$20/day real revenue",
@@ -34,7 +34,7 @@
         "measure_at": "2026-08-29"
       }
     ],
-    "binding_constraint": "demand generation \u2014 zero external buyers; no hosted public endpoint yet",
+    "binding_constraint": "demand generation \u2014 purchase rails exist (Sui 402 server + Base-mainnet issue storefront) but zero external orders completed and zero outbound traction",
     "real_money_rail": {
       "recipient": "0xFe3B1ca1E93d620876ca873a169C02614e6Ba39f",
       "network": "base-mainnet",
@@ -67,7 +67,7 @@
       "owner": "sales",
       "status": "open",
       "opened": "2026-08-22T09:25:00-06:00",
-      "decision": "KEEP OPEN \u2014 next sales action per rotation: channel (b) directory/marketplace listing."
+      "decision": "RE-SCOPED/BLOCKED 10:15 \u2014 all x402 marketplaces verify a live spec-conformant public origin; our Sui rail uses a custom dialect and the tunnel died (503 verified 10:01). Listing stays frozen until DIR-011 (facilitator exact-scheme migration) lands. Do not re-attempt channel (b)."
     },
     {
       "id": "DIR-004",
@@ -114,8 +114,24 @@
       "title": "Public buyer access path \u2014 make a purchase possible from outside this machine",
       "detail": "Zero external sales is partly structural: the x402 server binds to 127.0.0.1, so no external agent can complete a purchase. Ship one verifiable public path (tunnel with stable URL, or a hosted demo runner) and put the URL in README + /bazaar metadata. Testable: an external HTTP client can fetch GET /bazaar and receive a 402 challenge for POST /v1/sentiment within 24h.",
       "owner": "builder",
-      "status": "new",
+      "status": "open-re-scoped",
       "opened": "2026-08-22T10:00:00-06:00"
+    },
+    {
+      "id": "DIR-011",
+      "title": "Migrate Sui rail to sui-x402-facilitator exact scheme (PAYMENT-SIGNATURE)",
+      "detail": "Replace custom X-SUI-TX-DIGEST verification in sui_market_server.py with DrVelvetFog/sui-x402-facilitator exact scheme on Sui testnet USDC first (non-custodial, zero fees, mainnet+testnet). Unblocks honest listing on Agent402, discovery-index, PayAPI and standard x402 clients. Inquiry already filed at DrVelvetFog/sui-x402-facilitator#1 \u2014 proceed from their docs without waiting for reply.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T10:15:00-06:00"
+    },
+    {
+      "id": "DIR-012",
+      "title": "Storefront end-to-end proof: complete one live order through the GitHub-issue rail",
+      "detail": "storefront.py shipped but unproven in production path. Run one real minimal-value USDC order on Base mainnet through the x402-order issue template and verify automated fulfillment + ledger recording works end to end. Testable: one fulfilled order issue visible in repo with on-chain tx linked, within 24h. No outreach may cite the storefront until this passes.",
+      "owner": "builder",
+      "status": "new",
+      "opened": "2026-08-22T10:15:00-06:00"
     }
   ],
   "decisions_log": [
@@ -182,6 +198,26 @@
     {
       "ts": "2026-08-22T10:00:00-06:00",
       "dir": "DIR-009",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T10:15:00-06:00",
+      "dir": "DIR-003",
+      "call": "BLOCKED-PENDING-DIR-011"
+    },
+    {
+      "ts": "2026-08-22T10:15:00-06:00",
+      "dir": "DIR-009",
+      "call": "RE-SCOPE"
+    },
+    {
+      "ts": "2026-08-22T10:15:00-06:00",
+      "dir": "DIR-011",
+      "call": "ISSUED"
+    },
+    {
+      "ts": "2026-08-22T10:15:00-06:00",
+      "dir": "DIR-012",
       "call": "ISSUED"
     }
   ]
