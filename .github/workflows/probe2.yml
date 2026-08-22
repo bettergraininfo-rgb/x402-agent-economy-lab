@@ -1,0 +1,31 @@
+name: funding-probe2
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe round 2
+        run: |
+          W="0xdC0750D5fB649bab3B8b02d31CDab12Dcae0cC51"
+          echo "=== ethfaucet.com (BringID) ==="
+          curl -s -o /tmp/e.html -w "root http=%{http_code}\n" --max-time 15 https://ethfaucet.com/networks/base
+          grep -oiE "(api|faucet)[a-z0-9/_.-]*" /tmp/e.html | sort -u | head -15
+          echo "--- POST attempt ---"
+          curl -s -o /tmp/e.json -w "post http=%{http_code}\n" --max-time 20 \
+            -X POST https://ethfaucet.com/api/faucet/base-sepolia \
+            -H "Content-Type: application/json" \
+            -d "{\"address\":\"$W\"}"
+          head -c 200 /tmp/e.json; echo
+
+          echo "=== ethereum-ecosystem.com ==="
+          curl -sL -o /tmp/ec.html -w "http=%{http_code}\n" --max-time 15 \
+            "https://www.ethereum-ecosystem.com/faucets/base-sepolia"
+          grep -oE "https://[a-z0-9.-]+/(api/[a-z0-9/_-]*|faucet[a-z0-9/_-]*)" /tmp/ec.html | sort -u | head -10
+
+          echo "=== pk910 websocket endpoint ==="
+          curl -s -o /dev/null -w "ws-page http=%{http_code}\n" --max-time 15 \
+            "https://sepolia-faucet.pk910.de/"
+          curl -s --max-time 15 -o /tmp/pk.js -w "js http=%{http_code}\n" \
+            "https://sepolia-faucet.pk910.de/js/miner.js" || true
+          ls -la /tmp/pk.js 2>/dev/null | head -1
