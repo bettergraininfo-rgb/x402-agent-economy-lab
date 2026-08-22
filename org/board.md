@@ -6,9 +6,9 @@
 ## Products we can sell today
 | Endpoint | Price | Notes |
 |---|---|---|
-| POST /v1/sentiment | $0.001/call | x402-paid, live |
-| POST /v1/entity-extract | $0.002/call | x402-paid, live |
-| POST /v1/summarize | $0.005/call | x402-paid, live |
+| POST /v1/sentiment | $0.015/call | x402-paid, live |
+| POST /v1/entity-extract | $0.030/call | x402-paid, live |
+| POST /v1/summarize | $0.075/call | x402-paid, live |
 
 Server: sui_market_server.py (port 8604) / market_server.py. Payments verified on-chain before serving.
 

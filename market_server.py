@@ -30,9 +30,9 @@ REPRICE_EVERY = 6
 MIN_FACTOR, MAX_FACTOR = 0.4, 3.0
 
 SERVICES = {
-    "/v1/sentiment":      {"base_price": 0.001, "price": 0.001, "fn": svc_sentiment},
-    "/v1/summarize":      {"base_price": 0.005, "price": 0.005, "fn": svc_summarize},
-    "/v1/entity-extract": {"base_price": 0.002, "price": 0.002, "fn": svc_entities},
+    "/v1/sentiment":      {"base_price": 0.015, "price": 0.015, "fn": svc_sentiment},
+    "/v1/summarize":      {"base_price": 0.075, "price": 0.075, "fn": svc_summarize},
+    "/v1/entity-extract": {"base_price": 0.030, "price": 0.030, "fn": svc_entities},
 }
 # views vs buys per service since last reprice
 demand = {ep: {"views": 0, "buys": 0} for ep in SERVICES}

@@ -52,9 +52,9 @@ AGENTS = [
 DEMO_MARKET = {
     "sales": 14,
     "revenue_by_service": {
-        "/v1/sentiment": {"sales": 6, "revenue_usdc": 0.006, "price_usdc": 0.001},
-        "/v1/entity-extract": {"sales": 4, "revenue_usdc": 0.008, "price_usdc": 0.002},
-        "/v1/summarize": {"sales": 4, "revenue_usdc": 0.020, "price_usdc": 0.005},
+        "/v1/sentiment": {"sales": 6, "revenue_usdc": 0.006, "price_usdc": 0.015},
+        "/v1/entity-extract": {"sales": 4, "revenue_usdc": 0.008, "price_usdc": 0.030},
+        "/v1/summarize": {"sales": 4, "revenue_usdc": 0.020, "price_usdc": 0.075},
     },
 }
 
